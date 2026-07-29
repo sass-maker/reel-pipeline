@@ -1,5 +1,11 @@
 # Reel Pipeline
 
+> [!IMPORTANT]
+> This public repository is preserved for history and attribution. The
+> maintained implementation has moved to a private Foundry monorepo under
+> `foundry/services/reel-pipeline`. It is created and maintained by
+> [Sarthak Agrawal](https://sarthakagrawal.dev).
+
 AI reel generation and autopost orchestration for fleet products. Turns
 approved SaaS Maker marketing ideas, High Signal briefs, Significant Hobbies
 envelopes, and public brand URLs into reviewable short-form video drafts,
@@ -100,8 +106,3 @@ and draft production, not final marketing quality.
 - Run `npm run docs:validate` before committing doc changes; CI enforces it.
 
 See [`AGENTS.md`](AGENTS.md) for the full documentation maintenance rules.
-> [!IMPORTANT]
-> This repository was merged into
-> [`sass-maker/fleet-workspace`](https://github.com/sass-maker/fleet-workspace)
-> at `fleet-ops/services/reel-pipeline/`. It is retained for history and
-> attribution only; do not clone it for Fleet setup or development.
