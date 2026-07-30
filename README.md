@@ -2,8 +2,9 @@
 
 > [!IMPORTANT]
 > This public repository is preserved for history and attribution. The
-> maintained implementation has moved to a private Foundry monorepo under
-> `foundry/services/reel-pipeline`. It is created and maintained by
+> maintained implementation is
+> [`foundry/services/reel-pipeline`](https://github.com/sass-maker/fleet-workspace/tree/main/foundry/services/reel-pipeline)
+> in the private Fleet Workspace. It is created and maintained by
 > [Sarthak Agrawal](https://sarthakagrawal.dev).
 
 AI reel generation and autopost orchestration for fleet products. Turns
