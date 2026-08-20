@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="640" viewBox="0 0 360 640">
+  <defs>
+    <linearGradient id="wash" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0f0b08"/><stop offset="1" stop-color="#4f3522"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="360" height="640" fill="url(#wash)"/>
+  <circle cx="310" cy="76" r="82" fill="#f2b46f" opacity=".12" filter="url(#soft)"/>
+  <text x="28" y="39" fill="#f2b46f" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="700" letter-spacing="1.8">FLEET · FIXTURE PREVIEW</text>
+  <g><rect x="52" y="92" width="256" height="276" fill="#4f3522" stroke="#f2b46f"/><text x="74" y="132" fill="#fff3df" font-family="Arial" font-size="18" font-weight="800">WHAT CHANGED</text><circle cx="80" cy="178" r="8" fill="#f2b46f"/><path d="M102 174h164M102 190h111" stroke="#fff3df" opacity=".5" stroke-width="7"/><circle cx="80" cy="237" r="8" fill="#f2b46f"/><path d="M102 233h131M102 249h85" stroke="#fff3df" opacity=".5" stroke-width="7"/><circle cx="80" cy="296" r="8" fill="#f2b46f"/><path d="M102 292h176M102 308h103" stroke="#fff3df" opacity=".5" stroke-width="7"/></g>
+  <text x="28" y="430" fill="#fff3df" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="800" letter-spacing="-.8">PRODUCT PROOF REEL</text>
+  <text x="28" y="510" fill="#f2b46f" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700">Changelog</text>
+  <line x1="28" y1="596" x2="332" y2="596" stroke="#f2b46f" opacity=".34"/>
+  <text x="28" y="618" fill="#fff3df" opacity=".7" font-family="Arial,Helvetica,sans-serif" font-size="10">Brand Reel / Remotion · 21/48</text>
+</svg>

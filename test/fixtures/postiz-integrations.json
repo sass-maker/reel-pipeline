@@ -1,0 +1,17 @@
+{
+  "schema": "fleet.postiz-integrations.v1",
+  "integrations": {
+    "aliveville-instagram": { "integrationId": "ig-aliveville", "provider": "instagram" },
+    "aliveville-youtube": { "integrationId": "yt-aliveville", "provider": "youtube" },
+    "high-signal-instagram": { "integrationId": "ig-high-signal", "provider": "instagram" },
+    "high-signal-youtube": { "integrationId": "yt-high-signal", "provider": "youtube" },
+    "karte-instagram": { "integrationId": "ig-karte", "provider": "instagram" },
+    "karte-youtube": { "integrationId": "yt-karte", "provider": "youtube" },
+    "rolepatch-instagram": { "integrationId": "ig-rolepatch", "provider": "instagram" },
+    "rolepatch-youtube": { "integrationId": "yt-rolepatch", "provider": "youtube" },
+    "significanthobbies-instagram": { "integrationId": "ig-significanthobbies", "provider": "instagram" },
+    "significanthobbies-youtube": { "integrationId": "yt-significanthobbies", "provider": "youtube" },
+    "swe-interview-prep-instagram": { "integrationId": "ig-swe", "provider": "instagram" },
+    "swe-interview-prep-youtube": { "integrationId": "yt-swe", "provider": "youtube" }
+  }
+}

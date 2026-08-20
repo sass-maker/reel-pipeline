@@ -1,0 +1,20 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "image-slideshow",
+  "proofRole": "range",
+  "rangeLabel": "Image model · drift",
+  "motionTags": [
+    "diagonal-drift",
+    "painterly-cinema"
+  ],
+  "renderer": "openai-imagegen-ffmpeg@1",
+  "sourcePosture": "specialist-proof",
+  "durationSeconds": 8,
+  "sha256": "097da2e632badb93ac1288722a634ff46758cf2f4fef413d1c05432afc8786f7",
+  "source": {
+    "kind": "generated-image-motion",
+    "generator": "OpenAI built-in image generation",
+    "asset": "fixtures/video-gallery/assets/image-model/rain-train.png",
+    "cameraMove": "drift"
+  }
+}

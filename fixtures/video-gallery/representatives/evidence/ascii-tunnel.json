@@ -1,0 +1,17 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "ascii-story",
+  "proofRole": "range",
+  "rangeLabel": "ASCII · camera push",
+  "motionTags": [
+    "camera-push",
+    "depth-tunnel"
+  ],
+  "renderer": "ascii-raster-ffmpeg@2",
+  "sourcePosture": "local-render",
+  "durationSeconds": 8,
+  "sha256": "61869ab9c98ae4281ae51587dbf35d148c0a9c8ad787eeef877a30ed5ecf9d2d",
+  "source": {
+    "kind": "fleet-owned-local-proof"
+  }
+}

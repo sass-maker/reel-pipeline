@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "postizRelease": "v2.22.1",
+  "images": {
+    "postiz": "ghcr.io/gitroomhq/postiz-app:v2.22.1@sha256:edcc9a8e3bfaafac72ccae30b630e5eed873b9538f726fcb97c5a7529e6ed10a",
+    "postgres": "postgres:17-alpine",
+    "redis": "redis:7.2",
+    "temporal": "temporalio/auto-setup:1.28.1",
+    "temporalPostgres": "postgres:16",
+    "temporalElasticsearch": "elasticsearch:7.17.27"
+  },
+  "minimumHost": {
+    "cpuCount": 2,
+    "memoryBytes": 4294967296,
+    "freeDiskBytes": 21474836480
+  },
+  "activation": "inert"
+}

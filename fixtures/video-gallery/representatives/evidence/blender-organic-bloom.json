@@ -1,0 +1,19 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "blender-film",
+  "proofRole": "range",
+  "rangeLabel": "Blender · procedural growth",
+  "motionTags": [
+    "growth",
+    "organic"
+  ],
+  "renderer": "blender-eevee-animation@1",
+  "sourcePosture": "local-render",
+  "durationSeconds": 7.5,
+  "sha256": "d182fb22b42ec965664aa8c23a13d320f3e0cc15d315ddebf7111e10f9d8c856",
+  "source": {
+    "kind": "local-render-range",
+    "evidence": "fixtures/video-gallery/proofs/blender/evidence.json",
+    "proof": "blender-organic-bloom"
+  }
+}

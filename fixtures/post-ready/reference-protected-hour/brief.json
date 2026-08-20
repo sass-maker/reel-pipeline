@@ -1,0 +1,142 @@
+{
+  "schema": "fleet.post-ready-video.v1",
+  "id": "protected-hour-reference",
+  "title": "Protect one hour",
+  "hook": "You don't need more free time.",
+  "closingBeat": "Make this week yours.",
+  "musicIntent": "A restrained warm pulse begins sparse, gains quiet momentum as the painting starts, and resolves without a motivational crescendo.",
+  "approval": {
+    "status": "approved",
+    "approvedBy": "fleet-owner",
+    "approvedAt": "2026-08-03T00:00:00.000Z"
+  },
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "style": {
+    "background": "#08111d",
+    "foreground": "#f4eadb",
+    "muted": "#a7b0b9",
+    "accent": "#2764d7",
+    "danger": "#dd9256"
+  },
+  "narration": {
+    "mode": "kokoro",
+    "voice": "af_bella",
+    "speed": 1.04,
+    "lang": "en-us"
+  },
+  "music": {
+    "mode": "generated",
+    "recipe": "fleet-arranged-bed@1",
+    "mood": "intimate, warm, quietly determined"
+  },
+  "scenes": [
+    {
+      "id": "arrival",
+      "role": "setup",
+      "purpose": "Name the false assumption before showing the evening at risk.",
+      "durationSeconds": 5,
+      "narration": "You don't need more free time. You need one protected hour.",
+      "caption": "YOU DON'T NEED MORE FREE TIME",
+      "transition": "fade",
+      "visual": {
+        "kind": "image",
+        "source": "assets/scene-01-arrival.png",
+        "sourceType": "generated-image",
+        "license": "Fleet-owned OpenAI-generated image",
+        "tier": "production-safe",
+        "motion": "slow-push",
+        "focusX": 0.52,
+        "focusY": 0.43
+      }
+    },
+    {
+      "id": "choice",
+      "role": "tension",
+      "purpose": "Make the competing choice physically visible.",
+      "durationSeconds": 5,
+      "narration": "The phone will take the evening in pieces, unless you make a choice.",
+      "caption": "ONE PROTECTED HOUR",
+      "transition": "wipe",
+      "visual": {
+        "kind": "image",
+        "source": "assets/scene-02-choice.png",
+        "sourceType": "generated-image",
+        "license": "Fleet-owned OpenAI-generated image",
+        "tier": "production-safe",
+        "motion": "focus-pull",
+        "focusX": 0.49,
+        "focusY": 0.55
+      }
+    },
+    {
+      "id": "making",
+      "role": "analysis",
+      "purpose": "Turn the idea into one immediate physical action.",
+      "durationSeconds": 5,
+      "narration": "Put it down. Open the page. Start before you feel ready.",
+      "caption": "PUT THE PHONE DOWN. BEGIN.",
+      "transition": "match-cut",
+      "visual": {
+        "kind": "video",
+        "source": "assets/scene-03-motion.mp4",
+        "sourceType": "generated-atmosphere",
+        "license": "Fleet-owned LTX-generated motion from an approved Fleet image",
+        "tier": "production-safe",
+        "motion": "match-cut",
+        "focusX": 0.5,
+        "focusY": 0.5,
+        "fallback": {
+          "source": "assets/scene-03-making.png",
+          "sourceType": "generated-image",
+          "license": "Fleet-owned OpenAI-generated image",
+          "tier": "production-safe",
+          "motion": "mask-reveal",
+          "focusX": 0.52,
+          "focusY": 0.52
+        }
+      }
+    },
+    {
+      "id": "memory",
+      "role": "proof",
+      "purpose": "Show the hour becoming a tangible memory.",
+      "durationSeconds": 5,
+      "narration": "An hour becomes a mark you can keep, not another night you forget.",
+      "caption": "MAKE SOMETHING YOU CAN KEEP",
+      "transition": "beam-wipe",
+      "visual": {
+        "kind": "image",
+        "source": "assets/scene-04-memory.png",
+        "sourceType": "generated-image",
+        "license": "Fleet-owned OpenAI-generated image",
+        "tier": "production-safe",
+        "motion": "parallax",
+        "focusX": 0.58,
+        "focusY": 0.46
+      }
+    },
+    {
+      "id": "close",
+      "role": "close",
+      "purpose": "Resolve with one specific, repeatable invitation.",
+      "durationSeconds": 5,
+      "narration": "Protect one hour. Make this week yours.",
+      "caption": "MAKE THIS WEEK YOURS.",
+      "transition": "fade",
+      "visual": {
+        "kind": "image",
+        "source": "assets/scene-05-close.png",
+        "sourceType": "generated-image",
+        "license": "Fleet-owned OpenAI-generated image",
+        "tier": "production-safe",
+        "motion": "slow-pull",
+        "focusX": 0.52,
+        "focusY": 0.45
+      }
+    }
+  ]
+}

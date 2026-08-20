@@ -7,60 +7,17 @@ Engine facts live here; the adapter code lives under `src/adapters/` and
 
 ## Strategy
 
-- Default to cheap/local render paths first, then premium UGC actors when
-  quality requires it.
+- Default to repository-owned local render paths first, then explicit
+  specialized handoffs when quality requires them.
 - Keep render engines behind adapters under `src/adapters/`. Do not edit
-  vendored upstream engines under `engines/*` unless there is no adapter-only
-  path; prefer sending patches upstream.
+  third-party engine checkouts into this service.
 - Every engine integration must have a smoke test that proves
   request → status → artifact metadata.
-- `MoneyPrinterTurbo`: default cheap renderer for stock-footage + voice +
-  subtitles.
 - `OpenShorts`: rejected UGC actor workflow; adapter and submodule removed (see
   [`decisions/0002-openshorts-removed-parked.md`](./decisions/0002-openshorts-removed-parked.md)).
-- `reel-maker`: legacy Remotion/Modal engine; reuse pieces after the pipeline
-  contract is stable.
-
-## Pinned submodules
-
-`reel-pipeline` pins upstream engines as git submodules. They are not copied
-into the product layer and must not auto-update. Verify with:
-
-```bash
-git submodule status
-```
-
-| Engine | Path | Commit | Ref | Role |
-| --- | --- | --- | --- | --- |
-| MoneyPrinterTurbo | `engines/MoneyPrinterTurbo` | `bf229e20012e38f3bf161679fa98894b1e6f6d63` | `v1.2.8` | default cheap stock-footage renderer |
-| reel-maker | `engines/reel-maker` | `cedeeea002566bb81b2dff7b67ef852957fadbaf` | `heads/main` | internal Remotion + Modal prototype engine |
-
-The pin manifest above is generated from `git submodule status`. Update it
-intentionally, always alongside a passing render canary, and record the new
-commit + artifact URL in the change description.
-
-> Gotcha: `reel-maker` floats on `heads/main`, while MoneyPrinterTurbo is
-> pinned to a tag. A bare `git submodule update --remote` silently advances the
-> floating engine without a canary — never run that
-> on `main`. Use the upgrade flow in
-> [`development/submodules.md`](../development/submodules.md).
-
-## MoneyPrinterTurbo
-
-- Upstream: `https://github.com/harry0703/MoneyPrinterTurbo` (MIT).
-- Local path: `engines/MoneyPrinterTurbo`.
-- Role: default cheap renderer for stock-footage reels. Good for stock-footage
-  videos with Edge TTS, subtitles, background music, and FFmpeg/MoviePy
-  composition.
-- Why first: MIT licensed, heavily starred, actively maintained, and practical
-  for fast MP4 generation. The first canary uses locally generated fixtures so
-  the renderer can be verified without API quota.
-- Dependencies: Python 3.11, FFmpeg, ImageMagick, one LLM provider, stock media
-  source such as Pexels/Pixabay or local materials, optional Redis, optional
-  Upload-Post.
-- Current status: HTTP adapter implemented (`src/adapters/moneyprinterturbo.js`,
-  `reel/src/engine/moneyprinter.rs`); local canary implemented; real MP4 upload
-  to R2 verified.
+- Checkout-backed MoneyPrinterTurbo and reel-maker integrations were removed on
+  2026-08-01. Neither was initialized on the working host, while repository-owned
+  render paths already covered the supported local workflow.
 
 ## Grok / Imagine local MP4s
 
@@ -88,6 +45,21 @@ commit + artifact URL in the change description.
 - Current status: Node adapter implemented; Rust orchestrator shells out to the
   same Node renderer for parity.
 
+## Blender literal scene plates
+
+- Source: a compatible local Blender 5.2 installation.
+- Role: deterministic silent visual plates for literal lyric-video scenes.
+  Blender does not own lyric text, attribution, captions, or audio.
+- Safety: the adapter runs one repository-owned builder against bounded,
+  validated JSON with factory startup and automatic script execution disabled.
+  Arbitrary Python, add-ons, uploaded `.blend` files, and escaping output paths
+  are rejected.
+- Configure: render mode `blender`; install with
+  `brew install --cask blender`.
+- Current status: Node adapter, real local capability probe, literal scene
+  builder, standard render receipt, and Blender-backed lyric canary implemented.
+  See [`lyric-video-and-blender.md`](./lyric-video-and-blender.md).
+
 ## Editframe-inspired HTML composition
 
 - Upstream: `https://editframe.com/`.
@@ -110,16 +82,16 @@ commit + artifact URL in the change description.
   when installed (`LESSON_TTS_PROVIDER=kokoro`).
 - Current status: shipped; live proof 40.6s 1080×1920 h264 render end-to-end.
 
-## reel-maker
+## MLX-Video / LTX local generation
 
-- Upstream: `https://github.com/sarthakagrawal927/reel-maker`.
-- Local path: `engines/reel-maker`.
-- Role: older internal Remotion + Modal prototype. Kept as a reference engine.
-  It should either be superseded by this repo or reused behind the same
-  `VideoBrief` adapter contract.
-- Current status: Remotion shell-out adapter (`src/adapters/reel-maker.js`,
-  `reel/src/engine/reel_maker.rs`); the `remotion` mode. Lower priority than
-  `render-pro.js`, which is the canonical production renderer.
+- Upstream: `https://github.com/Blaizzy/mlx-video`.
+- Role: Apple Silicon image-to-video generation for short controlled motion
+  clips. Generated clips remain assets inside approved, deterministic film
+  manifests rather than replacing the compositor.
+- Current status: the CodeVetter reference film records an LTX-2.3 Q4
+  two-stage generation with model revision, prompt, seed, dimensions, frame
+  count, runtime, and hash. Publication rights remain an explicit asset-level
+  gate.
 
 ## OpenShorts (removed)
 
@@ -170,3 +142,17 @@ not copied:
   or adopting its NestJS/Prisma/Temporal runtime. See
   [`decisions/0004-postiz-editframe-patterns-not-code.md`](./decisions/0004-postiz-editframe-patterns-not-code.md).
 - **Editframe** — see HTML composition above; pattern source only.
+- **OpenVid** (`https://github.com/CristianOlivera1/openvid`) — clean-room
+  inspiration for focus/zoom framing, layered screen stages, and
+  time-addressable composition. Its PolyForm Noncommercial license and
+  editor-sized Next/Canvas runtime make it unsuitable as a Fleet production
+  dependency, so no source or package was copied.
+- **SuperCMO Skills** (`https://github.com/SupercmoHQ/superCMO-skills`,
+  Apache-2.0) — cloud-first creative generation skill pack whose runtime we
+  did not adopt (local-first stance unchanged; see
+  [`decisions/0002-openshorts-removed-parked.md`](./decisions/0002-openshorts-removed-parked.md)).
+  We extracted the engine-agnostic generation craft — anchor-reference
+  consistency across clips, script-to-duration budgeting, read-supplied-media
+  first, intent-based routing with a fallback ladder, and pending-job
+  discipline — into [`generation-craft.md`](./generation-craft.md). No code,
+  MCP server, installer, telemetry, or credential surface was copied.

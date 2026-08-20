@@ -3,6 +3,18 @@ import test from 'node:test';
 
 import worker from '../src/worker/index.js';
 
+const INTERNAL_TOKEN = 'worker-test-token';
+
+function internalEnv(bindings = {}) {
+  return { ...bindings, REEL_INTERNAL_TOKEN: INTERNAL_TOKEN };
+}
+
+function internalRequest(url, init = {}) {
+  const headers = new Headers(init.headers);
+  headers.set('authorization', `Bearer ${INTERNAL_TOKEN}`);
+  return new Request(url, { ...init, headers });
+}
+
 function createR2Mock() {
   const objects = new Map();
   return {
@@ -65,9 +77,38 @@ test('artifact worker serves R2 objects with video cache headers', async () => {
   assert.equal(await res.text(), 'mp4-body');
 });
 
+test('worker fails closed on internal routes while public artifacts remain anonymous', async () => {
+  const env = internalEnv({ REEL_ARTIFACTS: createR2Mock() });
+  const review = await worker.fetch(new Request('https://assets.example.test/review'), env);
+  assert.equal(review.status, 401);
+  assert.match(review.headers.get('www-authenticate') ?? '', /Foundry Reel Review/);
+  assert.equal(review.headers.get('access-control-allow-origin'), null);
+
+  const mutation = await worker.fetch(new Request('https://assets.example.test/reels/demo/decision', {
+    method: 'PATCH',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ decision: 'approve' }),
+  }), env);
+  assert.equal(mutation.status, 401);
+
+  const missingSecret = await worker.fetch(internalRequest('https://assets.example.test/reels'), {
+    REEL_ARTIFACTS: createR2Mock(),
+  });
+  assert.equal(missingSecret.status, 401);
+});
+
+test('worker accepts browser basic auth for the internal review surface', async () => {
+  const credentials = Buffer.from(`foundry:${INTERNAL_TOKEN}`).toString('base64');
+  const response = await worker.fetch(new Request('https://assets.example.test/review', {
+    headers: { authorization: `Basic ${credentials}` },
+  }), internalEnv({ REEL_ARTIFACTS: createR2Mock() }));
+  assert.equal(response.status, 200);
+  assert.match(await response.text(), /Swipe left to reject/);
+});
+
 test('worker creates reel drafts and serves swipe review UI', async () => {
-  const env = { REEL_ARTIFACTS: createR2Mock() };
-  const created = await worker.fetch(new Request('https://assets.example.test/reels', {
+  const env = internalEnv({ REEL_ARTIFACTS: createR2Mock() });
+  const created = await worker.fetch(internalRequest('https://assets.example.test/reels', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
@@ -84,16 +125,16 @@ test('worker creates reel drafts and serves swipe review UI', async () => {
   assert.equal(createdPayload.data.id, 'worker-reel');
   assert.equal(createdPayload.data.status, 'generated');
 
-  const listed = await worker.fetch(new Request('https://assets.example.test/reels?status=generated'), env);
+  const listed = await worker.fetch(internalRequest('https://assets.example.test/reels?status=generated'), env);
   assert.equal(listed.status, 200);
   const listedPayload = await listed.json();
   assert.equal(listedPayload.data.length, 1);
 
-  const page = await worker.fetch(new Request('https://assets.example.test/review'), env);
+  const page = await worker.fetch(internalRequest('https://assets.example.test/review'), env);
   assert.equal(page.status, 200);
   assert.match(await page.text(), /Swipe left to reject/);
 
-  const decision = await worker.fetch(new Request('https://assets.example.test/reels/worker-reel/decision', {
+  const decision = await worker.fetch(internalRequest('https://assets.example.test/reels/worker-reel/decision', {
     method: 'PATCH',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ decision: 'reject' }),
@@ -104,8 +145,8 @@ test('worker creates reel drafts and serves swipe review UI', async () => {
 });
 
 test('worker renders approved reel drafts into R2 mock artifacts', async () => {
-  const env = { REEL_ARTIFACTS: createR2Mock() };
-  await worker.fetch(new Request('https://assets.example.test/reels', {
+  const env = internalEnv({ REEL_ARTIFACTS: createR2Mock() });
+  await worker.fetch(internalRequest('https://assets.example.test/reels', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
@@ -116,13 +157,13 @@ test('worker renders approved reel drafts into R2 mock artifacts', async () => {
       channel: 'tiktok',
     }),
   }), env);
-  await worker.fetch(new Request('https://assets.example.test/reels/worker-render-reel/decision', {
+  await worker.fetch(internalRequest('https://assets.example.test/reels/worker-render-reel/decision', {
     method: 'PATCH',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ decision: 'approve' }),
   }), env);
 
-  const rendered = await worker.fetch(new Request('https://assets.example.test/reels/worker-render-reel/render', {
+  const rendered = await worker.fetch(internalRequest('https://assets.example.test/reels/worker-render-reel/render', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ mode: 'mock' }),
@@ -136,7 +177,7 @@ test('worker renders approved reel drafts into R2 mock artifacts', async () => {
   assert.equal(artifact.status, 200);
   assert.equal(artifact.headers.get('content-type'), 'video/mp4');
 
-  const ready = await worker.fetch(new Request('https://assets.example.test/reels/worker-render-reel/video-decision', {
+  const ready = await worker.fetch(internalRequest('https://assets.example.test/reels/worker-render-reel/video-decision', {
     method: 'PATCH',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ decision: 'approve' }),
@@ -147,8 +188,8 @@ test('worker renders approved reel drafts into R2 mock artifacts', async () => {
 });
 
 test('worker ignores allowUnapproved in the public render body', async () => {
-  const env = { REEL_ARTIFACTS: createR2Mock() };
-  await worker.fetch(new Request('https://assets.example.test/reels', {
+  const env = internalEnv({ REEL_ARTIFACTS: createR2Mock() });
+  await worker.fetch(internalRequest('https://assets.example.test/reels', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
@@ -160,7 +201,7 @@ test('worker ignores allowUnapproved in the public render body', async () => {
     }),
   }), env);
 
-  const rendered = await worker.fetch(new Request('https://assets.example.test/reels/worker-allow-unapproved/render', {
+  const rendered = await worker.fetch(internalRequest('https://assets.example.test/reels/worker-allow-unapproved/render', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ mode: 'mock', allowUnapproved: true }),
@@ -170,8 +211,8 @@ test('worker ignores allowUnapproved in the public render body', async () => {
 });
 
 test('worker derives artifact URLs from the current deployment origin', async () => {
-  const env = { REEL_ARTIFACTS: createR2Mock() };
-  await worker.fetch(new Request('https://preview.example.test/reels', {
+  const env = internalEnv({ REEL_ARTIFACTS: createR2Mock() });
+  await worker.fetch(internalRequest('https://preview.example.test/reels', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
@@ -182,13 +223,13 @@ test('worker derives artifact URLs from the current deployment origin', async ()
       channel: 'tiktok',
     }),
   }), env);
-  await worker.fetch(new Request('https://preview.example.test/reels/worker-origin/decision', {
+  await worker.fetch(internalRequest('https://preview.example.test/reels/worker-origin/decision', {
     method: 'PATCH',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ decision: 'approve' }),
   }), env);
 
-  const rendered = await worker.fetch(new Request('https://preview.example.test/reels/worker-origin/render', {
+  const rendered = await worker.fetch(internalRequest('https://preview.example.test/reels/worker-origin/render', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ mode: 'mock' }),

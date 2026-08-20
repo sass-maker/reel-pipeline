@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="640" viewBox="0 0 360 640">
+  <defs>
+    <linearGradient id="wash" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07100f"/><stop offset="1" stop-color="#223f3a"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="360" height="640" fill="url(#wash)"/>
+  <circle cx="310" cy="76" r="82" fill="#79dcc8" opacity=".12" filter="url(#soft)"/>
+  <text x="28" y="39" fill="#79dcc8" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="700" letter-spacing="1.8">FLEET · FIXTURE PREVIEW</text>
+  <g><circle cx="180" cy="225" r="112" fill="none" stroke="#79dcc8" opacity=".25" stroke-width="2"/><circle cx="180" cy="225" r="76" fill="none" stroke="#79dcc8" stroke-width="8" stroke-dasharray="92 28"/><rect x="71" y="164" width="218" height="34" fill="#e8fff9" opacity=".9"/><rect x="101" y="216" width="158" height="18" fill="#79dcc8"/><rect x="126" y="254" width="108" height="12" fill="#e8fff9" opacity=".5"/></g>
+  <text x="28" y="430" fill="#e8fff9" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="800" letter-spacing="-.8">WEB MOTION</text>
+  <text x="28" y="510" fill="#79dcc8" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700">Kinetic Type</text>
+  <line x1="28" y1="596" x2="332" y2="596" stroke="#79dcc8" opacity=".34"/>
+  <text x="28" y="618" fill="#e8fff9" opacity=".7" font-family="Arial,Helvetica,sans-serif" font-size="10">HTML / Canvas · 7/48</text>
+</svg>

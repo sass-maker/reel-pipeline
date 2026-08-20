@@ -2,7 +2,7 @@ import { resolveStudioLlm } from './llm.js';
 import { buildHashtags } from './metadata.js';
 
 const WORDS_PER_MINUTE = 150;
-const MIN_DURATION = 30;
+const MIN_DURATION = 5;
 const MAX_DURATION = 20 * 60;
 export const DEFAULT_VOICE = 'en-US-AriaNeural-Female';
 

@@ -14,7 +14,11 @@ mkdir -p "$KOKORO_DIR"
 
 if [ ! -x "$VENV/bin/python" ]; then
   echo "[kokoro] creating venv at $VENV"
-  python3 -m venv "$VENV"
+  if ! command -v uv >/dev/null 2>&1; then
+    echo "[kokoro] uv is required to create the pinned Python 3.12 environment" >&2
+    exit 1
+  fi
+  uv venv --python 3.12 --seed "$VENV"
 fi
 
 echo "[kokoro] installing kokoro-onnx + soundfile"

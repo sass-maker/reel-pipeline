@@ -1,0 +1,17 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "local-voice-film",
+  "proofRole": "primary",
+  "rangeLabel": "Local voice · mixed media",
+  "motionTags": [
+    "narration",
+    "mixed-media"
+  ],
+  "renderer": "local-video-forge-mixed-media@1",
+  "sourcePosture": "local-model-proof",
+  "durationSeconds": 12,
+  "sha256": "057531ee535c2678ef00e92975249923aac67a97905a4eaca1f6272ba08205e0",
+  "source": {
+    "kind": "fleet-owned-local-proof"
+  }
+}

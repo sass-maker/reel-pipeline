@@ -15,8 +15,11 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
+import { reelWorkerHeaders } from '../src/reel-worker-auth.js';
+
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const workerUrl = (process.env.REEL_WORKER_URL ?? 'https://reel-pipeline-artifacts.sarthakagrawal927.workers.dev').replace(/\/$/, '');
+const workerHeaders = reelWorkerHeaders();
 
 const jsCandidates = await fetchJsCandidates(workerUrl);
 const rustCandidates = runRustDryRun(repoRoot);
@@ -42,7 +45,9 @@ console.log('✓ watcher parity OK');
 process.exit(0);
 
 async function fetchJsCandidates(baseUrl) {
-  const res = await fetch(`${baseUrl}/reels?status=approved`);
+  const res = await fetch(`${baseUrl}/reels?status=approved`, {
+    headers: workerHeaders,
+  });
   if (!res.ok) throw new Error(`worker /reels?status=approved → ${res.status}`);
   const payload = await res.json();
   const reels = payload.data ?? [];

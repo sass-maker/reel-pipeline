@@ -1,0 +1,66 @@
+{
+  "schema": "fleet.blender-gallery-range-proof.v1",
+  "renderer": "blender-eevee-animation@1",
+  "blenderVersion": "5.2.0",
+  "builder": "scripts/blender/gallery_range_builder.py",
+  "rights": "Original deterministic procedural geometry, materials, lighting, and animation.",
+  "generatedAt": "2026-08-02T13:05:00.853Z",
+  "items": [
+    {
+      "variantId": "blender-film--visualstyle-cosmic-shrine",
+      "visualStyle": "cosmic-shrine",
+      "source": "fixtures/video-gallery/proofs/blender/cosmic-shrine.mp4",
+      "sha256": "cc48c1e6137ab42ae4361fcb6179b8862471f2a4c4cfcf68d1d706289f82a0c9",
+      "bytes": 56192
+    },
+    {
+      "variantId": "blender-film--visualstyle-brutalist-monument",
+      "visualStyle": "brutalist-monument",
+      "source": "fixtures/video-gallery/proofs/blender/brutalist-monument.mp4",
+      "sha256": "1ebc25cbb2db9d720bd793d9708705948d5f13d89856303ef14f0c89235d7d80",
+      "bytes": 39104
+    },
+    {
+      "variantId": "blender-film--visualstyle-glass-studio",
+      "visualStyle": "glass-studio",
+      "source": "fixtures/video-gallery/proofs/blender/glass-studio.mp4",
+      "sha256": "c6df45a7a1a1b513e71d952bbbecc0f9c0b4c801fd1fbc9392f3e06a8aeb9074",
+      "bytes": 63527
+    },
+    {
+      "variantId": "blender-film--visualstyle-low-poly-valley",
+      "visualStyle": "low-poly-valley",
+      "source": "fixtures/video-gallery/proofs/blender/low-poly-valley.mp4",
+      "sha256": "81aef93b3450ed6f9d0d722f98d6bc9b84b816b67de1223620ab327257d6aa91",
+      "bytes": 49228
+    },
+    {
+      "variantId": "blender-film--visualstyle-organic-bloom",
+      "visualStyle": "organic-bloom",
+      "source": "fixtures/video-gallery/proofs/blender/organic-bloom.mp4",
+      "sha256": "545c8b356dd94993563b4b2f00dadc94b7145039ef73fa6fe4563eea12f60170",
+      "bytes": 54973
+    },
+    {
+      "variantId": "blender-film--visualstyle-kinetic-sculpture",
+      "visualStyle": "kinetic-sculpture",
+      "source": "fixtures/video-gallery/proofs/blender/kinetic-sculpture.mp4",
+      "sha256": "c0282848c7fbbe0a09e0291f335eeddc1a7b1173171d704f97becd3c21325227",
+      "bytes": 122627
+    },
+    {
+      "variantId": "blender-film--visualstyle-neon-tunnel",
+      "visualStyle": "neon-tunnel",
+      "source": "fixtures/video-gallery/proofs/blender/neon-tunnel.mp4",
+      "sha256": "df36520884f24a8aee33e5020752a59257345caebb52732c644847f9353a6cfc",
+      "bytes": 196999
+    },
+    {
+      "variantId": "blender-film--visualstyle-paper-diorama",
+      "visualStyle": "paper-diorama",
+      "source": "fixtures/video-gallery/proofs/blender/paper-diorama.mp4",
+      "sha256": "b3bb07c5312bebcf2294d6324882934fe0b4bba0b3ba0b06b011185ad60ad4fe",
+      "bytes": 22182
+    }
+  ]
+}

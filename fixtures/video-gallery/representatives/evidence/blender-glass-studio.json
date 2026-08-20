@@ -1,0 +1,19 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "blender-film",
+  "proofRole": "range",
+  "rangeLabel": "Blender · material study",
+  "motionTags": [
+    "camera-arc",
+    "glass"
+  ],
+  "renderer": "blender-eevee-animation@1",
+  "sourcePosture": "local-render",
+  "durationSeconds": 7.5,
+  "sha256": "3fa4d9f6a967f7080f77963c05f5ef6eea01716cc1411817f9e696079e268eb4",
+  "source": {
+    "kind": "local-render-range",
+    "evidence": "fixtures/video-gallery/proofs/blender/evidence.json",
+    "proof": "blender-glass-studio"
+  }
+}

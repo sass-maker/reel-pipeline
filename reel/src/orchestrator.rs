@@ -30,6 +30,7 @@ pub struct VariantOutcome {
     pub quality_reasons: Vec<String>,
     pub provider: String,
     pub external_task_id: String,
+    pub artifact_manifest_path: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -85,6 +86,7 @@ where
                     quality_reasons: vec![format!("render failed: {err}")],
                     provider: String::new(),
                     external_task_id: String::new(),
+                    artifact_manifest_path: None,
                 });
             }
         }
@@ -114,7 +116,10 @@ where
         hook: Some(entry.hook.clone()),
         cta: entry.cta.clone(),
     };
-    let raw = engine.create_video(brief, &options)?;
+    let mut raw = engine.create_video(brief, &options)?;
+    if raw.status == RenderStatus::Completed {
+        crate::content_factory::attach_manifest(brief, &mut raw, cwd)?;
+    }
 
     // Publish only completed renders (mirrors the JS `status === 'completed'`).
     let published_videos = if raw.status == RenderStatus::Completed {
@@ -157,6 +162,10 @@ where
         quality_reasons: score.reasons.clone(),
         provider: raw.provider.clone(),
         external_task_id: raw.external_task_id.clone(),
+        artifact_manifest_path: raw
+            .artifact_manifest_path
+            .as_ref()
+            .map(|path| path.to_string_lossy().into_owned()),
     };
     Ok((outcome, score))
 }

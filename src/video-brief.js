@@ -34,6 +34,7 @@ export function normalizeVideoBrief(input) {
     marketingPostId: optionalString(input.marketingPostId ?? input.marketing_post_id),
     channel: normalizeChannel(input.channel),
     title: stringOrThrow(input.title, 'title'),
+    summary: optionalString(input.summary),
     hook: stringOrThrow(input.hook, 'hook'),
     body: stringOrThrow(input.body, 'body'),
     cta: optionalString(input.cta),
@@ -44,12 +45,23 @@ export function normalizeVideoBrief(input) {
     recordingUrl: optionalString(input.recordingUrl ?? input.recording_url),
     changelogEntryId: optionalString(input.changelogEntryId ?? input.changelog_entry_id),
     brandTone: optionalString(input.brandTone ?? input.brand_tone),
+    creativeDirection: optionalString(input.creativeDirection ?? input.creative_direction),
     proofType: normalizeProofType(input.proofType ?? input.proof_type),
     template: optionalString(input.template),
     screenshots: normalizeScreenshots(input.screenshots),
     demoSteps: normalizeDemoSteps(input.demoSteps ?? input.demo_steps),
+    literalScenes: normalizeLiteralScenes(input.literalScenes ?? input.literal_scenes),
+    renderOptions: normalizeRenderOptions(input.renderOptions ?? input.render_options),
     renderMode: normalizeRenderMode(input.renderMode ?? input.render_mode),
     durationSeconds: normalizeDuration(input.durationSeconds ?? input.duration_seconds),
+    themePackId: optionalString(input.themePackId ?? input.theme_pack_id) ?? 'auto',
+    modelProfileId: optionalString(input.modelProfileId ?? input.model_profile_id) ?? 'auto',
+    modelPriorities: normalizeModelPriorities(input.modelPriorities ?? input.model_priorities),
+    contentScope: normalizeContentScope(input.contentScope ?? input.content_scope),
+    themeRightsEvidence: optionalString(input.themeRightsEvidence ?? input.theme_rights_evidence),
+    cast: normalizeCast(input.cast),
+    soundtrack: normalizeSoundtrack(input.soundtrack),
+    matureAssertions: normalizeMatureAssertions(input.matureAssertions ?? input.mature_assertions),
   };
 
   if (isReelChannel(brief.channel) && !looksLikeVideoBrief(brief.body)) {
@@ -101,6 +113,51 @@ function normalizeDemoSteps(value) {
   return steps.length ? steps : undefined;
 }
 
+function normalizeLiteralScenes(value) {
+  if (value === undefined || value === null) return undefined;
+  if (!Array.isArray(value)) throw new Error('literalScenes must be an array');
+  return value.slice(0, 60).map((scene, index) => ({
+    id: optionalString(scene?.id) ?? `scene-${index + 1}`,
+    lyric: optionalString(scene?.lyric) ?? '',
+    objects: Array.isArray(scene?.objects) ? scene.objects.map(optionalString).filter(Boolean).slice(0, 8) : ['subject'],
+    camera: optionalString(scene?.camera),
+    palette: optionalString(scene?.palette),
+    visualStyle: optionalString(scene?.visualStyle ?? scene?.visual_style),
+  }));
+}
+
+function normalizeRenderOptions(value) {
+  if (value === undefined || value === null) return undefined;
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('renderOptions must be an object');
+  const entries = Object.entries(value).slice(0, 20).map(([key, candidate]) => {
+    if (!/^[a-z][a-zA-Z0-9]{0,39}$/.test(key)) throw new Error(`unsupported render option key: ${key}`);
+    if (typeof candidate === 'boolean') return [key, candidate];
+    if (typeof candidate === 'number' && Number.isFinite(candidate)) return [key, candidate];
+    if (typeof candidate === 'string') return [key, candidate.trim().slice(0, 160)];
+    throw new Error(`render option ${key} must be a string, number, or boolean`);
+  });
+  return entries.length ? Object.fromEntries(entries) : undefined;
+}
+
+function normalizeCast(value) {
+  if (value === undefined || value === null) return [];
+  if (!Array.isArray(value)) throw new Error('cast must be an array');
+  return value.slice(0, 24).map(normalizeCastInstance);
+}
+
+function normalizeMatureAssertions(value) {
+  if (value === undefined || value === null) return [];
+  if (!Array.isArray(value)) throw new Error('matureAssertions must be an array');
+  return value.slice(0, 24).map((entry, index) => ({
+    characterId: stringOrThrow(entry?.characterId, `matureAssertions[${index}].characterId`),
+    revision: Number(entry?.revision),
+    fictional: entry?.fictional === true,
+    age: Number(entry?.age),
+    consent: entry?.consent === 'affirmative' ? 'affirmative' : 'unknown',
+    realPersonLikeness: entry?.realPersonLikeness === true,
+  }));
+}
+
 export function briefFromMarketingPost(post) {
   return normalizeVideoBrief({
     id: `brief_${post.id}`,
@@ -112,51 +169,8 @@ export function briefFromMarketingPost(post) {
     hook: post.hook ?? post.title,
     body: post.body,
     cta: post.cta,
-    renderMode: 'stock',
+    renderMode: 'html-composition',
   });
-}
-
-export function toMoneyPrinterRequest(brief) {
-  return {
-    video_subject: `${brief.projectSlug}: ${brief.title}`,
-    video_script: buildNarrationScript(brief),
-    video_terms: extractSearchTerms(brief),
-    video_aspect: '9:16',
-    video_concat_mode: 'random',
-    video_transition_mode: 'FadeIn',
-    video_clip_duration: 4,
-    video_count: 1,
-    video_source: 'pexels',
-    voice_name: 'en-US-AriaNeural-Female',
-    voice_rate: 1.05,
-    bgm_type: 'random',
-    bgm_volume: 0.12,
-    subtitle_enabled: true,
-    subtitle_position: 'bottom',
-    font_size: 68,
-    stroke_color: '#000000',
-    stroke_width: 2,
-  };
-}
-
-function buildNarrationScript(brief) {
-  const lines = [
-    brief.hook,
-    cleanForNarration(brief.body),
-    brief.cta ? `Try this next: ${brief.cta}` : '',
-  ].filter(Boolean);
-  return lines.join('\n\n');
-}
-
-function extractSearchTerms(brief) {
-  const terms = [
-    brief.projectSlug.replaceAll('-', ' '),
-    brief.audience,
-    brief.title,
-    'software demo',
-    'startup product',
-  ].filter(Boolean);
-  return Array.from(new Set(terms)).slice(0, 5);
 }
 
 function looksLikeVideoBrief(body) {
@@ -169,15 +183,6 @@ function looksLikeVideoBrief(body) {
   );
 }
 
-function cleanForNarration(text) {
-  return text
-    .replace(/^#+\s+/gm, '')
-    .replace(/\*\*/g, '')
-    .replace(/[-*]\s+/g, '')
-    .replace(/\b(asset prompts?|edit notes?|shot list|captions?):/gi, '')
-    .trim();
-}
-
 function normalizeChannel(channel) {
   const value = stringOrThrow(channel, 'channel');
   if (!CHANNELS.has(value)) throw new Error(`unsupported channel: ${value}`);
@@ -185,13 +190,9 @@ function normalizeChannel(channel) {
 }
 
 function normalizeRenderMode(mode) {
-  const value = optionalString(mode) ?? 'stock';
+  const value = optionalString(mode) ?? 'html-composition';
   if (![
-    'stock',
-    'remotion',
-    'reel-maker',
     'mock',
-    'moneyprinterturbo',
     'grok',
     'grok-video',
     'grok-videos',
@@ -202,9 +203,11 @@ function normalizeRenderMode(mode) {
     'html',
     'html-composition',
     'web-composition',
+    'night-out-carousel',
     'kokoro',
     'kokoro-compose',
     'brand-video',
+    'blender',
   ].includes(value)) {
     throw new Error(`unsupported renderMode: ${value}`);
   }
@@ -219,6 +222,24 @@ function normalizeDuration(value) {
   return duration;
 }
 
+function normalizeModelPriorities(input) {
+  const value = input && typeof input === 'object' && !Array.isArray(input) ? input : {};
+  return {
+    speed: priority(value.speed ?? 3),
+    quality: priority(value.quality ?? 3),
+    nativeAudio: priority(value.nativeAudio ?? 1),
+  };
+}
+
+function priority(value) {
+  const number = Number(value);
+  return Number.isInteger(number) && number >= 1 && number <= 5 ? number : 3;
+}
+
+function normalizeContentScope(value) {
+  return value === 'mature-enabled' ? value : 'general';
+}
+
 function stringOrThrow(value, field) {
   if (typeof value !== 'string' || !value.trim()) throw new Error(`${field} is required`);
   return value.trim();
@@ -227,3 +248,5 @@ function stringOrThrow(value, field) {
 function optionalString(value) {
   return typeof value === 'string' && value.trim() ? value.trim() : undefined;
 }
+import { normalizeCastInstance } from './studio/character-directory.js';
+import { normalizeSoundtrack } from './studio/soundtrack.js';

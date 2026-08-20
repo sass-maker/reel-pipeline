@@ -1,0 +1,54 @@
+{
+  "schema": "reel-pipeline.guided-app-demo-template.v1",
+  "template": true,
+  "filmSkill": {
+    "id": "guided-app-demo",
+    "version": 1,
+    "ref": "guided-app-demo@1"
+  },
+  "workflow": {
+    "source": "browser-display-media",
+    "maximumDurationSeconds": 90,
+    "approvalRequiredBeforeUpload": true,
+    "presenter": {
+      "optional": true,
+      "capture": "same-session-camera-and-microphone",
+      "sync": "same-session",
+      "position": "bottom-right"
+    }
+  },
+  "composition": {
+    "aspectRatio": "9:16",
+    "fps": 24,
+    "appCapture": "dominant-full-frame-subject",
+    "presenterWidthFraction": 0.24,
+    "presenterSafeMarginFraction": 0.06,
+    "captions": {
+      "style": "phrase-timed",
+      "maximumLines": 2,
+      "avoid": "bottom-right-presenter"
+    }
+  },
+  "render": {
+    "preview": {
+      "width": 720,
+      "height": 1280,
+      "crf": 23,
+      "audioLoudnessLufs": -16
+    },
+    "final": {
+      "width": 1080,
+      "height": 1920,
+      "crf": 17,
+      "audioLoudnessLufs": -16
+    },
+    "preserveApprovedSourceSha256": true
+  },
+  "qualityGates": [
+    "real-app-capture",
+    "authentic-presenter-sync",
+    "presenter-safe-area",
+    "mobile-legibility",
+    "publication-rights"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "fleet.studio-workflow-samples.v1",
+  "version": 1,
+  "sampleSetId": "last-train-to-elsewhere",
+  "title": "The Last Train to Elsewhere",
+  "storyPrompt": "A red-haired night courier boards an impossible last train, crosses worlds that should not exist, and returns to the ordinary platform at dawn with a tiny living star as proof.",
+  "musicPrompt": "Cinematic electro-funk instrumental for a magical night train adventure, rubber bass, crisp breakbeat, glockenspiel sparks, rising strings, playful mystery, a confident hook in the first two seconds, one euphoric lift at twenty seconds, polished soundtrack mix, no vocals",
+  "samples": [
+    {
+      "id": "last-train-01-platform",
+      "title": "The ticket wakes",
+      "imagePrompt": "masterpiece, best quality, cinematic animated feature still, adult red-haired female night courier age 28, short copper bob, teal raincoat with brass fasteners, black trousers, worn leather satchel, full body on a deserted midnight subway platform in rain, a small paper ticket glowing gold in her hand, impossible vintage train emerging from mist, dramatic cyan and amber lighting, grounded anatomy, detailed expressive face, vertical composition",
+      "prompt": "A full-body cinematic shot of the red-haired courier on a deserted rain-soaked platform. The paper ticket in her hand wakes with golden light, wind lifts her teal coat, and an impossible vintage train glides out of the mist. She looks from the ticket to the train in startled disbelief as the camera makes one controlled dolly-in. Preserve her exact face, copper bob, teal coat, satchel, and body proportions.",
+      "referenceImage": ".reel-pipeline/projects/last-train-to-elsewhere/assets/01-platform.png",
+      "seed": 12871,
+      "aspectRatio": "9:16",
+      "durationSeconds": 6,
+      "lane": "final"
+    },
+    {
+      "id": "last-train-02-whales",
+      "title": "Whales between stations",
+      "imagePrompt": "masterpiece, best quality, cinematic animated feature still, same adult red-haired female night courier age 28, short copper bob, teal raincoat with brass fasteners, black trousers, worn leather satchel, inside a luxurious impossible night train, full body by a window, enormous translucent lantern whales swimming through a star field outside, warm carriage lamps, cyan cosmic glow, wonder on her face, grounded anatomy, vertical composition",
+      "prompt": "Inside the moving train, the same red-haired courier crosses the aisle toward a window as enormous translucent lantern whales swim through stars outside. Reflected blue light travels across her face and teal coat; she presses one hand to the glass and turns in breathless wonder. The camera tracks sideways with her, preserving identity, full-body geometry, wardrobe, and carriage layout.",
+      "referenceImage": ".reel-pipeline/projects/last-train-to-elsewhere/assets/02-whales.png",
+      "seed": 20791,
+      "aspectRatio": "9:16",
+      "durationSeconds": 6,
+      "lane": "final"
+    },
+    {
+      "id": "last-train-03-library",
+      "title": "The library stop",
+      "imagePrompt": "masterpiece, best quality, cinematic animated feature still, same adult red-haired female night courier age 28, short copper bob, teal raincoat with brass fasteners, black trousers, worn leather satchel, stepping from a train into a vast snowy library, full-body dynamic pose, thousands of paper birds erupting from bookshelves, white snow and amber lamps, magical realism, grounded anatomy, vertical composition",
+      "prompt": "The train doors open directly into a vast snowy library. The same courier takes one cautious step out, then ducks laughing as hundreds of paper birds erupt from the shelves and spiral around her. Snow dust kicks from her boots, pages flutter with weight, and the camera arcs from a wide establishing view to a medium reaction while her face, copper hair, teal coat, and satchel remain coherent.",
+      "referenceImage": ".reel-pipeline/projects/last-train-to-elsewhere/assets/03-library.png",
+      "seed": 28711,
+      "aspectRatio": "9:16",
+      "durationSeconds": 6,
+      "lane": "final"
+    },
+    {
+      "id": "last-train-04-ocean",
+      "title": "The upside-down ocean",
+      "imagePrompt": "masterpiece, best quality, cinematic animated feature still, same adult red-haired female night courier age 28, short copper bob, teal raincoat with brass fasteners, black trousers, worn leather satchel, full body braced inside a glass train carriage, an upside-down sunlit ocean floating above the roof, manta rays and waves overhead, spectacular wide angle, gold and turquoise light, grounded anatomy, vertical composition",
+      "prompt": "The glass carriage banks beneath an upside-down sunlit ocean suspended above its roof. The same courier braces full-body against a brass rail as turquoise light races through the cabin and manta rays sweep overhead. Her satchel swings with the turn, she regains balance and grins, and the camera rolls only slightly before settling. Preserve her exact identity and avoid morphing the carriage or ocean.",
+      "referenceImage": ".reel-pipeline/projects/last-train-to-elsewhere/assets/04-ocean.png",
+      "seed": 36631,
+      "aspectRatio": "9:16",
+      "durationSeconds": 6,
+      "lane": "final"
+    },
+    {
+      "id": "last-train-05-proof",
+      "title": "Proof at dawn",
+      "imagePrompt": "masterpiece, best quality, cinematic animated feature still, same adult red-haired female night courier age 28, short copper bob, teal raincoat with brass fasteners, black trousers, worn leather satchel, full body back on an ordinary subway platform at dawn, train disappearing into soft mist, tiny living star glowing in her open palm, exhausted delighted smile, warm sunrise, grounded anatomy, cinematic vertical composition",
+      "prompt": "At dawn, the same courier steps back onto the now-ordinary platform as the impossible train dissolves into mist behind her. She opens her palm to reveal a tiny living star, watches it orbit one finger, then looks straight at camera with an exhausted delighted smile. The camera eases from a full-body view to a restrained medium shot while her identity, teal coat, satchel, hands, and the single star remain coherent.",
+      "referenceImage": ".reel-pipeline/projects/last-train-to-elsewhere/assets/05-proof.png",
+      "seed": 44551,
+      "aspectRatio": "9:16",
+      "durationSeconds": 6,
+      "lane": "final"
+    }
+  ]
+}

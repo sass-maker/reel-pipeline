@@ -158,6 +158,11 @@ fn parse_render_result(stdout: &str) -> Result<RenderResult> {
         .or_else(|| value.get("proof_type"))
         .and_then(serde_json::Value::as_str)
         .map(ToString::to_string);
+    result.artifact_manifest = value.get("artifactManifest").cloned();
+    result.artifact_manifest_path = value
+        .get("artifactManifestPath")
+        .and_then(serde_json::Value::as_str)
+        .map(std::path::PathBuf::from);
     result.render_log = value
         .get("renderLog")
         .or_else(|| value.get("render_log"))

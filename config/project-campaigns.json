@@ -91,36 +91,6 @@
       "proof": "Walk through the artifacts attached to one role from save to reviewed packet.",
       "cta": "Build a role-specific apply packet.",
       "seoKeywords": ["job application tracker", "STAR interview prep", "AI job search workbench"]
-    },
-    {
-      "id": "saas-maker-one-person-fleet",
-      "brandSlug": "saas-maker",
-      "sourcePath": "saas-maker/PROJECT_STATUS.md",
-      "canonicalUrl": "https://sassmaker.com",
-      "destinationUrl": "https://sassmaker.com",
-      "title": "How one person operates a product fleet",
-      "summary": "Use a real Fleet workflow to show how product state, tasks, deployments, and agent work stay visible across many repositories.",
-      "audience": "Solo builders and small teams operating multiple software products",
-      "claim": "SaaS Maker connects product state, task execution, and fleet operations in one working cockpit.",
-      "hook": "Building product number two is easy. Operating product number twelve is the actual problem.",
-      "proof": "Follow one task from the Fleet overview into its product, code change, and deployment evidence.",
-      "cta": "Explore SaaS Maker.",
-      "seoKeywords": ["one person SaaS operations", "AI product cockpit", "Cloudflare SaaS starter"]
-    },
-    {
-      "id": "saas-maker-feedback-loop",
-      "brandSlug": "saas-maker",
-      "sourcePath": "saas-maker/PROJECT_STATUS.md",
-      "canonicalUrl": "https://sassmaker.com",
-      "destinationUrl": "https://sassmaker.com",
-      "title": "From user feedback to shipped task",
-      "summary": "Demonstrate a feedback item becoming a scoped task, an agent run, and visible release evidence without losing ownership context.",
-      "audience": "Product builders using agents in real delivery workflows",
-      "claim": "SaaS Maker preserves the link between feedback, tasks, execution, and shipped evidence.",
-      "hook": "An agent finishing code is not the same as a product finishing work.",
-      "proof": "Trace one real item through feedback, task state, commit, and deployment health.",
-      "cta": "Inspect the SaaS Maker workflow.",
-      "seoKeywords": ["AI task orchestration", "feedback widget for SaaS", "agent product workflow"]
     }
   ]
 }

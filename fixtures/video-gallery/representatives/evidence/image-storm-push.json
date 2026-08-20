@@ -1,0 +1,20 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "image-slideshow",
+  "proofRole": "primary",
+  "rangeLabel": "Image model · push in",
+  "motionTags": [
+    "push-in",
+    "cinematic-photo"
+  ],
+  "renderer": "openai-imagegen-ffmpeg@1",
+  "sourcePosture": "specialist-proof",
+  "durationSeconds": 8,
+  "sha256": "5aefe4aede3fd4f45550325177a02097b5af6e90037ed8e68a94c97a43d9da81",
+  "source": {
+    "kind": "generated-image-motion",
+    "generator": "OpenAI built-in image generation",
+    "asset": "fixtures/video-gallery/assets/image-model/storm-observatory.png",
+    "cameraMove": "push-in"
+  }
+}

@@ -1,126 +1,102 @@
 # Command Reference
 
-Canonical command list. The source of truth for npm scripts is
-`package.json`; this table mirrors it grouped by purpose. Render modes and
-their requirements live in
-[`architecture/render-modes.md`](../architecture/render-modes.md).
+`package.json` is authoritative. This page groups the supported operator
+commands.
 
-## Local API & dev
+## Develop and verify
 
 | Command | Purpose |
 | --- | --- |
-| `npm run dev` | Local control API (`src/server/index.js`, port 4317) |
-| `npm run dev` → `/` | Anonymous one-field brand URL → status → reviewed MP4 preview/download |
-| `npm run dev` → `/review` | Swipe review UI |
-| `npm run dev` → `/studio` | Content studio web UI |
-
-## Tests & smokes
-
-| Command | Purpose |
-| --- | --- |
-| `npm test` | Node `--test` + `cargo test` |
-| `npm run test:coverage` | Node tests with coverage thresholds |
-| `npm run smoke:mock` | No-dependency end-to-end smoke |
-| `npm run smoke:full` | Full pipeline smoke (manual posting fallback) |
-| `npm run smoke:generation-cases` | Top-level readiness: marketing modes, Worker render-pro, lesson CLI, creator packets |
-| `npm run smoke:render-modes` | Fixture-backed readiness for local/no-credential render modes |
-| `npm run smoke:reel-maker` | reel-maker/Remotion adapter smoke |
-| `npm run smoke:artifact` | Live R2 artifact byte-range playback smoke |
-| `npm run smoke:studio` | Content studio offline smoke (13 checks) |
-| `npm run smoke:lesson-local` | Lesson lifecycle with fake adapters |
-| `npm run smoke:significant-content` | Offline versioned handoff/idempotency/receipt/performance proof |
-
-## Readiness gates
-
-| Command | Purpose |
-| --- | --- |
-| `npm run check:generation-readiness` | Consolidated current-evidence report → `tmp/generation-readiness/report.json` |
-| `npm run check:generation-readiness -- --refresh --strict` | Refresh every refreshable proof, then validate |
-| `npm run ready:local` | One-command local smoke (`smoke:generation-cases`) |
-| `npm run ready:proofs` | Refreshed required-proof gate (`--refresh --strict`) |
-| `npm run ready:target` | Final target-host acceptance (`--refresh --strict --fail-unresolved`) |
-
-See [`operations/runbooks/generation-readiness.md`](../operations/runbooks/generation-readiness.md).
+| `npm run dev` | Local control API and browser surfaces |
+| `npm test` | Node and Rust regression suites |
+| `npm run smoke:render-modes` | Direct VideoBrief fixture checks for render modes |
+| `npm run smoke:postiz` | Postiz adapter, mapping, and draft contract tests |
+| `npm run ready:local` | Local generation-case readiness |
+| `npm run ready:proofs` | Refresh required readiness evidence |
+| `npm run ready:target` | Target-host acceptance; requires prepared live services |
+| `npm run docs:validate` | Documentation structure and link validation |
+| `npm run docs:build` | Build the Blume documentation site |
 
 ## Render
 
 | Command | Purpose |
 | --- | --- |
-| `npm run render:pro` | Canonical production render (`node scripts/render-pro.js`) |
-| `npm run render:pro:rs` | Rust production render (`reel render --execute`) |
-| `npm run render:accepted -- --mode <mode> --limit N` | Render accepted SaaS Maker queue items |
-| `npm run render:html -- --brief brief.json --artifact-dir artifacts/html` | Export HTML/CSS preview artifacts |
-| `npm run render:package -- --file approved-package.json --out artifacts/brand-video` | Render an approved content package |
-| `npm run render:reel-maker` | reel-maker/Remotion adapter |
-| `npm run moneyprinter:api` | Start MoneyPrinterTurbo API on `127.0.0.1:18080` |
-| `npm run canary:moneyprinter` | MoneyPrinterTurbo real-MP4 canary |
-| `npm run probe:engines` | Verify real-render prerequisites without rendering |
+| `npm run render:pro -- <reel-id>` | Canonical Worker/R2 production render |
+| `npm run render:pro:rs -- <reel-id>` | Rust wrapper around production render |
+| `npm run render:fixture -- --mode <mode>` | Direct local VideoBrief fixture render |
+| `npm run render:html -- --brief <file>` | Export HTML composition artifacts |
+| `npm run render:package -- --file <package>` | Render an approved content package |
+| `npm run inspect:mashup-media -- --receipt <receipt>` | Verify a completed external Mashup artifact and receipt without rendering |
+| `npm run probe:engines` | Inspect renderer prerequisites without rendering |
 
-## Watch / autopilot / post
+## External Mashup media
 
 | Command | Purpose |
 | --- | --- |
-| `npm run watch:render` | Production watcher (`reel watch --execute`) |
-| `npm run watch:render:once` / `:dry` | One-shot / dry-run watcher |
-| `npm run autopilot:dry` | Rust marketing autopilot dry-run (`reel autopilot`, prints intended actions). Execute with `cargo run --manifest-path reel/Cargo.toml -- autopilot --execute --repo-root .` |
-| `npm run autopilot` / `:once` | Node content-package control tick (`marketing-control.js tick`) — sync-source content flow, not the SaaS Maker reel autopilot |
-| `npm run post:ready` | Post ready reels (`reel post --execute`) |
-| `npm run sync:metrics` | Backfill YouTube/Instagram metrics (`reel metrics --execute`) |
-| `npm run sync:saasmaker` | Sync from SaaS Maker |
-| `npm run draft:signal` | Convert a High Signal brief fixture into a reviewable draft bundle |
-| `npm run marketing` | Marketing control (sync / tick) |
-| `npm run distribution` | Prepare/execute a distribution request |
-| `npm run content` | Content package extract/sync |
+Mashup owns podcast/archive planning and rendering under
+the independent Mashup repository. Reel Pipeline accepts only its completed media and
+`fleet.mashup-media-receipt.v1`; it has no Mashup execution command.
 
-## Studio / faceless / factory / lessons
+## Source packages and Postiz
 
 | Command | Purpose |
 | --- | --- |
-| `npm run studio -- <tool>` | Content studio: ideas, titles, descriptions, tags, scripts, voice, keywords, transcripts, thumbnails, ideas manager |
-| `npm run faceless -- --topic "..."` | Topic → script → brief → rendered faceless video (batch via `--topics-file`; engines mock/kokoro/moneyprinterturbo) |
-| `npm run factory -- plan/produce/status` | Backlog conveyor: plan ideas → produce renders with quality gate + publish packet |
-| `npm run significant-content -- validate/import/status/receipt/report/follow-up` | Local Significant Hobbies handoff, receipt, status, and draft-only performance loop |
-| `npm run lesson:render -- --input test/fixtures/lessons/closures.json --auto-approve` | Tutoring lesson pipeline |
-| `npm run setup:kokoro` | One-time local Kokoro-82M TTS install (venv + ~340MB model) |
+| `npm run content` | Extract or inspect content packages |
+| `npm run draft:signal` | Convert a High Signal brief into a draft bundle |
+| `npm run significant-content -- <command>` | Significant Content intake/receipt/report tooling |
+| `npm run check:social` | Validate Postiz base URL, key presence, and integration mapping |
+| `npm run distribution -- --file <package> --receipt <receipt> --provider postiz` | Create a Postiz draft from approved inputs |
 
-## OAuth & Cloudflare
+Distribution supports only `manual` and `postiz`. Native YouTube/Instagram
+publishing is intentionally rejected.
+
+## Studio and generation tools
 
 | Command | Purpose |
 | --- | --- |
-| `npm run yt:bootstrap` | YouTube OAuth bootstrap (mints refresh token) |
-| `npm run ig:bootstrap` | Instagram OAuth bootstrap (mints long-lived token + user id) |
-| `npm run ig:refresh` | Refresh Instagram long-lived tokens |
-| `npm run bootstrap:cloudflare` | Cloudflare Worker + R2 setup |
-| `npm run check:cloudflare` | Cloudflare readiness check |
-| `npm run worker:dry-run` | `wrangler deploy --dry-run` |
-| `npm run check:social` | Social account routing readiness |
+| `npm run studio -- <tool>` | Content studio tools |
+| `npm run faceless -- --topic "..."` | Topic-to-video workflow |
+| `npm run factory -- <command>` | Local backlog-to-artifact conveyor |
+| `npm run factory -- arsenal [filters]` | Read-only machine inventory of projects, tools, workflows, recipes, engines, policies, readiness, guardrails, and next actions |
+| `npm run factory -- autopilot --policy <id> --dry-run` | Discover one automation policy without writes, rendering, upload, or Postiz calls |
+| `npm run factory -- autopilot --all --execute --count <n>` | Execute bounded enabled policies with persisted retries and evidence gates |
+| `npm run factory -- status` | Show backlog stages plus content-lane, policy, run, and recovery status |
+| `npm run lesson:render -- ...` | Tutoring lesson renderer |
+| `npm run setup:kokoro` | Install the optional local Kokoro model |
+| `npm run forge:coherent -- --manifest <json> --output <dir>` | Render an approved skill-bound coherent film with reproducibility and review metadata |
 
-## Rust CLI surface
+Add `--reduced-motion` to `forge:coherent` to render the same manifest with
+fixed source frames and direct scene changes.
 
+Frontier image, video, and music setup/execution commands are intentionally not
+exposed. Those runtimes are parked under ADR 0006. Import approved media
+manually; every paid generation run needs a separate per-job budget and
+operator approval.
+
+## Worker and watcher
+
+| Command | Purpose |
+| --- | --- |
+| `npm run watch:render` | Poll and render approved Worker reels |
+| `npm run watch:render:once` | Execute one watcher tick |
+| `npm run watch:render:dry` | Print watcher actions without mutation |
+| `npm run bootstrap:cloudflare` | Prepare Worker/R2 resources; explicit operator action |
+| `npm run check:cloudflare` | Check Cloudflare prerequisites |
+| `npm run worker:dry-run` | Wrangler deployment dry run |
+
+The retained Local Video Forge coordinator and model scripts are historical
+evidence, not supported operator commands.
+
+## Rust CLI
+
+```text
+reel render <reel-id...> [--variant-count N] [--execute]
+reel watch [--once] [--execute]
+reel plan <brief.json> [--variant-count N]
+reel validate-brief <brief.json>
+reel score <brief.json>
+reel config project-urls
 ```
-reel render <reelId...> [--variant-count N] [--execute]   # production path; dry-run by default
-reel watch [--worker-url URL] [--once] [--execute]        # auto-render-watcher equivalent
-reel autopilot [--once] [--execute] [--fixture path]      # marketing-autopilot equivalent
-reel render-accepted [--execute] [--fixture path] [--mode MODE] # render accepted marketing posts
-reel post [--execute] [--posting-provider auto|manual]    # post ready marketing videos
-reel metrics --execute                                    # backfill provider metrics
-reel plan <brief.json> [--variant-count N]                # preview templates + hooks
-reel validate-brief <brief.json>                          # VideoBrief lint
-reel score <brief.json>                                   # quality heuristics
-reel config <project-urls|social-accounts>                # inspect resolved config
-```
 
-`render`/`watch`/`autopilot`/`post` print intended actions unless `--execute`
-is passed. Use `--posting-provider manual` for dry-run-style "prepared"
-outcomes without API calls.
-
-## Docs
-
-| Command | Purpose |
-| --- | --- |
-| `npm run docs:validate` | Validate docs structure + internal markdown links (no Blume install needed) |
-| `npm run docs:links` | Blume link validation (requires `blume`) |
-| `npm run docs:dev` | Blume dev server (requires `blume`) |
-| `npm run docs:build` | Blume static build to `dist/` (requires `blume`) |
-
-See [`docs-build.md`](./docs-build.md) for the Blume setup.
+Rust render/watch commands default to dry-run and require `--execute` for live
+work.

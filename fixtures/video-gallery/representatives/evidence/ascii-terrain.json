@@ -1,0 +1,17 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "ascii-story",
+  "proofRole": "range",
+  "rangeLabel": "ASCII · lateral scan",
+  "motionTags": [
+    "lateral-scan",
+    "topographic-field"
+  ],
+  "renderer": "ascii-raster-ffmpeg@2",
+  "sourcePosture": "local-render",
+  "durationSeconds": 8,
+  "sha256": "a74f7ed0f212acec363a24265996fd685fc07e0ea7101c10005a733c34e2eb9d",
+  "source": {
+    "kind": "fleet-owned-local-proof"
+  }
+}

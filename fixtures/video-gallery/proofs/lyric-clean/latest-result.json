@@ -1,0 +1,28 @@
+{
+  "schema": "fleet.lyric-video-canary-result.v1",
+  "status": "completed",
+  "provider": "lyric-video-local",
+  "videoPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/twinkle-literally.mp4",
+  "manifestPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/production-manifest.json",
+  "qualityPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/quality.json",
+  "rightsPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/rights.json",
+  "captionsPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/lyrics.srt",
+  "scenePlanPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/literal-scene-plan.json",
+  "blenderVersion": "5.2.0",
+  "quality": {
+    "schema": "fleet.lyric-video-quality.v1",
+    "verdict": "pass",
+    "durationSeconds": 12,
+    "audioPresent": true,
+    "cueCount": 4,
+    "sceneCount": 4,
+    "cueCoverage": 1,
+    "exactLyricText": true,
+    "safeArea": {
+      "horizontalPx": 42,
+      "bottomPx": 74
+    },
+    "contrastBacking": true,
+    "reducedMotion": false
+  }
+}

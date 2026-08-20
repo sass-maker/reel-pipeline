@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 
 import { AsciiAnimationAdapter } from '../src/adapters/ascii-animation.js';
 import { normalizeVideoBrief } from '../src/video-brief.js';
+import { decorateRenderResult } from '../content-factory/src/manifest.js';
 
 const args = parseArgs(process.argv.slice(2));
 if (!args.brief) {
@@ -16,7 +17,7 @@ try {
     artifactDir: args.artifactDir,
     ffmpegPath: args.ffmpegPath,
   });
-  const render = await adapter.createVideo(brief);
+  const render = await decorateRenderResult({ brief, render: await adapter.createVideo(brief) });
   process.stdout.write(`${JSON.stringify(render)}\n`);
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

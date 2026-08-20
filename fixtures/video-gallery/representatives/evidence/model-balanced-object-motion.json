@@ -1,0 +1,19 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "coherent-local-film",
+  "proofRole": "primary",
+  "rangeLabel": "LTX · object motion",
+  "motionTags": [
+    "camera-arc",
+    "object-motion"
+  ],
+  "renderer": "ltx-2.3-mlx-q4",
+  "sourcePosture": "local-model-proof",
+  "durationSeconds": 6,
+  "sha256": "32303b0a4962b4d3a7e49f30925ce557c485fccec78171b26f16e99a6a9fb9cd",
+  "source": {
+    "kind": "local-model-range",
+    "evidence": "fixtures/video-gallery/proofs/video-model/evidence.json",
+    "proof": "model-balanced-object-motion"
+  }
+}

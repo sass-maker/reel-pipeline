@@ -1,0 +1,24 @@
+{
+  "schema": "fleet.internal-video-channels.v1",
+  "channels": [
+    {
+      "brand": "high-signal",
+      "channel": "youtube_shorts",
+      "accountSlug": "high-signal-youtube",
+      "credentialEnv": {
+        "clientId": "HIGH_SIGNAL_YOUTUBE_CLIENT_ID",
+        "clientSecret": "HIGH_SIGNAL_YOUTUBE_CLIENT_SECRET",
+        "refreshToken": "HIGH_SIGNAL_YOUTUBE_REFRESH_TOKEN"
+      }
+    },
+    {
+      "brand": "high-signal",
+      "channel": "instagram_reels",
+      "accountSlug": "high-signal-instagram",
+      "credentialEnv": {
+        "userId": "HIGH_SIGNAL_INSTAGRAM_USER_ID",
+        "accessToken": "HIGH_SIGNAL_INSTAGRAM_ACCESS_TOKEN"
+      }
+    }
+  ]
+}

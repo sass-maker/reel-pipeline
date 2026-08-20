@@ -1,0 +1,19 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "podcast-short",
+  "proofRole": "primary",
+  "rangeLabel": "Podcast · speaker first",
+  "motionTags": [
+    "captions",
+    "source-edit"
+  ],
+  "renderer": "editorial-podcast-render@1",
+  "sourcePosture": "specialist-proof",
+  "durationSeconds": 12,
+  "sha256": "638b5c84f66e9d533b97fb48cca91f15f636573e03fc4f0f3e4e6032c3c1164a",
+  "source": {
+    "kind": "licensed-source",
+    "receipt": "../../../../../foundry/marketing/reel-pipeline/.reel-pipeline/podcast-edits/runs/zeropod-conviction-short-2026-07-29T09-48-39-947Z/receipt.json",
+    "license": "CC0 / zero rights reserved"
+  }
+}

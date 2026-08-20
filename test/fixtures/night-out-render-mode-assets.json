@@ -1,0 +1,30 @@
+{
+  "schema": "fleet.night-out-assets.v1",
+  "theme": {
+    "id": "render-mode-smoke",
+    "label": "Repository-owned smoke assets"
+  },
+  "sourcePosture": "operator-owned",
+  "images": [
+    {
+      "id": "opening",
+      "label": "The opening",
+      "path": "../../artifacts/design/before.png"
+    },
+    {
+      "id": "signal-field",
+      "label": "The signal field",
+      "path": "../../artifacts/design/probes/ascii-signal-field.jpg"
+    },
+    {
+      "id": "filmstrip",
+      "label": "The filmstrip",
+      "path": "../../artifacts/design/probes/variant-filmstrip.jpg"
+    },
+    {
+      "id": "proof",
+      "label": "The proof",
+      "path": "../../artifacts/design/probes/approved-proof-slide.jpg"
+    }
+  ]
+}

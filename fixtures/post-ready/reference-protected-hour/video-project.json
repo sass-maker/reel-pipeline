@@ -1,0 +1,30 @@
+{
+  "schema": "reel-pipeline.local-video-forge.v0.1",
+  "project": {
+    "name": "protected-hour-reference",
+    "aspectRatio": "9:16",
+    "fps": 24,
+    "targetDurationSeconds": 5,
+    "style": "natural 35mm editorial continuity"
+  },
+  "shots": [
+    {
+      "id": "watercolor-stroke",
+      "narration": "",
+      "durationSeconds": 5,
+      "mode": "image-to-video",
+      "keyframe": "assets/scene-03-making.png",
+      "keyframeApproved": true,
+      "motionPrompt": "One continuous restrained editorial shot. Preserve the woman's exact face, hands, cream sweater, apartment, sketchbook, phone, watercolor set, blue-hour rain, and warm lamp. Her brush completes one slow ultramarine stroke while wet pigment blooms naturally into the paper; her breathing and gaze move subtly; rain trails drift down the window; the camera makes a nearly imperceptible stable push. No cut and no new action.",
+      "negativePrompt": "identity change, face morph, extra fingers, broken brush, moving phone, duplicated objects, wardrobe change, camera shake, sudden cut, text, logo, watermark, glossy commercial look",
+      "preview": {
+        "preset": "draft",
+        "seeds": [8317, 8318, 8319],
+        "width": 384,
+        "height": 640,
+        "frames": 121,
+        "fps": 24
+      }
+    }
+  ]
+}

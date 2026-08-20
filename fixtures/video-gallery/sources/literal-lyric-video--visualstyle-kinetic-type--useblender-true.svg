@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="640" viewBox="0 0 360 640">
+  <defs>
+    <linearGradient id="wash" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#12120e"/><stop offset="1" stop-color="#424827"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="360" height="640" fill="url(#wash)"/>
+  <circle cx="310" cy="76" r="82" fill="#d9e785" opacity=".12" filter="url(#soft)"/>
+  <text x="28" y="39" fill="#d9e785" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="700" letter-spacing="1.8">FLEET · FIXTURE PREVIEW</text>
+  <g><text x="180" y="164" text-anchor="middle" fill="#fbffdf" font-family="Arial" font-size="46" font-weight="900">EVERY</text><text x="180" y="222" text-anchor="middle" fill="#d9e785" font-family="Arial" font-size="58" font-weight="900">WORD</text><text x="180" y="266" text-anchor="middle" fill="#fbffdf" font-family="Arial" font-size="30" font-weight="800">MOVES.</text><path d="M61 318h238" stroke="#d9e785" stroke-width="8" stroke-dasharray="24 10"/><path d="M180 87l112 194-112 76L68 281z" fill="none" stroke="#d9e785" opacity=".28"/></g>
+  <text x="28" y="430" fill="#fbffdf" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="800" letter-spacing="-.8">LITERAL LYRIC VIDEO</text>
+  <text x="28" y="510" fill="#d9e785" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700">Kinetic Type · True</text>
+  <line x1="28" y1="596" x2="332" y2="596" stroke="#d9e785" opacity=".34"/>
+  <text x="28" y="618" fill="#fbffdf" opacity=".7" font-family="Arial,Helvetica,sans-serif" font-size="10">Lyric compositor + optional Blender · 48/48</text>
+</svg>

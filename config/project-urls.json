@@ -2,12 +2,12 @@
   "$comment": "Real deployed product URLs per fleet project. Read by render-pro.js and the worker. Source of truth — update here, not in code.",
   "karte": {
     "productUrl": "https://karte.cc",
-    "fallbackUrl": "https://github.com/sarthakagrawal927/karte"
+    "fallbackUrl": "https://github.com/Significant-Hobbies/karte"
   },
   "linkchat": {
     "$comment": "Legacy project slug retained for old queue items; Karte is canonical.",
     "productUrl": "https://karte.cc",
-    "fallbackUrl": "https://github.com/sarthakagrawal927/karte"
+    "fallbackUrl": "https://github.com/Significant-Hobbies/karte"
   },
   "reader": {
     "productUrl": "https://read.significanthobbies.com",

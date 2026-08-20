@@ -7,7 +7,8 @@ import test from 'node:test';
 import { StudioLlm } from '../src/studio/llm.js';
 import { IdeaStore } from '../src/studio/idea-store.js';
 import { generateScript } from '../src/studio/script.js';
-import { scriptToBrief, runFacelessWorkflow, runBatch } from '../src/studio/workflow.js';
+import { scriptToBrief, runFacelessWorkflow, runBatch, runSourceBackedWorkflow } from '../src/studio/workflow.js';
+import { getProductionRecipe } from '../src/studio/production-catalog.js';
 
 const offlineLlm = new StudioLlm({ apiKey: '' });
 const silent = { info: () => {}, warn: () => {} };
@@ -36,6 +37,13 @@ test('scriptToBrief produces a valid brief with a single voice by default', asyn
   assert.equal(brief.renderMode, 'mock');
   assert.equal(voicePlan.rotation, false);
   assert.equal(new Set(voicePlan.scenes.map((scene) => scene.voice)).size, 1);
+});
+
+test('short-form scripts preserve a selected reel duration', async () => {
+  const script = await generateScript({ topic: 'night out carousel', durationSeconds: 13, llm: offlineLlm });
+  const { brief } = scriptToBrief(script, { engine: 'night-out-carousel' });
+  assert.equal(script.targetDurationSeconds, 13);
+  assert.equal(brief.durationSeconds, 13);
 });
 
 test('voice rotation requires explicit opt-in', async () => {
@@ -76,6 +84,35 @@ test('faceless workflow runs mock end-to-end and writes artifacts', async () => 
   assert.equal(metadata.voicePlan.rotation, false);
 });
 
+test('faceless workflow preserves confirmed Marketing Studio inputs in the brief', async () => {
+  const out = await tempDir('studio-confirmed-');
+  const storeDir = await tempDir('studio-store-');
+  const summary = await runFacelessWorkflow({
+    topic: 'Evidence before automation',
+    projectSlug: 'high-signal',
+    channel: 'instagram_reels',
+    briefId: 'brief-confirmed',
+    durationSeconds: 45,
+    hook: 'Proof first. Automation second.',
+    cta: 'Read the evidence',
+    creativeDirection: 'Use one product receipt as the dominant visual.',
+    engine: 'mock',
+    outputDir: out,
+    ideaStore: new IdeaStore({ filePath: path.join(storeDir, 'ideas.json') }),
+    rendererOptions: { mock: { artifactDir: path.join(out, 'renders') } },
+    llm: offlineLlm,
+    logger: silent,
+  });
+  assert.equal(summary.projectSlug, 'high-signal');
+  assert.equal(summary.channel, 'instagram_reels');
+  const brief = JSON.parse(await readFile(path.join(summary.artifactDir, 'brief.json'), 'utf8'));
+  assert.equal(brief.projectSlug, 'high-signal');
+  assert.equal(brief.channel, 'instagram_reels');
+  assert.equal(brief.hook, 'Proof first. Automation second.');
+  assert.equal(brief.cta, 'Read the evidence');
+  assert.match(brief.body, /dominant visual/);
+});
+
 test('workflow does not auto-post and surfaces the handoff command only on request', async () => {
   const out = await tempDir('studio-faceless-');
   const storeDir = await tempDir('studio-store-');
@@ -91,7 +128,38 @@ test('workflow does not auto-post and surfaces the handoff command only on reque
   const without = await runFacelessWorkflow(base);
   assert.equal(without.postHandoff, null);
   const withHandoff = await runFacelessWorkflow({ ...base, postHandoff: true });
-  assert.match(withHandoff.postHandoff.command, /post:ready/);
+  assert.match(withHandoff.postHandoff.command, /distribution/);
+  assert.match(withHandoff.postHandoff.command, /postiz/);
+});
+
+test('source-backed workflow renders deterministic supplied copy without inventing claims', async () => {
+  const out = await tempDir('studio-source-backed-');
+  const store = new IdeaStore({ filePath: path.join(out, 'ideas.json') });
+  const idea = await store.saveIdea({ title: 'Evidence changes the decision', projectSlug: 'high-signal' });
+  const summary = await runSourceBackedWorkflow({
+    source: {
+      projectSlug: 'high-signal', title: 'Evidence changes the decision',
+      summary: 'One proof makes the choice easier.', claim: 'Visible evidence improves trust.',
+      hook: 'Show the proof first.', cta: 'Read the evidence.',
+      canonicalUrl: 'https://highsignal.app/briefs/proof-1', contentPackage: null,
+    },
+    recipe: getProductionRecipe('image-slideshow'),
+    channel: 'youtube_shorts', ideaId: idea.id, ideaStore: store, outputDir: out,
+    rendererOptions: { renderer: { createVideo: async () => ({ provider: 'fixture', status: 'completed', videos: ['/tmp/source-backed.mp4'] }) } },
+    publishArtifacts: async (render) => render,
+    assessQuality: async () => ({ verdict: 'pass', overall: 90 }),
+    logger: silent,
+  });
+  const script = JSON.parse(await readFile(path.join(summary.artifactDir, 'script.json'), 'utf8'));
+  assert.equal(script.source, 'standing-policy-source');
+  assert.deepEqual(script.scenes.map((scene) => scene.narration), [
+    'Show the proof first.',
+    'One proof makes the choice easier.',
+    'Visible evidence improves trust.',
+    'Read the evidence.',
+  ]);
+  assert.equal(summary.publicUrl, null);
+  assert.equal((await store.listIdeas())[0].status, 'rendered');
 });
 
 test('batch isolates per-topic failures and reports the split', async () => {

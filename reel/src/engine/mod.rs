@@ -2,17 +2,15 @@
 //!
 //! The heavy lifting (actual video render) stays *behind* this trait. Rust owns
 //! orchestration and delegates specialized render work to adapter-specific
-//! engines: `render-pro` for the canonical worker render, MoneyPrinterTurbo for
-//! stock-footage MP4s, Grok local MP4s, ASCII animation clips, HTML composition
-//! previews, reel-maker/Remotion, and mock dry runs.
+//! engines: `render-pro` for the canonical worker render, Grok local MP4s,
+//! ASCII animation clips, HTML composition previews, Blender, and mock dry runs.
 
 pub mod ascii_animation;
+pub mod blender;
 pub mod factory;
 pub mod grok_video;
 pub mod html_composition;
 pub mod mock;
-pub mod money_printer;
-pub mod reel_maker;
 pub mod render_pro;
 
 use std::path::PathBuf;
@@ -55,6 +53,9 @@ pub struct RenderResult {
     pub aspect: String,
     pub proof_type: Option<String>,
     pub render_log: Vec<String>,
+    /// Validated Content Factory manifest emitted for completed local artifacts.
+    pub artifact_manifest: Option<serde_json::Value>,
+    pub artifact_manifest_path: Option<PathBuf>,
 }
 
 impl RenderResult {
@@ -70,6 +71,8 @@ impl RenderResult {
             aspect: "9:16".to_string(),
             proof_type: None,
             render_log: Vec::new(),
+            artifact_manifest: None,
+            artifact_manifest_path: None,
         }
     }
 }
@@ -88,14 +91,14 @@ pub struct RenderOptions {
 pub trait RenderEngine {
     fn name(&self) -> &str;
 
-    /// Render from a normalized brief (the autopilot / marketing flow).
+    /// Render from a normalized brief.
     fn create_video(&self, brief: &VideoBrief, options: &RenderOptions) -> Result<RenderResult>;
 
     /// Render a worker-stored reel by id (the production render-pro flow). The
     /// renderer fetches/patches the reel record itself, so all we pass is the id.
     fn render_reel_by_id(&self, reel_id: &str, options: &RenderOptions) -> Result<RenderResult>;
 
-    /// Poll an async render task (MoneyPrinterTurbo). Default impl errors.
+    /// Poll an async render task. Default impl errors.
     fn get_status(&self, external_task_id: &str) -> Result<RenderResult> {
         let _ = external_task_id;
         Err(anyhow::anyhow!(

@@ -1,0 +1,63 @@
+{
+  "schema": "fleet.blender-literal-scenes.v1",
+  "builderVersion": "literal-scene-builder-v2",
+  "width": 540,
+  "height": 960,
+  "samples": 8,
+  "durationSeconds": 20,
+  "transparent": false,
+  "scenes": [
+    {
+      "id": "lyric-scene-1",
+      "cueIndex": 0,
+      "lyric": "Twinkle, twinkle, little star",
+      "objects": [
+        "star"
+      ],
+      "camera": "slow-push",
+      "palette": "midnight-gold",
+      "visualStyle": "cosmic-shrine",
+      "seed": 3375736615,
+      "output": "plates/001-lyric-scene-1.png"
+    },
+    {
+      "id": "lyric-scene-2",
+      "cueIndex": 1,
+      "lyric": "How I wonder what you are",
+      "objects": [
+        "star"
+      ],
+      "camera": "gentle-orbit",
+      "palette": "blue-silver",
+      "visualStyle": "cosmic-shrine",
+      "seed": 2685865399,
+      "output": "plates/002-lyric-scene-2.png"
+    },
+    {
+      "id": "lyric-scene-3",
+      "cueIndex": 2,
+      "lyric": "Up above the world so high",
+      "objects": [
+        "world"
+      ],
+      "camera": "slow-push",
+      "palette": "midnight-gold",
+      "visualStyle": "cosmic-shrine",
+      "seed": 1175265183,
+      "output": "plates/003-lyric-scene-3.png"
+    },
+    {
+      "id": "lyric-scene-4",
+      "cueIndex": 3,
+      "lyric": "Like a diamond in the sky",
+      "objects": [
+        "diamond"
+      ],
+      "camera": "gentle-orbit",
+      "palette": "blue-silver",
+      "visualStyle": "cosmic-shrine",
+      "seed": 3118942914,
+      "output": "plates/004-lyric-scene-4.png"
+    }
+  ]
+}

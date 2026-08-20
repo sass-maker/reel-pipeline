@@ -1,10 +1,11 @@
-import { access } from 'node:fs/promises';
-
 import { getBrandProfile, normalizeContentPackage } from './content-package.js';
 
 export const DISTRIBUTION_REQUEST_SCHEMA = 'fleet.distribution-request.v1';
 export const DISTRIBUTION_RECEIPT_SCHEMA = 'fleet.distribution-receipt.v1';
-const PROVIDERS = new Set(['manual', 'native', 'postiz']);
+// `postiz` remains decodable for old persisted project files. New agent and
+// Studio operations must use `internal`; no capability manifest advertises the
+// legacy adapter.
+const PROVIDERS = new Set(['manual', 'internal', 'postiz']);
 
 export function buildDistributionRequest(contentInput, mediaReceipt, options = {}) {
   const contentPackage = normalizeContentPackage(contentInput);
@@ -90,18 +91,16 @@ export async function executeDistribution(contentInput, mediaReceipt, requestInp
   }, options.now);
 
   if (!request.accountSlug) throw new Error(`no ${request.channel} account mapping configured for ${request.brand}`);
+  if (request.provider === 'internal') {
+    if (!options.internalProvider) throw new Error('Fleet internal publishing is not configured for this channel');
+    const result = await options.internalProvider.post(toMarketingPost(contentPackage, mediaReceipt, request));
+    return distributionReceipt(request, result, options.now);
+  }
   if (request.provider === 'postiz') {
-    if (!options.postizProvider) throw new Error('Postiz is not configured; connect the account and provide a Postiz adapter');
+    if (!options.postizProvider) throw new Error('legacy Postiz adapter is not configured');
     const result = await options.postizProvider.post(toMarketingPost(contentPackage, mediaReceipt, request));
     return distributionReceipt(request, result, options.now);
   }
-  if (!options.nativeProvider) throw new Error('native publisher is not configured');
-  if (request.channel === 'instagram_reels' && !request.media.publicUrl) {
-    throw new Error('Instagram publishing requires a public media URL');
-  }
-  if (request.channel === 'youtube_shorts') await access(request.media.artifact);
-  const result = await options.nativeProvider.post(toMarketingPost(contentPackage, mediaReceipt, request));
-  return distributionReceipt(request, result, options.now);
 }
 
 export function toMarketingPost(contentPackage, mediaReceipt, request) {
@@ -159,6 +158,7 @@ function distributionReceipt(request, result, now = () => new Date()) {
     status: result.status,
     externalId: result.externalId ?? null,
     externalUrl: result.externalUrl ?? null,
+    scheduledFor: request.scheduledFor,
     recordedAt: now().toISOString(),
   };
 }

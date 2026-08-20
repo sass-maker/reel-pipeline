@@ -1,0 +1,16 @@
+{
+  "schema": "fleet.lyric-video-quality.v1",
+  "verdict": "pass",
+  "durationSeconds": 12,
+  "audioPresent": true,
+  "cueCount": 4,
+  "sceneCount": 4,
+  "cueCoverage": 1,
+  "exactLyricText": true,
+  "safeArea": {
+    "horizontalPx": 42,
+    "bottomPx": 74
+  },
+  "contrastBacking": true,
+  "reducedMotion": false
+}

@@ -3,7 +3,7 @@
   "cases": [
     {
       "id": "marketing-render-modes",
-      "description": "Accepted marketing posts through the supported render-mode matrix.",
+      "description": "Source-backed VideoBriefs through the supported render-mode matrix.",
       "smoke": {
         "type": "command",
         "command": "npm",
@@ -17,7 +17,7 @@
       "smoke": {
         "type": "command",
         "command": "node",
-        "args": ["--check", "scripts/render-pro.js"],
+        "args": ["--check", "content-factory/scripts/render-pro.js"],
         "hint": "Syntax smoke only; live Worker/R2 render proof needs a real approved reel id."
       }
     },

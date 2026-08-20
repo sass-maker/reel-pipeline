@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, readFile, rm } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 
@@ -16,6 +16,20 @@ const reelBody = [
   'Captions: "missed posts are visible" and "metrics sync has a queue".',
   'Asset prompts: HTML motion cards with product UI proof.',
 ].join('\n');
+
+function deterministicVideoOptions() {
+  return {
+    frameRenderer: async (_htmlPath, timeline, framesDir) => Promise.all(timeline.scenes.map(async (scene) => {
+      const framePath = path.join(framesDir, `scene-${scene.index}.png`);
+      await writeFile(framePath, Buffer.from('fixture-png'));
+      return { path: framePath, duration: scene.duration, motion: scene.motion };
+    })),
+    commandRunner: async (_binary, args) => {
+      await writeFile(args.at(-1), Buffer.from('fixture-video'));
+      return { stdout: '', stderr: '' };
+    },
+  };
+}
 
 test('html composition render modes map to HtmlCompositionAdapter', () => {
   assert.equal(createRenderer('html').constructor.name, 'HtmlCompositionAdapter');
@@ -64,6 +78,33 @@ test('buildHtmlComposition emits timeline, preview HTML, and word cues', () => {
   );
 });
 
+test('HTML visual styles change composition structure and motion plans', () => {
+  const base = {
+    id: 'brief-html-style',
+    projectSlug: 'reel-pipeline',
+    channel: 'instagram_reels',
+    title: 'Style proof',
+    hook: 'The same idea should have visibly different art direction.',
+    body: reelBody,
+    renderMode: 'html',
+    durationSeconds: 12,
+  };
+  const kinetic = buildHtmlComposition(normalizeVideoBrief({
+    ...base,
+    renderOptions: { visualStyle: 'kinetic-type' },
+  }));
+  const grid = buildHtmlComposition(normalizeVideoBrief({
+    ...base,
+    renderOptions: { visualStyle: 'editorial-grid' },
+  }));
+
+  assert.equal(kinetic.timeline.visualStyle, 'kinetic-type');
+  assert.equal(grid.timeline.visualStyle, 'editorial-grid');
+  assert.notDeepEqual(kinetic.timeline.scenes.map((scene) => scene.motion), grid.timeline.scenes.map((scene) => scene.motion));
+  assert.match(kinetic.html, /data-style="kinetic-type"/);
+  assert.match(grid.html, /data-style="editorial-grid"/);
+});
+
 test('HtmlCompositionAdapter smoke proves request to status to artifact metadata', async () => {
   const root = path.resolve('./tmp/html-composition-test');
   const artifactDir = path.join(root, 'artifacts');
@@ -73,6 +114,7 @@ test('HtmlCompositionAdapter smoke proves request to status to artifact metadata
   const adapter = new HtmlCompositionAdapter({
     artifactDir,
     now: () => new Date('2026-07-03T00:00:00.000Z'),
+    ...deterministicVideoOptions(),
   });
   const brief = normalizeVideoBrief({
     id: 'brief-html-preview',
@@ -89,7 +131,8 @@ test('HtmlCompositionAdapter smoke proves request to status to artifact metadata
   assert.equal(render.provider, 'html-composition');
   assert.equal(render.status, 'completed');
   assert.equal(render.externalTaskId, 'html_brief-html-preview_1783036800000');
-  assert.deepEqual(render.videos, []);
+  assert.equal(render.videos.length, 1);
+  assert.match(render.videos[0], /\.mp4$/);
   assert.equal(render.durationSeconds, 10);
   assert.ok(render.renderLog.includes('style=html-css-composition'));
   assert.match(render.raw.previewHtmlPath, /composition\.html$/);
@@ -125,6 +168,7 @@ test('createDraftVideo can save an html composition preview job', async () => {
       htmlComposition: {
         artifactDir,
         now: () => new Date('2026-07-03T00:00:00.000Z'),
+        ...deterministicVideoOptions(),
       },
       storeOptions: {
         root,
@@ -134,6 +178,6 @@ test('createDraftVideo can save an html composition preview job', async () => {
 
   assert.equal(job.status, 'video_ready');
   assert.equal(job.render.provider, 'html-composition');
-  assert.deepEqual(job.render.videos, []);
+  assert.equal(job.render.videos.length, 1);
   assert.match(job.render.raw.previewHtmlPath, /composition\.html$/);
 });

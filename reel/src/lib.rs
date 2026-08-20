@@ -1,13 +1,12 @@
 //! reel — Rust orchestrator for the reel-pipeline.
 //!
-//! Rust orchestration for render engines, R2 artifact publishing, and gated
-//! social posting. Heavy lifting stays behind traits and adapter-specific
+//! Rust orchestration for render engines and R2 artifact publishing. Heavy
+//! lifting stays behind traits and adapter-specific
 //! engines:
-//!   - [`engine::RenderEngine`] → render-pro, MoneyPrinterTurbo, Grok local
-//!     MP4s, ASCII animation, HTML composition, reel-maker, and mock engines.
+//!   - [`engine::RenderEngine`] → render-pro, Grok local MP4s, ASCII animation,
+//!     HTML composition, Blender, and mock engines.
 //!   - [`publisher::ArtifactPublisher`] → [`publisher::R2Publisher`]
 //!     (shells out to `wrangler r2 object put`).
-//!   - [`social::SocialPoster`] → [`social::DryRunPoster`] (never posts yet).
 //!
 //! The pure logic (brief normalization, template selection, quality scoring,
 //! artifact path/key handling, config parsing) is ported in full and unit
@@ -15,21 +14,14 @@
 //! remaining phases.
 
 pub mod artifact;
-pub mod autopilot;
-pub mod autopilot_daemon;
 pub mod brief;
 pub mod config;
+pub mod content_factory;
 pub mod engine;
-pub mod marketing;
-pub mod marketing_metrics;
-pub mod marketing_posting;
 pub mod orchestrator;
 pub mod publisher;
-pub mod publishers;
 pub mod quality;
 pub mod runner;
-pub mod saas_maker;
-pub mod social;
 pub mod store;
 pub mod templates;
 pub mod watcher;

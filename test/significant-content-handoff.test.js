@@ -4,7 +4,6 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 
-import { postingGate } from '../src/posting.js';
 import {
   importSignificantReels,
   importedVariantToScript,
@@ -121,7 +120,7 @@ test('imported workflow renders supplied script and leaves quality review author
   assert.equal(renderedBrief.hook, input.variants[0].hook);
   assert.equal(result.quality.verdict, 'review');
   assert.equal((await store.listIdeas()).find((entry) => entry.id === idea.id).status, 'rendered');
-  assert.equal(postingGate({ channel: 'youtube_shorts', status: 'generated', result_url: result.video }).ready, false);
+  assert.equal(result.quality.verdict, 'review');
 });
 
 test('factory routes imported ideas through the approved-variant workflow', async () => {

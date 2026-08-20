@@ -1,0 +1,19 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "coherent-local-film",
+  "proofRole": "primary",
+  "rangeLabel": "LTX · identity continuity",
+  "motionTags": [
+    "slow-push",
+    "identity-lock"
+  ],
+  "renderer": "ltx-2.3-mlx-q4",
+  "sourcePosture": "local-model-proof",
+  "durationSeconds": 6,
+  "sha256": "c7431695ed1c42d943b3dd5a16fa4016c9822160f0f63e4db8e7bdb8d1b32801",
+  "source": {
+    "kind": "local-model-range",
+    "evidence": "fixtures/video-gallery/proofs/video-model/evidence.json",
+    "proof": "model-strict-continuity"
+  }
+}

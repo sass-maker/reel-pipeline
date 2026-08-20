@@ -1,0 +1,60 @@
+{
+  "$schema": "fleet.design-review.v1",
+  "version": 1,
+  "project": "reel-pipeline",
+  "target": "Voice-first editable workflow, cast, and soundtrack at /studio",
+  "mode": "preserve",
+  "register": "brand",
+  "context": {
+    "product": "PRODUCT.md",
+    "design": "DESIGN.md"
+  },
+  "direction": {
+    "references": [],
+    "probes": [],
+    "selected": "evidence-beam editable production console",
+    "approval": "not-required",
+    "before": "artifacts/design/local-workflow-proposal/before-1440.png"
+  },
+  "evidence": {
+    "screenshots": [
+      {
+        "width": 390,
+        "path": "artifacts/design/voice-first-workflow/after-390.png"
+      },
+      {
+        "width": 768,
+        "path": "artifacts/design/voice-first-workflow/after-768.png"
+      },
+      {
+        "width": 1440,
+        "path": "artifacts/design/voice-first-workflow/after-1440.png"
+      }
+    ],
+    "projectCheck": {
+      "command": "npm test && npm run smoke:studio && npm run gallery:check && npm run gallery:representatives:check && npm run docs:validate && openspec validate add-voice-first-reel-workflows --strict && git diff --check",
+      "status": "pass"
+    },
+    "critique": {
+      "score": 37,
+      "maximum": 40
+    },
+    "audit": {
+      "score": 19,
+      "maximum": 20
+    },
+    "unresolved": {
+      "p0": 0,
+      "p1": 0
+    },
+    "detector": {
+      "posture": "advisory",
+      "findings": [],
+      "note": "The required one-pass detector returned no findings for src/studio/ui.js. Visual critique was completed in-thread because sub-agent delegation was disabled for this run."
+    }
+  },
+  "ownerFeedback": {
+    "decision": "delegated",
+    "note": "On 2026-08-09 the owner delegated completion and shipping of all non-blocking Fleet issues to Codex."
+  }
+}

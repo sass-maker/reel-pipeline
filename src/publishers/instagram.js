@@ -1,153 +1,75 @@
-const DEFAULT_GRAPH_URL = 'https://graph.instagram.com';
-const DEFAULT_API_VERSION = 'v22.0';
-const DEFAULT_POLL_INTERVAL_MS = 3_000;
-const DEFAULT_POLL_TIMEOUT_MS = 5 * 60_000;
-const TERMINAL_STATUSES = new Set(['FINISHED', 'ERROR', 'EXPIRED']);
-const DEFAULT_INSIGHT_METRICS = ['views', 'likes', 'comments', 'shares', 'saved'];
+const TERMINAL = new Set(['FINISHED', 'ERROR', 'EXPIRED']);
 
 export class InstagramPublisher {
   constructor(options = {}) {
     this.userId = options.userId;
-    this.longLivedToken = options.longLivedToken;
-    this.graphUrl = (options.graphUrl ?? DEFAULT_GRAPH_URL).replace(/\/$/, '');
-    this.apiVersion = options.apiVersion ?? DEFAULT_API_VERSION;
-    this.pollIntervalMs = options.pollIntervalMs ?? DEFAULT_POLL_INTERVAL_MS;
-    this.pollTimeoutMs = options.pollTimeoutMs ?? DEFAULT_POLL_TIMEOUT_MS;
-    this.fetchImpl = options.fetchImpl ?? fetch;
-    this.sleepImpl = options.sleepImpl ?? ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
-    this.now = options.now ?? (() => Date.now());
+    this.accessToken = options.accessToken;
+    this.baseUrl = (options.baseUrl ?? 'https://graph.instagram.com/v22.0').replace(/\/$/, '');
+    this.fetchImpl = options.fetchImpl ?? globalThis.fetch;
+    this.sleepImpl = options.sleepImpl ?? ((milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)));
+    this.pollIntervalMs = options.pollIntervalMs ?? 3_000;
+    this.pollLimit = options.pollLimit ?? 100;
   }
 
-  base() {
-    return `${this.graphUrl}/${this.apiVersion}`;
-  }
-
-  async publishReel(input) {
-    if (!this.userId) throw new Error('InstagramPublisher requires userId');
-    if (!this.longLivedToken) throw new Error('InstagramPublisher requires longLivedToken');
-    if (!input?.videoUrl) throw new Error('publishReel requires videoUrl');
-    if (!isHttpUrl(input.videoUrl)) {
-      throw new Error(`InstagramPublisher.videoUrl must be a public http(s) URL (got ${input.videoUrl})`);
-    }
-
-    const containerId = await this.createContainer(input);
-    const status = await this.waitForContainer(containerId);
-    if (status !== 'FINISHED') {
-      throw new Error(`Instagram container ${containerId} ended in ${status}`);
-    }
-    return this.publishContainer(containerId);
-  }
-
-  async createContainer(input) {
-    const body = new URLSearchParams({
-      media_type: 'REELS',
-      video_url: input.videoUrl,
-      caption: input.caption ?? '',
-      access_token: this.longLivedToken,
-    });
-    if (input.shareToFeed === false) body.set('share_to_feed', 'false');
-    if (input.thumbOffsetMs) body.set('thumb_offset', String(input.thumbOffsetMs));
-    const res = await this.fetchImpl(`${this.base()}/${this.userId}/media`, {
+  async publish(input) {
+    if (!this.userId || !this.accessToken) throw new InstagramPublisherError('Instagram account credentials are not configured', 'needs_reconnect');
+    if (!isPublicHttps(input.videoUrl)) throw new InstagramPublisherError('Instagram requires a public HTTPS video URL', 'bad_asset');
+    if (input.scheduledFor) throw new InstagramPublisherError('Instagram native scheduling is not supported by the internal publisher', 'bad_caption');
+    const create = await this.request(`/${this.userId}/media`, {
       method: 'POST',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      body: body.toString(),
+      body: new URLSearchParams({ media_type: 'REELS', video_url: input.videoUrl, caption: input.caption ?? '', access_token: this.accessToken }),
     });
-    if (!res.ok) {
-      throw new Error(`Instagram createContainer failed ${res.status}: ${await res.text()}`);
-    }
-    const payload = await res.json();
-    if (!payload.id) throw new Error(`Instagram createContainer missing id: ${JSON.stringify(payload)}`);
-    return payload.id;
-  }
-
-  async waitForContainer(containerId) {
-    const deadline = this.now() + this.pollTimeoutMs;
-    let last = 'IN_PROGRESS';
-    while (this.now() < deadline) {
-      const url = `${this.base()}/${containerId}?fields=status_code&access_token=${encodeURIComponent(this.longLivedToken)}`;
-      const res = await this.fetchImpl(url);
-      if (!res.ok) throw new Error(`Instagram waitForContainer failed ${res.status}: ${await res.text()}`);
-      const payload = await res.json();
-      last = payload.status_code ?? 'IN_PROGRESS';
-      if (TERMINAL_STATUSES.has(last)) return last;
+    if (!create.id) throw new InstagramPublisherError('Instagram returned no media container id', 'provider_down');
+    for (let attempt = 0; attempt < this.pollLimit; attempt += 1) {
+      const status = await this.request(`/${create.id}?fields=status_code&access_token=${encodeURIComponent(this.accessToken)}`);
+      if (status.status_code === 'FINISHED') break;
+      if (TERMINAL.has(status.status_code)) throw new InstagramPublisherError(`Instagram media container ended in ${status.status_code}`, 'bad_asset');
+      if (attempt === this.pollLimit - 1) throw new InstagramPublisherError('Instagram media processing timed out', 'provider_down');
       await this.sleepImpl(this.pollIntervalMs);
     }
-    throw new Error(`Instagram container ${containerId} did not finish within ${this.pollTimeoutMs}ms (last=${last})`);
-  }
-
-  async publishContainer(containerId) {
-    const body = new URLSearchParams({
-      creation_id: containerId,
-      access_token: this.longLivedToken,
-    });
-    const res = await this.fetchImpl(`${this.base()}/${this.userId}/media_publish`, {
+    const published = await this.request(`/${this.userId}/media_publish`, {
       method: 'POST',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      body: body.toString(),
+      body: new URLSearchParams({ creation_id: create.id, access_token: this.accessToken }),
     });
-    if (!res.ok) {
-      throw new Error(`Instagram media_publish failed ${res.status}: ${await res.text()}`);
-    }
-    const payload = await res.json();
-    if (!payload.id) throw new Error(`Instagram media_publish missing id: ${JSON.stringify(payload)}`);
-    return {
-      mediaId: payload.id,
-      url: `https://www.instagram.com/reel/${payload.id}/`,
-      raw: payload,
-    };
-  }
-
-  async refreshLongLivedToken() {
-    if (!this.longLivedToken) throw new Error('refreshLongLivedToken requires longLivedToken');
-    const url = `${this.base()}/refresh_access_token?grant_type=ig_refresh_token&access_token=${encodeURIComponent(this.longLivedToken)}`;
-    const res = await this.fetchImpl(url);
-    if (!res.ok) {
-      throw new Error(`Instagram refresh failed ${res.status}: ${await res.text()}`);
-    }
-    const payload = await res.json();
-    if (!payload.access_token) {
-      throw new Error(`Instagram refresh missing access_token: ${JSON.stringify(payload)}`);
-    }
-    return {
-      longLivedToken: payload.access_token,
-      expiresInSeconds: Number(payload.expires_in ?? 0),
-    };
-  }
-
-  async mediaInsights(mediaId, metrics = DEFAULT_INSIGHT_METRICS) {
-    if (!this.longLivedToken) throw new Error('mediaInsights requires longLivedToken');
-    if (!mediaId) throw new Error('mediaInsights requires mediaId');
-    const metricList = metrics.join(',');
-    const url = `${this.base()}/${encodeURIComponent(mediaId)}/insights?metric=${encodeURIComponent(metricList)}&access_token=${encodeURIComponent(this.longLivedToken)}`;
-    const res = await this.fetchImpl(url);
-    if (!res.ok) {
-      throw new Error(`Instagram mediaInsights failed ${res.status}: ${await res.text()}`);
-    }
-    const payload = await res.json();
+    if (!published.id) throw new InstagramPublisherError('Instagram returned no published media id', 'provider_down');
     return {
       provider: 'instagram',
-      postId: mediaId,
-      metrics: normalizeInsights(payload),
-      raw: payload,
+      status: 'posted',
+      externalId: published.id,
+      externalUrl: `https://www.instagram.com/reel/${published.id}/`,
     };
   }
-}
 
-function isHttpUrl(value) {
-  return typeof value === 'string' && /^https?:\/\//i.test(value);
-}
-
-function normalizeInsights(payload) {
-  const metrics = {};
-  for (const item of payload?.data ?? []) {
-    const value = item.values?.[0]?.value ?? item.total_value?.value ?? null;
-    metrics[item.name] = numberOrNull(value);
+  async request(pathname, options = {}) {
+    const response = await this.fetchImpl(`${this.baseUrl}${pathname}`, {
+      method: options.method ?? 'GET',
+      headers: options.body ? { 'content-type': 'application/x-www-form-urlencoded' } : undefined,
+      body: options.body?.toString(),
+    });
+    if (!response.ok) {
+      const classification = response.status === 401 || response.status === 403 ? 'needs_reconnect'
+        : response.status === 429 ? 'rate_limited'
+          : response.status >= 500 ? 'provider_down' : 'bad_caption';
+      throw new InstagramPublisherError(`Instagram request failed with ${response.status}: ${await response.text()}`, classification);
+    }
+    return response.json();
   }
-  return metrics;
 }
 
-function numberOrNull(value) {
-  if (value === undefined || value === null || value === '') return null;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
+export class InstagramPublisherError extends Error {
+  constructor(message, classification) {
+    super(message);
+    this.name = 'InstagramPublisherError';
+    this.classification = classification;
+    this.retryable = ['rate_limited', 'provider_down'].includes(classification);
+  }
+}
+
+function isPublicHttps(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && !['localhost', '127.0.0.1', '::1'].includes(url.hostname);
+  } catch {
+    return false;
+  }
 }

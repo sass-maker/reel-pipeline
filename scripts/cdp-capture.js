@@ -49,10 +49,10 @@ export class CdpSession {
   }
 }
 
-export async function withChrome({ width, height }, body) {
+export async function withChrome({ width, height, chromePath = CHROME_BIN }, body) {
   const userDataDir = await mkdtemp(path.join(tmpdir(), 'reel-cdp-'));
   const port = 9222 + Math.floor(Math.random() * 1000);
-  const proc = spawn(CHROME_BIN, [
+  const proc = spawn(chromePath, [
     '--headless=new',
     `--remote-debugging-port=${port}`,
     `--user-data-dir=${userDataDir}`,
@@ -68,8 +68,13 @@ export async function withChrome({ width, height }, body) {
   proc.stderr.on('data', () => {});
 
   const cleanup = async () => {
-    try { proc.kill('SIGTERM'); } catch {}
-    await new Promise((resolve) => proc.once('exit', resolve));
+    if (proc.exitCode === null && proc.signalCode === null) {
+      try { proc.kill('SIGTERM'); } catch {}
+      await new Promise((resolve) => {
+        proc.once('exit', resolve);
+        setTimeout(resolve, 5_000);
+      });
+    }
     try { await rm(userDataDir, { recursive: true, force: true }); } catch {}
   };
 

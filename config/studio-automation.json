@@ -1,0 +1,57 @@
+{
+  "$schema": "fleet.studio-automation-policies.v1",
+  "version": 1,
+  "policies": [
+    {
+      "id": "high-signal-daily",
+      "revision": 1,
+      "enabled": true,
+      "label": "High Signal daily",
+      "scope": { "type": "project", "projectSlug": "high-signal" },
+      "source": { "adapter": "high-signal" },
+      "trigger": { "type": "scheduled", "cadence": "daily" },
+      "channels": ["instagram_reels", "youtube_shorts"],
+      "recipes": ["image-slideshow", "web-motion", "ascii-story"],
+      "spendCeiling": "local-compute",
+      "sourceRights": "approved",
+      "maxItemsPerRun": 1,
+      "maxAttempts": 2,
+      "qualityThreshold": "pass",
+      "distribution": { "mode": "draft" }
+    },
+    {
+      "id": "significant-hobbies-weekly",
+      "revision": 1,
+      "enabled": true,
+      "label": "Significant Hobbies weekly",
+      "scope": { "type": "project", "projectSlug": "significanthobbies" },
+      "source": { "adapter": "significanthobbies" },
+      "trigger": { "type": "scheduled", "cadence": "weekly" },
+      "channels": ["instagram_reels", "youtube_shorts"],
+      "recipes": ["image-slideshow", "web-motion", "ascii-story"],
+      "spendCeiling": "local-compute",
+      "sourceRights": "approved",
+      "maxItemsPerRun": 1,
+      "maxAttempts": 2,
+      "qualityThreshold": "pass",
+      "distribution": { "mode": "draft" }
+    },
+    {
+      "id": "major-project-changelog",
+      "revision": 1,
+      "enabled": true,
+      "label": "Major project changelogs",
+      "scope": { "type": "project", "projectSlug": "*" },
+      "source": { "adapter": "major-project-changelog" },
+      "trigger": { "type": "event", "cadence": "event" },
+      "channels": ["instagram_reels", "youtube_shorts"],
+      "recipes": ["image-slideshow", "web-motion", "ascii-story"],
+      "spendCeiling": "local-compute",
+      "sourceRights": "approved",
+      "maxItemsPerRun": 3,
+      "maxAttempts": 2,
+      "qualityThreshold": "pass",
+      "distribution": { "mode": "draft" }
+    }
+  ]
+}

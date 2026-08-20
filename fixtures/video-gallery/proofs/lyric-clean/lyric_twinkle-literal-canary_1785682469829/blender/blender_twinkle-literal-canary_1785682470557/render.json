@@ -1,0 +1,78 @@
+{
+  "taskId": "blender_twinkle-literal-canary_1785682470557",
+  "render": {
+    "provider": "blender",
+    "externalTaskId": "blender_twinkle-literal-canary_1785682470557",
+    "status": "completed",
+    "videos": [
+      "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/twinkle-literal-canary.mp4"
+    ],
+    "artifacts": [
+      "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/001-lyric-scene-1.png",
+      "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/002-lyric-scene-2.png",
+      "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/003-lyric-scene-3.png",
+      "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/004-lyric-scene-4.png"
+    ],
+    "durationSeconds": 20,
+    "proofType": "generated_card",
+    "captionText": "Twinkle, twinkle, little star",
+    "renderLog": [
+      "blenderVersion=5.2.0",
+      "builderVersion=literal-scene-builder-v2",
+      "manifestHash=90e62c3d254e82249af399a387c1def081eed73f57c231dbdb8c2364c96edae9",
+      "cacheIdentity=a98a4a31095fecfa0057ab0fba44e677a8030f027f0ed1e7320f43e4881e29be",
+      "scenes=4",
+      "durationMs=3369",
+      "delivery=final-video"
+    ],
+    "raw": {
+      "aspect": "540:960",
+      "width": 540,
+      "height": 960,
+      "manifestPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/scene-manifest.json",
+      "videoPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/twinkle-literal-canary.mp4",
+      "manifestHash": "90e62c3d254e82249af399a387c1def081eed73f57c231dbdb8c2364c96edae9",
+      "cacheIdentity": "a98a4a31095fecfa0057ab0fba44e677a8030f027f0ed1e7320f43e4881e29be",
+      "builderVersion": "literal-scene-builder-v2",
+      "blenderVersion": "5.2.0",
+      "blenderExecutable": "/Applications/Blender.app/Contents/MacOS/Blender",
+      "commandPosture": [
+        "--background",
+        "--factory-startup",
+        "--disable-autoexec",
+        "--python",
+        "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/scripts/blender/literal_scene_builder.py",
+        "--",
+        "--manifest"
+      ],
+      "plates": [
+        {
+          "sceneId": "lyric-scene-1",
+          "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/001-lyric-scene-1.png",
+          "bytes": 586201,
+          "sha256": "649bf9f54e04baafbfe1c0c8843d48180919b1aef959704bd558f0c9aef4be91"
+        },
+        {
+          "sceneId": "lyric-scene-2",
+          "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/002-lyric-scene-2.png",
+          "bytes": 573147,
+          "sha256": "b5a0ee33d04566897d2d3200982ea0e83293b7606543b5ab9387404a22fd4b1b"
+        },
+        {
+          "sceneId": "lyric-scene-3",
+          "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/003-lyric-scene-3.png",
+          "bytes": 586201,
+          "sha256": "94a4075787e5a937dad8c90fde0e5c49f188cddae336e65e6491ab8118d0c60d"
+        },
+        {
+          "sceneId": "lyric-scene-4",
+          "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/004-lyric-scene-4.png",
+          "bytes": 573147,
+          "sha256": "5c7bc07d4d46f0d51f4c9f937efc7709c8fe869b896a31d22b23d00f47c75675"
+        }
+      ],
+      "stdout": "00:01.083  render           | Saved: '<repo>/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/001-lyric-scene-1.png'\nFLEET_BLENDER_PROGRESS lyric-scene-1 plates/001-lyric-scene-1.png\n00:01.617  render           | Saved: '<repo>/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/002-lyric-scene-2.png'\nFLEET_BLENDER_PROGRESS lyric-scene-2 plates/002-lyric-scene-2.png\n00:02.056  render           | Saved: '<repo>/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/003-lyric-scene-3.png'\nFLEET_BLENDER_PROGRESS lyric-scene-3 plates/003-lyric-scene-3.png\n00:02.621  render           | Saved: '<repo>/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/004-lyric-scene-4.png'\nFLEET_BLENDER_PROGRESS lyric-scene-4 plates/004-lyric-scene-4.png\nBlender 5.2.0 LTS (hash fbe6228777e7 built 2026-07-14 01:31:22)\n\nBlender quit\n",
+      "stderr": "<repo>/scripts/blender/literal_scene_builder.py:315: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0\n  world.use_nodes = True\n<repo>/scripts/blender/literal_scene_builder.py:59: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0\n  item.use_nodes = True\n"
+    }
+  }
+}

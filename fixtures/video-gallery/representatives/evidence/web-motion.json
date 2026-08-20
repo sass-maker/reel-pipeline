@@ -1,0 +1,17 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "web-motion",
+  "proofRole": "primary",
+  "rangeLabel": "HTML motion · kinetic hierarchy",
+  "motionTags": [
+    "kinetic-type",
+    "scene-progression"
+  ],
+  "renderer": "html-composition@1",
+  "sourcePosture": "local-render",
+  "durationSeconds": 8,
+  "sha256": "443f138cdc54109ffcd1e7866def10ca7e6b3dd09f5b4bd353d5113026333d6f",
+  "source": {
+    "kind": "fleet-owned-local-proof"
+  }
+}

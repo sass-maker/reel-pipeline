@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="640" viewBox="0 0 360 640">
+  <defs>
+    <linearGradient id="wash" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0f0b08"/><stop offset="1" stop-color="#4f3522"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="360" height="640" fill="url(#wash)"/>
+  <circle cx="310" cy="76" r="82" fill="#f2b46f" opacity=".12" filter="url(#soft)"/>
+  <text x="28" y="39" fill="#f2b46f" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="700" letter-spacing="1.8">FLEET · FIXTURE PREVIEW</text>
+  <g><circle cx="116" cy="239" r="69" fill="#f2b46f" opacity=".18" stroke="#fff3df"/><circle cx="250" cy="190" r="54" fill="#fff3df" opacity=".12" stroke="#f2b46f"/><path d="M180 89l65 112-65 112-65-112z" fill="#f2b46f" opacity=".28" stroke="#fff3df"/><ellipse cx="180" cy="342" rx="116" ry="19" fill="#f2b46f" opacity=".12"/></g>
+  <text x="28" y="430" fill="#fff3df" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="800" letter-spacing="-.8">BLENDER LITERAL</text><text x="28" y="460" fill="#fff3df" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="800" letter-spacing="-.8">SCENES</text>
+  <text x="28" y="510" fill="#f2b46f" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700">Glass Studio</text>
+  <line x1="28" y1="596" x2="332" y2="596" stroke="#f2b46f" opacity=".34"/>
+  <text x="28" y="618" fill="#fff3df" opacity=".7" font-family="Arial,Helvetica,sans-serif" font-size="10">Blender 5.2 · 27/48</text>
+</svg>

@@ -4,9 +4,12 @@ import { mkdir, writeFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
+import { reelWorkerHeaders } from '../src/reel-worker-auth.js';
+
 const execFileAsync = promisify(execFile);
 
 const BASE = process.env.REEL_WORKER_URL ?? 'https://reel-pipeline-artifacts.sarthakagrawal927.workers.dev';
+const WORKER_HEADERS = reelWorkerHeaders();
 const BUCKET = process.env.REEL_ARTIFACT_R2_BUCKET ?? 'reel-artifacts';
 const REEL_ID = process.env.REEL_SEED_ID ?? 'demo-linkchat-1';
 const WORK = path.resolve(process.env.REEL_SEED_WORK ?? './tmp/real-render');
@@ -68,7 +71,9 @@ console.log('\n✓ Done. Open https://reel-pipeline-artifacts.sarthakagrawal927.
 
 async function fetchReel(id) {
   for (const status of ['generated', 'approved', 'video_ready', 'needs_review', 'ready_to_post']) {
-    const res = await fetch(`${BASE}/reels?status=${status}`);
+    const res = await fetch(`${BASE}/reels?status=${status}`, {
+      headers: WORKER_HEADERS,
+    });
     if (!res.ok) continue;
     const payload = await res.json();
     const match = (payload.data || []).find((entry) => entry.id === id);

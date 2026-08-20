@@ -1,0 +1,17 @@
+{
+  "schema": "fleet.episode-environment-reference.v1",
+  "id": "observatory-style-v1",
+  "rightsPosture": "owned-generated",
+  "attribution": "Original coastal observatory environment reference generated for the Signal After Midnight episode canary.",
+  "generator": {
+    "tool": "OpenAI built-in image generation",
+    "generatedAt": "2026-08-09",
+    "promptSummary": "One original abandoned coastal radio observatory during a midnight rainstorm; polished adult 2D cinematic animation; no people, signs, interface, text, panels, signature, or watermark."
+  },
+  "output": {
+    "path": "assets/episode-samples/observatory-style-v1.png",
+    "sha256": "d592b59011d172fa0edfbbf10ce284a142d5c9ed2a94c4aac11acfa591f76ffd",
+    "width": 941,
+    "height": 1672
+  }
+}

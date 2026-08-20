@@ -1,0 +1,19 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "coherent-local-film",
+  "proofRole": "range",
+  "rangeLabel": "LTX · transformation",
+  "motionTags": [
+    "parallax",
+    "transformation"
+  ],
+  "renderer": "ltx-2.3-mlx-q4",
+  "sourcePosture": "local-model-proof",
+  "durationSeconds": 6,
+  "sha256": "60278c18d6cc34e738220ab32f43bb81fc99b713fba6cd5fddd01682e323905e",
+  "source": {
+    "kind": "local-model-range",
+    "evidence": "fixtures/video-gallery/proofs/video-model/evidence.json",
+    "proof": "model-experimental-transformation"
+  }
+}

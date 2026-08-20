@@ -31,11 +31,24 @@ test('manual distribution prepares a receipt without posting', async () => {
   assert.equal(receipt.externalId, null);
 });
 
-test('native posting uses the pre-routed brand account and fails without a publisher', async () => {
-  const request = buildDistributionRequest(contentPackage, mediaReceipt, { provider: 'native' });
-  assert.equal(request.accountSlug, 'high-signal-youtube');
+test('unregistered publishing is not a supported distribution provider', () => {
+  assert.throws(
+    () => buildDistributionRequest(contentPackage, mediaReceipt, { provider: 'native' }),
+    /unsupported distribution provider/,
+  );
+});
+
+test('internal distribution routes through the owned provider contract', async () => {
+  const request = buildDistributionRequest(contentPackage, mediaReceipt, { provider: 'internal' });
   request.approval = { status: 'approved', approvedAt: '2026-07-12T12:15:00Z', approvedBy: 'owner' };
-  await assert.rejects(executeDistribution(contentPackage, mediaReceipt, request), /native publisher is not configured/);
+  const calls = [];
+  const receipt = await executeDistribution(contentPackage, mediaReceipt, request, {
+    internalProvider: { async post(input) { calls.push(input); return { provider: 'youtube', status: 'posted', externalId: 'video-1', externalUrl: 'https://youtube.com/shorts/video-1' }; } },
+    now: () => new Date('2026-07-12T12:16:00Z'),
+  });
+  assert.equal(calls[0].local_path, '/tmp/proof.mp4');
+  assert.equal(receipt.provider, 'youtube');
+  assert.equal(receipt.status, 'posted');
 });
 
 test('package, media, and distribution revisions cannot be mixed', () => {

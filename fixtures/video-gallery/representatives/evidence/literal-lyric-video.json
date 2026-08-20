@@ -1,0 +1,20 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "literal-lyric-video",
+  "proofRole": "primary",
+  "rangeLabel": "Lyrics · literal scene",
+  "motionTags": [
+    "timed-lyrics",
+    "literal-imagery"
+  ],
+  "renderer": "lyric-canvas@1",
+  "sourcePosture": "local-render",
+  "durationSeconds": 12,
+  "sha256": "4226d05ba46bdb43c535449d400b76dec2909f2f3a66cb84b269120438cfd5f7",
+  "source": {
+    "kind": "original-canary",
+    "composition": "public-domain",
+    "master": "Fleet generated",
+    "quality": "fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/quality.json"
+  }
+}

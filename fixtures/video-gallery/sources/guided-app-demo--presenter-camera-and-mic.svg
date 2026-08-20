@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="640" viewBox="0 0 360 640">
+  <defs>
+    <linearGradient id="wash" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0c0b12"/><stop offset="1" stop-color="#382d50"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="360" height="640" fill="url(#wash)"/>
+  <circle cx="310" cy="76" r="82" fill="#c5a7ff" opacity=".12" filter="url(#soft)"/>
+  <text x="28" y="39" fill="#c5a7ff" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="700" letter-spacing="1.8">FLEET · FIXTURE PREVIEW</text>
+  <g><rect x="49" y="88" width="262" height="290" rx="9" fill="#382d50" stroke="#c5a7ff"/><rect x="65" y="119" width="230" height="42" fill="#f5efff" opacity=".1"/><rect x="65" y="177" width="101" height="165" fill="#c5a7ff" opacity=".22"/><rect x="179" y="177" width="116" height="78" fill="#f5efff" opacity=".13"/><path d="M207 235l20 54 13-19 22 12-55-47z" fill="#f5efff"/><circle cx="276" cy="333" r="40" fill="#c5a7ff"/><circle cx="276" cy="322" r="11" fill="#382d50"/><path d="M257 350c4-18 34-18 38 0" fill="#382d50"/><path d="M236 364h80" stroke="#f5efff" stroke-width="5" stroke-dasharray="8 5"/></g>
+  <text x="28" y="430" fill="#f5efff" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="800" letter-spacing="-.8">GUIDED APP DEMO</text>
+  <text x="28" y="510" fill="#c5a7ff" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700">Camera And Mic</text>
+  <line x1="28" y1="596" x2="332" y2="596" stroke="#c5a7ff" opacity=".34"/>
+  <text x="28" y="618" fill="#f5efff" opacity=".7" font-family="Arial,Helvetica,sans-serif" font-size="10">Local Video Forge · 38/48</text>
+</svg>

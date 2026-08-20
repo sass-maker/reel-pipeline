@@ -1,0 +1,19 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "blender-film",
+  "proofRole": "range",
+  "rangeLabel": "Blender · monument reveal",
+  "motionTags": [
+    "pull-back",
+    "monument"
+  ],
+  "renderer": "blender-eevee-animation@1",
+  "sourcePosture": "local-render",
+  "durationSeconds": 7.5,
+  "sha256": "efbcc2729410a8a5b342d6496e4bd6f169f1efe16955d437287b66827af9cd57",
+  "source": {
+    "kind": "local-render-range",
+    "evidence": "fixtures/video-gallery/proofs/blender/evidence.json",
+    "proof": "blender-brutalist-monument"
+  }
+}

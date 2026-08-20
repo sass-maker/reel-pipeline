@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "status": "inert",
+  "note": "Definitions only. Do not install or enable without owner-approved Postiz host activation and a healthy shared lease.",
+  "schedulesActive": false,
+  "schedules": [
+    {
+      "id": "postiz-evidence-sync",
+      "kind": "distribution-evidence-sync",
+      "cadence": "every-15-minutes",
+      "cron": "7,22,37,52 * * * *",
+      "enabled": false,
+      "runner": "scripts/postiz-evidence-sync.mjs",
+      "itemLimit": 50,
+      "timeBudgetSeconds": 120
+    },
+    {
+      "id": "postiz-queued-distribution",
+      "kind": "queued-distribution",
+      "cadence": "every-5-minutes",
+      "cron": "2-59/5 * * * *",
+      "enabled": false,
+      "runner": "scripts/postiz-queued-distribution.mjs",
+      "itemLimit": 20,
+      "timeBudgetSeconds": 120,
+      "requiresHealthyLease": true
+    }
+  ]
+}

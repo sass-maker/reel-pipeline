@@ -3,9 +3,7 @@ import { execFileSync } from 'node:child_process';
 
 const [workflowFile, ciWorkflowFile = 'ci.yml'] = process.argv.slice(2);
 
-if (!workflowFile) {
-  fail('Usage: manual-deploy.mjs <deploy-workflow.yml> [ci-workflow.yml]');
-}
+if (!workflowFile) fail('Usage: manual-deploy.mjs <deploy-workflow.yml> [ci-workflow.yml]');
 
 function run(command, args, options = {}) {
   return execFileSync(command, args, {
@@ -31,14 +29,8 @@ function githubSlug() {
 }
 
 const branch = run('git', ['branch', '--show-current']);
-if (branch !== 'main') {
-  fail(`current branch is ${branch || 'DETACHED'}, expected main`);
-}
-
-const dirty = run('git', ['status', '--porcelain']);
-if (dirty) {
-  fail('working tree is dirty');
-}
+if (branch !== 'main') fail(`current branch is ${branch || 'DETACHED'}, expected main`);
+if (run('git', ['status', '--porcelain'])) fail('working tree is dirty');
 
 run('git', ['fetch', '--quiet', 'origin']);
 const upstream = run('git', ['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{u}']);
@@ -58,36 +50,19 @@ try {
 const slug = githubSlug();
 let ciRuns;
 try {
-  ciRuns = JSON.parse(
-    run('gh', [
-      'run',
-      'list',
-      '-R',
-      slug,
-      '--workflow',
-      ciWorkflowFile,
-      '--branch',
-      'main',
-      '--limit',
-      '1',
-      '--json',
-      'status,conclusion,headSha,url',
-    ])
-  );
+  ciRuns = JSON.parse(run('gh', [
+    'run', 'list', '-R', slug, '--workflow', ciWorkflowFile, '--branch', 'main',
+    '--limit', '1', '--json', 'status,conclusion,headSha,url',
+  ]));
 } catch {
   fail(`could not read ${ciWorkflowFile} runs from GitHub`);
 }
 
-if (!ciRuns.length) {
-  fail(`no ${ciWorkflowFile} run found on main`);
-}
-
+if (!ciRuns.length) fail(`no ${ciWorkflowFile} run found on main`);
 const headSha = run('git', ['rev-parse', 'HEAD']);
 const ci = ciRuns[0];
 if (ci.headSha !== headSha) {
-  fail(
-    `${ciWorkflowFile} has not run on current main ${headSha.slice(0, 7)}; latest is ${(ci.headSha || 'unknown').slice(0, 7)} ${ci.url || ''}`
-  );
+  fail(`${ciWorkflowFile} has not run on current main ${headSha.slice(0, 7)}; latest is ${(ci.headSha || 'unknown').slice(0, 7)} ${ci.url || ''}`);
 }
 if (ci.status !== 'completed' || ci.conclusion !== 'success') {
   fail(`${ciWorkflowFile} is not green: ${ci.status}/${ci.conclusion || 'none'} ${ci.url || ''}`);

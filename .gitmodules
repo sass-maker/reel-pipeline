@@ -1,6 +1,0 @@
-[submodule "engines/MoneyPrinterTurbo"]
-	path = engines/MoneyPrinterTurbo
-	url = https://github.com/harry0703/MoneyPrinterTurbo.git
-[submodule "engines/reel-maker"]
-	path = engines/reel-maker
-	url = https://github.com/sarthakagrawal927/reel-maker.git

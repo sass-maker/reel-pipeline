@@ -1,0 +1,19 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "blender-film",
+  "proofRole": "primary",
+  "rangeLabel": "Blender · object motion",
+  "motionTags": [
+    "object-motion",
+    "sculpture"
+  ],
+  "renderer": "blender-eevee-animation@1",
+  "sourcePosture": "local-render",
+  "durationSeconds": 7.5,
+  "sha256": "f287f18e9e774e78aeff9f58ff50a1e4b67334c68a2bc02db8ee2ec96456278e",
+  "source": {
+    "kind": "local-render-range",
+    "evidence": "fixtures/video-gallery/proofs/blender/evidence.json",
+    "proof": "blender-kinetic-sculpture"
+  }
+}

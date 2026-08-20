@@ -1,0 +1,19 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "blender-film",
+  "proofRole": "range",
+  "rangeLabel": "Blender · landscape flight",
+  "motionTags": [
+    "fly-through",
+    "landscape"
+  ],
+  "renderer": "blender-eevee-animation@1",
+  "sourcePosture": "local-render",
+  "durationSeconds": 7.5,
+  "sha256": "486ecb1c6df500d87a8c95729e3fc7d7fb88d83245cbe6c188b97e03ae06183e",
+  "source": {
+    "kind": "local-render-range",
+    "evidence": "fixtures/video-gallery/proofs/blender/evidence.json",
+    "proof": "blender-low-poly-valley"
+  }
+}

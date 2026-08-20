@@ -1,0 +1,19 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "blender-film",
+  "proofRole": "range",
+  "rangeLabel": "Blender · orbiting architecture",
+  "motionTags": [
+    "orbit",
+    "architecture"
+  ],
+  "renderer": "blender-eevee-animation@1",
+  "sourcePosture": "local-render",
+  "durationSeconds": 7.5,
+  "sha256": "8ad84d8d1c6b08fe748b45cb73a5cdc18cdc3af085e35effbf08de0b02ee2aa6",
+  "source": {
+    "kind": "local-render-range",
+    "evidence": "fixtures/video-gallery/proofs/blender/evidence.json",
+    "proof": "blender-cosmic-shrine"
+  }
+}

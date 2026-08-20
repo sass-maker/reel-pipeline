@@ -36,6 +36,10 @@ test('anonymous surface creates and reads a safe video job without authenticatio
     assert.doesNotMatch(pageBody, /billing|credits|marketplace|actor onboarding/i);
     assert.doesNotMatch(pageBody, /<input[^>]+(?:password|email)/i);
 
+    const prefilledPage = await fetch(`${origin}/?url=https%3A%2F%2Fhighsignal.app%2F`);
+    assert.equal(prefilledPage.status, 200);
+    assert.match(await prefilledPage.text(), /incomingUrl/);
+
     const created = await fetch(`${origin}/api/videos`, {
       method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ url: 'https://brand.example' }),
     });

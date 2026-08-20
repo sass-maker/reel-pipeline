@@ -10,10 +10,10 @@ Novel AI + video tech stacked in one pipeline: Workers orchestrating Python engi
 - Gotcha (from code): The Worker itself (`src/worker/index.js`) only does synchronous R2 ops and returns immediately; the blocking poll loop (`src/pipeline.js:195-204`) runs in the Node server, not the Worker. If that loop were ever ported into a Worker handler without Durable Objects, the 30 s default would silently kill it mid-poll.
 - Source: https://developers.cloudflare.com/workers/platform/limits/
 
-## Engine Pinning Strategy
-- What: Each engine submodule is locked to an exact commit in [`architecture/engines.md`](../../architecture/engines.md); upgrades require a passing canary render on a branch first.
-- Why here: TBD
-- Gotcha (from code): `openshorts` (`fe87af6`) and `reel-maker` (`92b6268`) are on `heads/main` (floating ref), while MoneyPrinterTurbo is on tagged `v1.2.8` — any `git submodule update --remote` silently advances the two floating engines without a canary.
+## Engine checkout lesson
+- What: Third-party render-engine submodules added setup and drift without improving the working local product; the engine checkouts were removed on 2026-08-01.
+- Why here: Repository-owned adapters and explicit specialized handoffs are easier to test and keep truthful.
+- Gotcha: A dropdown option is not a capability when its backing checkout is absent.
 - Source: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 
 ## Gemini for Vision + Dynamic FFmpeg Generation
@@ -34,10 +34,10 @@ Novel AI + video tech stacked in one pipeline: Workers orchestrating Python engi
 - Gotcha: Dubbing is async — `elevenlabs.dubbing.create()` returns a `dubbing_id` and you must poll status before downloading; forgetting the poll step yields a 404 on the audio fetch.
 - Source: https://elevenlabs.io/docs/api-reference/dubbing
 
-## MoneyPrinterTurbo — What's Special
+## MoneyPrinterTurbo — historical evaluation
 - What: MIT-licensed Python engine that chains Edge TTS → stock footage fetch → FFmpeg/MoviePy compose → subtitle burn in one `POST /api/v1/videos` call; no GPU required.
 - Why here: TBD
-- Gotcha (from code): The engine is the "cheap path" default precisely because the canary can run with locally-generated fixtures — no API quota needed for first verification.
+- Gotcha: The integration and submodule were removed on 2026-08-01; this note is retained only as evaluation history.
 - Source: https://github.com/harry0703/MoneyPrinterTurbo
 
 ## Remotion (React → Video)
@@ -47,9 +47,9 @@ Novel AI + video tech stacked in one pipeline: Workers orchestrating Python engi
 - Source: https://remotion.dev/docs
 
 ## MoviePy (Python Video Editing)
-- What: Python library wrapping FFmpeg with a clip/effect/composite object model; used inside MoneyPrinterTurbo for programmatic assembly.
+- What: Python library wrapping FFmpeg with a clip/effect/composite object model; evaluated through the former MoneyPrinterTurbo integration.
 - Why here: TBD
-- Gotcha: MoviePy v2.0 (Jan 2025) introduced breaking changes from v1.x — MoneyPrinterTurbo's pinned commit (`v1.2.8`) ships its own requirements; mixing a system-wide v2 install with the engine's v1 expectations breaks silently on effect chaining.
+- Gotcha: MoviePy major versions have incompatible effect APIs; pin versions when evaluating it independently.
 - Source: https://zulko.github.io/moviepy/
 
 ## FFmpeg Compositing Basics
@@ -64,7 +64,7 @@ Novel AI + video tech stacked in one pipeline: Workers orchestrating Python engi
 - Source: https://github.com/JonasLoos/openshorts
 
 ## R2 for Asset Hosting
-- What: Cloudflare R2 is S3-compatible object storage with zero egress fees; MP4s, thumbnails, and captions land here before being attached to the marketing queue item.
+- What: Cloudflare R2 is S3-compatible object storage; MP4s, thumbnails, captions, and manifests land here before a receipt or Postiz draft handoff is created.
 - Why here: TBD
 - Source: https://developers.cloudflare.com/r2/
 

@@ -49,18 +49,7 @@
         "youtube_shorts": "rolepatch-youtube"
       }
     },
-    "saas-maker": {
-      "name": "SaaS Maker",
-      "domain": "https://sassmaker.com",
-      "contentBase": "project-campaigns",
-      "voice": ["operational", "direct", "technical"],
-      "palette": { "background": "#0E1215", "foreground": "#F4F7F5", "accent": "#65C7B4", "secondary": "#E8B84E" },
-      "channels": ["instagram_reels", "youtube_shorts"],
-      "accountMappings": {
-        "instagram_reels": "saas-maker-instagram",
-        "youtube_shorts": "saas-maker-youtube"
-      }
-    },
+
     "significanthobbies": {
       "name": "Significant Hobbies",
       "domain": "https://significanthobbies.com",

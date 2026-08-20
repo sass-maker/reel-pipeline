@@ -1,405 +1,251 @@
-# reel-pipeline — PROJECT STATUS
+# Reel Pipeline — Project Status
 
-Last updated: 2026-07-13
-
-> Short executive view: [`STATUS.md`](STATUS.md). Full docs hub:
-> [`docs/index.md`](docs/index.md). Agent bootloader:
-> [`AGENTS.md`](AGENTS.md).
+Last updated: 2026-08-20
 
 ## Why / What
 
-Reel Pipeline turns approved reel drafts into rendered MP4s and posts them through the SaaS Maker marketing queue. Production render path:
+Reel Pipeline is a provider-neutral media production, review, and publishing
+product maintained in its own repository. Its primary loop
+turns a plain-language request or approved media import into an inspectable
+workflow, deterministic production, browser-playable result, reusable history
+entry, and optional evidence-gated provider publication. It also accepts
+approved source-backed briefs and podcast edit decisions, renders reviewable
+media, and records artifact provenance.
 
-`Worker (R2) → Rust watcher → node scripts/render-pro.js → R2 upload → worker patch`
-
-**Users:** Visitors generating an anonymous brand reel from a public website; marketing operators running autopilot/post flows; fleet integrators syncing SaaS Maker marketing queue; reviewers using swipe approve/reject UI.
-
-**Constraints:** `render-pro.js` is canonical production renderer; Rust owns watch/autopilot/post entrypoints with JS glue retired. Hub-and-spoke: SaaS Maker is system of record.
-
-**Creator validation constraint:** for kids story reels, the next step is a
-manual creator MVP, not more pipeline software. Use `docs/product/creator-mvp.md` to
-make the first three public-domain story videos by hand before adding new
-automation, dashboards, agents, auto-uploaders, or render engines for that bet.
-
-**Growth format constraint:** for app marketing reels, the objective is to find
-a format that gets views consistently. Use `docs/product/growth-format-playbook.md` and
-the structured `src/growth-formats.js` taxonomy to draft 5-7 posts/day until
-the 35-post decision review.
-
-**IN scope:** Anonymous HTTPS brand intake and presenter-led preview/download, VideoBrief contract, MoneyPrinterTurbo + reel-maker adapters, R2 artifact Worker, Rust CLI orchestration, YouTube + Instagram Graph posting for internal accepted marketing items, source-backed packages for seven Fleet brands, product-proof Phase 1 quality gates, and lightweight draft/export support for the creator MVP.
-
-**OUT of scope:** OpenShorts adapter (removed), Cloudflare Worker rewrite of orchestration, product-proof Phases 2–3 until Phase 1 stabilizes, and kids-story automation before the first three manual videos prove the format.
-
-Marketing autopilot and posting run in Rust (`reel` CLI). Node remains for `render-pro.js`, OAuth bootstrap, and local dev server.
+It owns provider-neutral distribution contracts and native YouTube and
+Instagram adapters, but not credential values or provider truth. Its machine
+interface may request a write only through an explicit per-channel policy.
 
 ## Dependencies
 
 ### External
 
-- **Cloudflare R2:** Production artifact storage (`reel-artifacts`).
-- **MoneyPrinterTurbo:** `engines/MoneyPrinterTurbo` — default renderer (Python/FFmpeg).
-- **Grok / Imagine local MP4s:** `GROK_VIDEO_ASSET_DIR` — curated local export
-  folder for pre-rendered Grok clips used as optional motion inserts or
-  standalone `grok-video` renders; no Grok credentials or API calls in repo.
-- **reel-maker:** `engines/reel-maker` — Remotion prototype behind VideoBrief adapter.
-- **YouTube Data API:** OAuth bootstrap `npm run yt:bootstrap`.
-- **Instagram Graph API:** OAuth bootstrap + token refresh (`npm run ig:bootstrap` / `ig:refresh`).
-- **Env:** `.env.example` — default API URL corrected to `api.sassmaker.com` (double-s brand).
-- **Creator MVP tools (manual, not repo dependencies):** public-domain story
-  sources, ChatGPT/Claude for rewrites, image generation, human or licensed TTS
-  narration, DaVinci Resolve/CapCut, YouTube Audio Library, Canva, YouTube
-  Studio.
+- Cloudflare Worker and R2 for production artifact intake/storage.
+- YouTube Data API and Instagram Graph API for configured publication.
+- FFmpeg/Chromium and optional deterministic render engines, including Blender
+  5.2, on production hosts.
+- Optional Kokoro narration and approved externally generated media imports.
+- Optional finished media from the independent Mashup helper, accepted only
+  through a verified `fleet.mashup-media-receipt.v1` handoff.
 
-### Internal (fleet)
+### Internal
 
-| System | Role |
-| --- | --- |
-| **SaaS Maker** | System of record for marketing queue; pull accepted reel items; patch `asset_url`, `result_url`, provider metadata, posting state |
-| **High Signal** | Reel brief intake via `src/signal-intake.js` |
-| **Significant Hobbies** | Approved, versioned reel envelopes imported into Idea Store with immutable source payloads; Reel returns file-based render/upload/metrics receipts and never edits the content checkout |
-
-### Stack & commands
-
-**Stack:** Rust `reel/` crate · Node.js control scripts · Vitest via `node --test` · Worker `reel-pipeline-artifacts` · R2 `reel-artifacts` · MoneyPrinterTurbo · Grok local MP4 adapter · reel-maker · SaaS Maker client · YouTube + Instagram Graph publishers · review UI `src/review-ui.js`.
-
-**Setup (fresh clone):** the render path shells out to `node scripts/render-pro.js`, which depends on the engine git submodules. Clone with `git clone --recurse-submodules`, or run `git submodule update --init --recursive` after cloning — otherwise render fails with missing `engines/*`.
-
-| Command | Purpose |
-| --- | --- |
-| `npm install` / `npm test` | Install + node --test + cargo test |
-| `npm run dev` | Local control API |
-| `npm run dev` → `/` | Anonymous one-field brand URL → status → reviewed MP4 preview/download |
-| `npm run watch:render` | Production watcher (`reel watch --execute`) |
-| `npm run watch:render:once` / `:dry` | One-shot / dry-run watcher |
-| `npm run autopilot:dry` | Rust marketing autopilot dry-run (`reel autopilot`); execute via `cargo run --manifest-path reel/Cargo.toml -- autopilot --execute --repo-root .` |
-| `npm run autopilot` / `:once` | Node content-package control tick (`marketing-control.js tick`), not the SaaS Maker reel autopilot |
-| `npm run render:pro` | Canonical production render (`node scripts/render-pro.js`) |
-| `npm run moneyprinter:api` | Start MoneyPrinterTurbo API on `127.0.0.1:18080` for canaries |
-| `npm run render:html -- --brief brief.json --artifact-dir artifacts/html` | Export Editframe-inspired HTML/CSS preview artifacts |
-| `npm run render:pro:rs` / `render:accepted` | Rust render paths; supports `--mode moneyprinterturbo`, `grok-video`, `ascii`, `html-composition`, `reel-maker`, and `mock` |
-| `npm run post:ready` | Post ready reels |
-| `npm run yt:bootstrap` / `ig:bootstrap` / `ig:refresh` | OAuth bootstrap + token refresh |
-| `npm run sync:saasmaker` / `draft:signal` | SaaS Maker sync & drafts |
-| `npm run smoke:generation-cases` | Top-level readiness smoke for marketing render modes, Worker render-pro, lesson CLI, and creator packets |
-| `npm run smoke:render-modes` | Fixture-backed readiness smoke for local/no-credential render modes |
-| `npm run check:generation-readiness` / `-- --refresh --strict` | Consolidated current-evidence report / refreshed required-proof gate |
-| `npm run ready:local` / `ready:proofs` / `ready:target` | One-command local smoke / refreshed proof / final target-host acceptance gates |
-| `npm run smoke:mock` / `smoke:reel-maker` / `smoke:artifact` / `smoke:full` / `smoke:studio` | Smokes |
-| `npm run studio -- <tool>` | Content studio: ideas, titles, descriptions, tags, scripts, brand voice, keywords, transcripts, thumbnails, ideas manager |
-| `npm run dev` → `/studio` | Content studio web UI (all tools + ideas manager + faceless runs in the browser) |
-| `npm run faceless -- --topic "..."` | Topic → script → brief → rendered faceless video (batch via `--topics-file`; engines mock/kokoro/moneyprinterturbo) |
-| `npm run setup:kokoro` | One-time local Kokoro-82M TTS install (venv + ~340MB model) |
-| `npm run factory -- plan/produce/status` | Backlog conveyor: plan ideas → produce renders with quality gate + publish packet |
-| `npm run significant-content -- validate/import/status/receipt/report/follow-up` | Local Significant Hobbies handoff, receipt, status, and draft-only performance loop |
-| `npm run smoke:significant-content` | Offline versioned handoff/idempotency/receipt/performance proof; no upload or posting |
-| `npm run bootstrap:cloudflare` / `check:cloudflare` / `worker:dry-run` | Cloudflare setup |
-| `npm run lesson:render -- --input test/fixtures/lessons/closures.json --auto-approve` | Tutoring lesson pipeline |
-
-**Entrypoints:** `src/worker/index.js` · `src/video-brief.js` ·
-`src/saas-maker-client.js` · `reel/src/saas_maker.rs` ·
-`reel/src/publishers/`.
-
-**Render mode matrix:** `config/render-modes.json` is the operator-facing list
-of supported modes, aliases, provider names, smoke coverage, and live-service
-requirements.
-
-**Live readiness matrix:** `config/live-generation-readiness.json` maps local
-smokes, live canaries, artifact playback, lesson prerequisites, posting
-prerequisites, and manual creator review into one current-evidence report at
-`tmp/generation-readiness/report.json`.
-It also records the production `render-pro` live proof as a manual target-host
-check because that run mutates a real Worker reel record and R2 object.
-
-**Readiness checklist:** `docs/operations/runbooks/generation-readiness.md` defines the local and
-live proof commands for render modes, lesson videos, artifact hosting, and
-posting.
-Use `npm run ready:target` for final target-host acceptance when manual and
-missing checks must be closed.
-The generated report separates `strictReady` from `targetHostReady`; only
-`targetHostReady: true` means all target-host generation cases are closed or
-explicitly accepted. When target-host readiness is false, `targetHostNextActions`
-records the remaining proof commands and docs links.
-Use `docs/operations/runbooks/target-host-readiness.md` for the evidence checklist behind those
-unresolved target-host items, including the optional documented acceptance file
-for intentional target-host exclusions.
+- Source projects provide approved content packages or VideoBrief inputs.
+- High Signal and Significant Content provide source-backed creative inputs.
+- Content Factory defines approved brief, artifact manifest, and media receipt
+  contracts from the repository-owned `content-factory/` component.
 
 ## Timeline
 
-- **2026-07-13 — Evergreen campaigns became executable:** added versioned,
-  source-referenced campaign inputs for AliveVille, Karte, RolePatch, and SaaS
-  Maker alongside the existing High Signal, Significant Hobbies, and SWE
-  Interview Prep extractors. All seven brands now produce proposed Instagram
-  and YouTube content packages through the same approval-gated render contract.
-  Account routes are declared but live posting remains blocked until each exact
-  account is connected. Source sync now enforces the review-debt ceiling before
-  enqueueing variants.
-- **2026-07-13 — Anonymous brand website to reel:** replaced the unrequested HexCoded account/billing/actor-marketplace plan and deleted its isolated product-domain code. The public root now accepts one HTTPS brand URL without auth or payment, performs DNS-pinned SSRF-safe bounded extraction, builds an evidence-backed script/storyboard, runs a presenter-led 9:16 composition boundary, and exposes safe status, range preview, and attachment download only after review. `/review`, `/studio`, Significant Content, and internal accepted-marketing paths remain intact. The production presenter pack now includes a checksum-pinned fictional synthetic human cutout with generator provenance and an explicit non-real-identity attestation; real likenesses remain fail-closed without model-release proof. The complete Node/Rust regression suite passes.
-- **2026-07-13 — Significant Hobbies content handoff:** added the versioned
-  `significant-content-reels/v1` intake and `significant-content-receipt/v1`
-  output contracts. Approved variants enter Idea Store idempotently with
-  immutable provenance, and the factory preserves their exact hook, payoff,
-  ordered scenes, visuals, overlays, duration, and CTA instead of regenerating
-  copy. Local commands now validate/import, report cross-repo status, build
-  render/upload/metrics receipts, compare performance, and emit draft-only
-  follow-up briefs. The offline fixture proves duplicate intake and receipt
-  collapse without calling any upload, posting, schedule, credential, or
-  Significant Hobbies write path. Existing quality, review, accepted-post, and
-  provider preflight gates remain authoritative; see
-  `docs/operations/runbooks/significant-content-openclaw.md`.
-
-- **2026-07-13 — HexCoded provider-neutral commercial and actor contracts:**
-  extended the locally executable product-domain layer without enabling any
-  public capability or choosing production providers. Commercial renders now
-  bind accepted briefs to append-only credit holds and idempotently capture or
-  release them through bounded render attempts. Immutable output provenance
-  includes source, renderer, actor/twin status, approvals, and disclosure.
-  Added claim/evidence review, misuse/takedown/appeal/repeat-abuse controls,
-  export/deletion jobs with purpose-bound retention evidence, actor
-  verification and processor-deletion receipts, KYC/tax and tokenised payout
-  state, actor balances, and redacted structured events wired into commercial
-  render transitions. Domain-level fake-adapter brand and actor simulations
-  pass, alongside
-  death/incapacity, fraud, withdrawal, master-deletion, and delivered-licence
-  survival cases. These contracts do not close the corresponding persistence,
-  provider, customer-app, or target-host tasks. Provider-backed persistence and
-  customer surfaces remain blocked and all feature flags remain off.
-
-- **2026-07-13 — HexCoded safety foundation (capabilities remain disabled):**
-  added provider-neutral workspace authorisation, an append-only credit-ledger
-  aggregate, actor consent/licence lifecycle invariants, immutable output
-  provenance checks, fail-closed product feature gates, versioned legal
-  acceptances, a review-gated URL-to-ad domain flow over `VideoBrief`, and
-  append-only actor earning/reversal records. The actor-library domain exposes
-  only active twins with evidence for the current Actor Licence version. Actor
-  licence snapshots now have an integration test proving they remain attached
-  to delivered provenance, while the full regression suite proves the existing
-  SaaS Maker approval and posting gates remain intact.
-  Real actor casting cannot enable unless all consent, licence, identity,
-  liveness, earnings, withdrawal, retention, misuse, and payout evidence gates
-  pass. The self-serve product is not launch-ready; durable persistence,
-  customer APIs/UI, and external integrations remain blocked on the decisions
-  below.
-
-- **2026-07-12 — Durable marketing control loop:** source packages now round-trip
-  through SaaS Maker in a versioned distribution envelope, with separate content
-  and posting approvals, public R2 media handoff, per-brand account routing,
-  schedule gates, a persistent SHA-256 publication ledger, bounded retries, and
-  Fleet notifications. A supervised one-minute LaunchAgent is installed and
-  verified against the authenticated production queue. Daily intake is capped
-  at one package per active brand and pauses at 12 pending reviews. Six initial
-  Instagram/YouTube drafts were created; none were approved, rendered, or posted.
-
-- **2026-07-12 — Source-backed multi-brand marketing path:** added read-only
-  extractors for High Signal, Significant Hobbies, and SWE Interview Prep;
-  revisioned `fleet.content-package.v1` packages; per-brand visual/channel
-  configuration; local Kokoro + Chromium + FFmpeg vertical video rendering;
-  and a separate `fleet.distribution-request.v1` gate. Both Rust and Node
-  time-based auto-accept paths are disabled. Live posting now fails closed
-  until the exact brand/channel account is mapped and the distribution request
-  is separately approved. Initial distribution scope is Instagram Reels and
-  YouTube Shorts; TikTok/Postiz is deferred. See
-  `docs/operations/runbooks/content-package-pipeline.md`.
-
-- **2026-07-10 — Studio factory line shipped:** production conveyor over the
-  ideas manager — `npm run factory` plan/produce/status; every render now
-  gets a quality gate (`quality.json`, pass/review/fail across duration fit,
-  resolution, audio, hook, pacing, captions) and a publish packet
-  (`packet/upload.md` + thumbnail); `/studio` gains Factory panels and a
-  Renders review panel with in-browser playback (whitelisted file serving)
-  and approve/reject. Failed LLM providers now fail fast for the session.
-  Live proof: plan → produce ran a real kokoro render scoring 89/100 pass.
-  Spec archived as `studio-factory-line`.
-- **2026-07-10 — Kokoro local voice shipped:** Kokoro-82M runs locally via
-  `kokoro-onnx` (`npm run setup:kokoro`, `tools/kokoro/`, gitignored).
-  Lesson videos default to Kokoro TTS when installed
-  (`LESSON_TTS_PROVIDER` overrides; removes the ElevenLabs live-prereq),
-  and the faceless workflow gains a fully local `kokoro` engine — Kokoro
-  narration + Pexels b-roll + FFmpeg captions (drawtext-capable binary
-  auto-resolved; Pexels key falls back to the MoneyPrinterTurbo config).
-  Live proof: 40.6s 1080×1920 h264 render end-to-end. Spec archived as
-  `kokoro-local-voice`.
-- **2026-07-10 — Content studio + faceless workflow shipped:** TubeMagic-style
-  creator toolset (`src/studio/`, `npm run studio`) — ideas, titles,
-  descriptions, tags, scripts (30s–20min), brand voice, keyword research,
-  transcript tooling, thumbnail concepts, ideas manager — plus a Vid.ai-style
-  `npm run faceless` topic→script→brief→render workflow with batch mode and
-  posting handoff. Template-mode $0 default, DeepSeek-compatible LLM upgrade.
-  Same-day follow-up: `/studio` web UI on the local control server (all tools,
-  ideas manager, faceless runs from the browser). Specs archived as
-  `content-studio-faceless-pipeline` and `studio-web-ui`. Docs:
-  `docs/product/content-studio.md`, `docs/product/faceless-workflow.md`.
-- **2026-07-10 — Generation cases consolidated:** added
-  `config/generation-cases.json`, `config/render-modes.json`, and
-  `config/live-generation-readiness.json` as the operator-facing matrix for
-  marketing render modes, Worker `render-pro`, lesson videos, and the manual
-  creator MVP; `npm run check:generation-readiness` now separates local
-  `strictReady` from target-host `targetHostReady`.
-- **2026-07-03 — Postiz-inspired posting hardening:** reimplemented selected
-  Postiz workflow patterns without copying AGPL code: provider capabilities,
-  provider-specific preflight, classified posting failures, per-post failure
-  isolation, explicit missed-post recovery, provider analytics fetch hooks, and
-  structured SaaS Maker notes for posting errors and platform release IDs.
-  SaaS Maker Cockpit now summarizes missed posts, posting failures, synced
-  metrics, and metrics-pending posts from those notes.
-- **2026-07-03 — Editframe-inspired HTML composition previews:** added
-  `html`/`html-composition`/`web-composition` render modes that export
-  deterministic `composition.html`, `timeline.json`, and word-level
-  `captions.json` artifacts for agent-authored preview/review without adding a
-  new video runtime dependency.
-- **2026-07-02 — Grok/Imagine local MP4 integration:** added `grok-video`
-  renderer mode in Node and Rust, plus optional Grok motion inserts in
-  `render-pro.js` and product-proof fallback capture.
-- **2026-07-03 — ASCII animation subsection renderer:** added local
-  `ascii`/`ascii-animation`/`ascii-fable`/`askai` render modes for
-  ASCII-fable-style interlude MP4s; high-quality renders use Chrome HTML
-  terminal art with a raster fallback, and Rust shells out to the same Node
-  renderer.
-- **2026-07-03 — Creator MVP reset for kids stories:** documented a manual
-  kids-story validation workflow in `docs/product/creator-mvp.md`; defer more software
-  automation until the first three public-domain story videos are made and
-  reviewed.
-- **2026-07-03 — First creator MVP packets built out:** added complete manual
-  production packets for `The Lion and the Mouse`, `The Tortoise and the Hare`,
-  and `The Crow and the Pitcher` under `docs/product/creator-mvp-packs/`.
-- **2026-07-04 — Growth format experiment layer:** added
-  `docs/product/growth-format-playbook.md` and `src/growth-formats.js`; signal draft
-  bundles now carry 5-7 posts/day, 35-post decision metadata plus per-variant
-  ranking, sound-sync, tutorial, trend-copy, and before/after format notes.
-- **2026-06-20 — Product-proof Phase 1 shipped:** Playwright screenshot capture (`src/product-proof-capture.js`); quality gate scoring (`src/reel-quality.js`); reel-maker composition with proof visuals; auto-wired via `resolveProductProofCapture()` in `src/pipeline.js`; review UI surfaces quality dimensions; smoke at `npm run smoke:reel-maker`.
-- **2026-06-20 — SaaS Maker hostname fix:** Default API URL and `.env.example` corrected to `api.sassmaker.com` (double-s brand).
-- **Rust orchestrator cutover:** All entrypoints on Rust CLI; JS watcher/autopilot/post glue retired with parity validated (`validate-watcher-parity.mjs`).
+- **2026-08-20:** restored this standalone repository as the canonical source,
+  moved Content Factory under the same repository boundary, and removed the
+  embedded Fleet Console maker/gallery and direct Fleet source imports. Existing
+  Cloudflare resources were retained without deployment.
+- **2026-08-20:** parked active local frontier image, video, and music model
+  execution after the retained LTX proofs failed the accepted-output bar. Set
+  automatic paid generation spend to $0 and made hosted generation manual-import
+  only with a separate per-job budget and operator approval. Deterministic local
+  production, Kokoro narration, procedural draft audio, review, provenance,
+  history, and publishing remain supported.
+- **2026-08-10:** restored the accepted internal-publishing architecture for
+  agent operations: configured channels route through repository-owned YouTube and
+  Instagram adapters, while credential values stay outside manifests and
+  results. Postiz is not an agent capability.
+- **2026-08-09:** shipped the strict `reel-agent` capability, execution,
+  packaging, and policy-gated publication contract over the live recipe and
+  adapter registries. Added `draft_only`, `approval_required`, and
+  `autonomous` channel modes without exposing credentials to the agent.
+- **2026-08-09:** separated Mashup into its independent repository. Reel Pipeline
+  no longer imports, starts, configures, or owns its Python runtime and instead
+  verifies approved finished media through a versioned receipt. Voice intake
+  also stopped borrowing Mashup transcription internals.
+- **2026-08-09:** reconciled the inherited Mashup maintenance bundle without
+  reopening a standalone product. Mixed-source renders now choose the modal
+  source format with maximum-quality tie-breaking, archive ingestion reports
+  and skips isolated unreadable files, and the unused local media directory was
+  removed. Kinetic Type is the selected optional visual direction; the old
+  corpus, matched-pair, five-condition, and cross-archive research program is
+  retired under the source-faithful CLI boundary.
+- **2026-08-09:** completed the safely shippable voice-first Studio workflow:
+  Talk and Type now compile to the same persisted eight-stage graph with
+  manual/quick execution, pause, retry, checkpoints, and downstream
+  invalidation. Added searchable reusable cast controls, explicit soundtrack
+  source and mix controls, mature/private readiness boundaries, and responsive
+  browser evidence. The generated-music adapter remains intentionally blocked
+  pending human listening review of its local ACE-Step canary.
+- **2026-08-09:** finalized the product boundary between Video Maker and
+  Mashup. `/studio` exposes the prompt-first Video Maker; the incorporated
+  podcast editor remains an operator CLI with no
+  Mashup navigation, page, or browser API.
+- **2026-08-09:** shipped policy-bounded Studio autopilot lanes for High Signal
+  daily briefs, Significant Hobbies weekly posts, and major maintained-project
+  changelogs. Runs reuse source revisions and prior receipts, stop on explicit
+  spend, rights, runtime, or distribution blockers, and can prepare Postiz
+  drafts or exact future schedules only when the standing policy covers them.
+- **2026-08-06:** established Reel Pipeline as a standalone product boundary,
+  with `/studio` as its product surface rather than a diagnostics-only view.
+  Tightened playback truth so History and Productions advertise an MP4 only
+  after media probing confirms a decodable video stream; missing and legacy
+  mock artifacts remain inspectable without a broken player.
+- **2026-08-06:** made Marketing Studio's production archive generic and
+  data-driven, keeping every saved prompt, executed workflow, receipt, and
+  playable artifact together. Added registry-backed Recipes and Workflows
+  libraries plus reproducible guarded sample workflows, including a five-shot
+  30-second LTX story canary with original Kokoro voice and ACE-Step music.
+- **2026-08-01:** completed the Fleet Console Marketing video arsenal boundary:
+  all 49 stable variants now have compact rights-safe vertical MP4 fixtures,
+  exact prompt presets, byte-range playback, fixture/real execution envelopes,
+  registered owner adapters, and fail-closed completeness checks. Added ordered
+  two-to-three-style gallery mixes with deterministic local FFmpeg composition
+  and component provenance; the maker UI was later consolidated into `/studio`.
+- **2026-08-01:** removed the unused MoneyPrinterTurbo and reel-maker engine
+  submodules, their checkout-backed Node/Rust adapters, false readiness gates,
+  and the blocked stock-service recipe. Product Proof remains an explicit
+  Brand Reel handoff; local video creation remains repository-owned.
+- **2026-07-31:** added rights-gated literal lyric videos to Marketing Studio
+  with exact timed-text preservation, separate composition and recording
+  evidence, deterministic cue-to-scene planning, optional safe Blender 5.2
+  plates, local composition, review receipts, and a reproducible public-domain
+  “Twinkle, Twinkle, Little Star” canary using a new local recording.
+- **2026-07-31:** unified the internal Marketing Studio around a persistent,
+  conversational video brief covering faceless lessons, brand reels, guided
+  app demos, coherent films, and podcast shorts. Added explicit runtime
+  routing, deduplicated production review/playback, fail-closed distribution
+  evidence, and Postiz draft or exact future-schedule handoffs for YouTube
+  Shorts and Instagram Reels. Postiz remains the owner of credentials, durable
+  calendar execution, publication state, rescheduling, cancellation, and
+  analytics.
+- **2026-07-29:** consolidated Mashup's Python planner, SQLite-backed stage
+  state, provenance-gated archive tooling, tests, and operator editor under
+  `editorial/`. Added the strict `fleet.podcast-edit.v1` handoff, an
+  approval-gated render adapter, source-hash verification, and a render
+  receipt. Proved the boundary with a real 46-second ZEROPOD short while
+  preserving the original EDL, source audio, source heading, source timing,
+  watermark, and sidecar captions.
+- **2026-07-27:** added the coherent scene compositor, the immutable
+  `evidence-beam@1` film skill, and a reproducible CodeVetter reference film
+  with real product evidence, local LTX atmosphere, Kokoro narration,
+  phrase-timed captions, review metadata, and a reduced-motion encode. Added
+  the authenticated `/forge` operator console for prompt intake, exact skill
+  choice, asset rights, queue status, variant decisions, and fail-closed final
+  approval.
+- **2026-07-27:** added `guided-app-demo@1` and the `/forge` app-recording
+  workflow: real window/tab/screen capture, optional same-session camera and
+  microphone presenter at bottom right, local preview-before-upload, immutable
+  source-hash provenance, and Mac FFmpeg preview/final encoding.
+- **2026-07-26:** added the Local Video Forge first vertical slice: pinned
+  Apple Silicon LTX-2.3 generation, an approved-keyframe three-variant command,
+  reproducibility metadata/review gallery, and an authenticated Worker/R2 queue
+  that accepts tasks from either machine and is pulled by the generation Mac.
+- **2026-07-26:** added a reproducible Local Video Forge mixed-media proof
+  preset with local Kokoro narration, audio-derived subtitle timing, burned and
+  external captions, ASCII/Canvas graphics, real variant proof frames, and a
+  no-false-lip-sync composition rule.
+- **2026-07-21:** removed the SaaS Maker queue, direct YouTube/Instagram
+  publishers, OAuth helpers, posting/metrics loops, and duplicate marketing
+  control services. Added the Postiz draft adapter and direct render-fixture
+  readiness path.
+- **2026-07:** completed source-backed content package, render manifest,
+  Significant Content, studio, and local render-mode work.
+- **Earlier:** established the Worker/R2 render path, Rust watcher, VideoBrief
+  adapters, anonymous brand-reel, and review surfaces.
 
 ## Products
 
-| Surface | URL |
-| --- | --- |
-| Artifact Worker base | `https://reel-pipeline-artifacts.sarthakagrawal927.workers.dev` |
-| Health | `GET /health` |
-| MP4 artifacts | `GET /reels/:key` (byte-range enabled) |
-| SaaS Maker API (default) | `https://api.sassmaker.com` |
+- Standalone local-first Video Maker (`/studio`) with Create, History, Recipes,
+  and Workflows.
+- Anonymous brand-reel generator and faceless/lesson workflows.
+- Worker/R2 production reel renderer.
+- Content-package renderer and Postiz draft or future-schedule handoff.
+- Verified ingestion of approved, finished Mashup media.
+- Rights-gated literal lyric-video production with optional Blender scenes.
+- Standalone Studio execution API with exact gallery previews and deterministic
+  ordered style mixes.
 
 ## Features (shipped)
 
-### Anonymous brand reel
+- Machine-readable agent manifest covering all 13 recipes, 49 registered
+  variants, 13 execution adapters, readiness blockers, and configured channel
+  policies, with strict validation and arbitrary-execution rejection.
+- A focused prompt-first Video Maker browser surface with recipe-derived format
+  selection and truthful continuations; Mashup is an independent helper.
+- Voice-first and typed brief intake feeding one persisted eight-stage
+  workflow with manual or quick progression, readiness rechecks, pause/retry,
+  reusable checkpoints, and transitive invalidation after upstream edits.
+- Searchable reusable characters and workflow-specific cast overrides with
+  source, likeness, mature-readiness, wardrobe, expression, and continuity
+  evidence.
+- Explicit procedural-draft, owned-local, platform-reference, and parked
+  generated soundtrack lanes with retained mix transforms and fail-closed
+  commercial-audio and rights blockers.
+- Versioned secret-free automation policies, source-revision idempotency,
+  bounded retries, dry-run and execute commands, lane-aware Studio status, and
+  Project Autopilot / Ask Me / Personal Automations production grouping.
+- VideoBrief validation and provider-neutral render adapters.
+- Content Factory manifests with hashes and provenance.
+- Local render modes: mock, HTML composition, ASCII, Blender, Grok local asset,
+  Kokoro, and brand video.
+- Worker/R2 render flow with Rust watch/render orchestration.
+- Significant Content and High Signal intake contracts.
+- Postiz integration mapping, media upload, and draft or exact future-schedule
+  adapter for YouTube Shorts and Instagram Reels.
+- Conversational `fleet.marketing-studio-brief.v1` intake with revisioned local
+  persistence, multi-turn natural-language refinement, normalized
+  brand/channel/creative state, explicit source-URL capture without inferred
+  approval, and honest readiness across six video workflows.
+- Exact LRC, SRT, or structured lyric-cue normalization; separate
+  composition/lyric and master-recording rights gates; one-to-one literal scene
+  planning; deterministic native or Blender-backed plates; synchronized
+  captions, attribution, approved audio, hashes, and quality evidence.
+- Safe Blender 5.2 adapter execution through a repository-owned scene builder,
+  bounded manifests, factory startup, disabled auto-execution, run-directory
+  path controls, versioned provenance, artifact hashes, and eight distinct
+  local 3D scene languages.
+- A secret-free, byte-range-capable Explore Gallery registry with 49 exact,
+  portable, hash-validated rights-safe MP4 previews; style-family filtering;
+  exact preset handoff; and ordered two-to-three-style mixes rendered locally
+  with component provenance.
+- Versioned fixture/real video execution envelopes, complete adapter and input
+  registries for all 12 recipes and 48 variants, normalized local and owner
+  receipts, contextual blockers, and catalog/gallery/preset completeness that
+  fails closed on missing, duplicate, null, unknown, or stale identifiers.
+- Unified Create, History, Recipes, Workflows, Distribute, and Tools operator
+  views with explicit execution, prompt-to-artifact traceability, registry-backed
+  reusable starting points, exact executed composite-workflow evidence,
+  specialized runtime continuations, safe public-field prefill for Brand Reel
+  and Forge, deduplicated brief-owned artifacts, and the complete legacy Content
+  Studio toolset.
+- Fail-closed Studio-to-Postiz preparation requiring source, claim,
+  destination, rights, creative approval, quality evidence, render evidence,
+  and a stable public media URL; draft and scheduled submissions preserve the
+  exact UTC timestamp, reject invalid or past times, reject immediate
+  publication, and prevent duplicate Postiz submissions.
+- Fail-closed rejection of native social-provider distribution.
+- Node and Rust regression suites plus focused Postiz and render-mode smokes.
+- Parked Local Video Forge manifests, receipts, review gallery, and task
+  contract retained as historical reproducibility evidence, with no active
+  package or Studio execution path.
+- Approved coherent-film manifests with deterministic scene primitives,
+  caption/audio bindings, collision-free render packages, input/output hashes,
+  engine revisions, review frames, BT.709 delivery, and reduced-motion output.
+- Versioned film-skill contracts that pin narrative order, allowed primitives,
+  asset requirements, render defaults, and quality gates; `evidence-beam@1` is
+  the first registered skill.
+- Authenticated hosted `/forge` console backed by the shared R2 queue, so human
+  or AI-created tasks from either machine use the same skill, asset, review,
+  and final-render state.
+- Guided app-demo capture with a button-driven permission/record/preview/
+  approve workflow, genuine same-session presenter synchronization, a
+  versioned Film style, and deterministic 720×1280 preview / 1080×1920 final
+  encoding on the Mac.
+- External Mashup media inspection with approved-root, schema, approval, size,
+  SHA-256, provenance, and rights validation and no runtime source dependency.
+- Robust heterogeneous-source ingestion that reports isolated unreadable
+  files, fails when no source is usable, and prevents the first low-resolution
+  source from determining the complete render format.
 
-- Public one-field HTTPS brand URL intake fetches the website through bounded,
-  DNS-pinned SSRF controls, extracts evidence-backed brand facts and visuals,
-  and turns them into a reviewed 9:16 reel with narration, captions, CTA, and a
-  checksum-pinned fictional synthetic human presenter.
-- Anonymous status, byte-range preview, and attachment download expose only the
-  reviewed artifact. This product surface has no authentication, workspaces,
-  billing, credits, actor marketplace, payouts, social posting, or scheduling.
+## Work queue
 
-### Architecture
-
-- SaaS Maker Marketing Queue (`/v1/marketing/posts`) supplies accepted items; pipeline PATCHes `asset_url`, `result_url`, status back.
-- Significant Hobbies approved-content adapter: versioned, idempotent Idea Store
-  intake; exact scene-to-script conversion; attributed render/upload/metrics
-  receipts; machine-readable status/performance and draft-only follow-up output.
-- VideoBrief contract (`src/video-brief.js`) feeds mock, MoneyPrinterTurbo
-  (default stock-footage MP4s), Grok/Imagine local MP4s, ASCII animation
-  interlude MP4s, HTML/CSS composition previews, or reel-maker (+ product-proof capture) adapters;
-  `render-pro.js` can insert Grok clips as generated-motion scenes when
-  configured.
-- Render path: `render-pro.js` / Rust `reel render` → local MP4 → artifact publisher → R2 `reel-artifacts`.
-- Cloudflare Worker `reel-pipeline-artifacts` serves MP4 with byte-range support at `/reels/:key`.
-- Rust autopilot/post publishes to YouTube + Instagram Graph, then PATCHes marketing queue.
-- Rust crate (`reel/`) owns watch, render-accepted, autopilot, and post entrypoints; JS control layer retired for watcher/autopilot/post glue with parity validated.
-- Intake `POST /reels`, review UI `GET /review`, render `POST /reels/:id/render`, video decision APIs in Node control layer.
-- OpenShorts removed from pipeline; submodule still present in repo.
-
-### Core pipeline
-
-- VideoBrief contract; mock/MoneyPrinterTurbo/Grok local MP4/ASCII animation/HTML composition/reel-maker adapters; SaaS Maker sync.
-- Intake `POST /reels`, review UI `GET /review`, render `POST /reels/:id/render`, video decision APIs.
-- Artifact publisher (local + R2); Worker serves MP4 with byte-range.
-
-### Rust orchestrator
-
-- All entrypoints on Rust CLI; JS watcher/autopilot/post glue retired with parity validated (`validate-watcher-parity.mjs`).
-- Production watcher: `npm run watch:render` → `reel watch --execute`.
-- Marketing autopilot: intake → render → post in Rust (`reel autopilot --execute`; dry-run via `npm run autopilot:dry`).
-
-### Native social posting
-
-- YouTube + Instagram Graph publishers in `reel/src/publishers/`.
-- Posting providers declare capability/preflight rules so YouTube requires a
-  local video path, Instagram/Upload-Post require a public video URL, captions
-  and tags are bounded before API calls, and failed posts are classified as
-  reconnect/quota/rate/provider/content/asset errors.
-- Post scans isolate failures per item and patch structured error notes back to
-  SaaS Maker while leaving the queue item accepted for operator review.
-- `reel post --missed-only --execute` runs an explicit recovery pass for
-  accepted rendered posts whose scheduled time has passed and `posted_at` is empty.
-- `reel metrics --execute` backfills YouTube/Instagram post metrics into SaaS
-  Maker notes using the platform `external_id` saved during posting.
-- Posting notes include `external_id` for the platform release ID returned by
-  YouTube/Instagram/Upload-Post where available.
-
-### OpenShorts removal
-
-- Adapter deleted from pipeline; submodule parked (still present in repo — explicit approval needed to remove).
-
-### Product-proof Phase 1 (2026-06-20)
-
-- Playwright screenshot capture (`src/product-proof-capture.js`).
-- Quality gate scoring (`src/reel-quality.js`): `productProofStrength`, `valueClarity`, `visualTrust`, `captionReadability`, `mobileComposition`, `cringeRisk`, `postingReadiness`.
-- reel-maker composition with proof visuals; auto-wired via `resolveProductProofCapture()` in `src/pipeline.js`.
-- Review UI surfaces quality dimensions; smoke at `npm run smoke:reel-maker`.
-
-### Content studio + faceless workflow (2026-07-10)
-
-- `src/studio/` toolset: ideas/niche/channel names, titles/descriptions/tags
-  (500-char budget enforcement), scripts with duration scaling and
-  article-to-script, brand-voice profiles, keyless keyword research + YouTube
-  transcript fetch, thumbnail concepts with HTML previews, JSON ideas manager.
-- `npm run faceless`: topic → script → VideoBrief → render via existing
-  adapters (mock/MoneyPrinterTurbo), single-voice default with opt-in
-  rotation, batch mode with per-topic failure isolation, manual posting
-  handoff (never auto-posts).
-- All tools run at $0 offline via templates; LLM upgrade via provider chain
-  `free-ai` (fleet gateway) → `codex` (local CLI) → `deepseek`, order
-  overridable with `STUDIO_LLM_PROVIDERS`, graceful fall-through. Smoke:
-  `npm run smoke:studio`; tests: `test/studio-*.test.js`.
-
-## Todo / Planned / Deferred / Blocked
-
-### Planned
-
-1. Run a production-environment canary with the checksum-pinned synthetic presenter in `assets/presenters/manifest.json`; add any future real likeness only with model-release proof.
-2. Produce the first creator-MVP kids story manually from `docs/product/creator-mvp-packs/lion-and-mouse.md`.
-3. Produce manual validation videos 2-3 from `docs/product/creator-mvp-packs/tortoise-and-hare.md` and `docs/product/creator-mvp-packs/crow-and-pitcher.md`.
-4. Record watch/parent-trust notes for the three completed videos.
-5. After those three videos, decide whether Reel Pipeline should support only scene/asset manifests, draft bundles, and review handoff, or resume renderer automation.
-6. Run one 35-post app-marketing experiment across the five growth formats and record format-level results.
-7. Phase 2 screen-recording renderer (`demoSteps` browser flow with screenshot fallback).
-8. Phase 3 multi-variant render (`variantCount` > 1) polish in review UI.
-9. Wire draft bundle output into review UI without paid engines.
-
-### Deferred
-
-- Cloudflare Worker rewrite of orchestration (stay on JS + Rust CLI).
-- Make reel-maker/Remotion production-quality if it becomes more than the
-  product-proof/reference path (`render-pro` stays canonical production renderer).
-- Product-proof Phases 2–3 (screen recording, multi-variant drafts).
-- Phase 2–3 product-proof PRD work not started.
-- Draft bundle output not yet wired into review UI.
-- Kids-story dashboards, agents, auto-uploaders, custom renderers, and
-  analytics scripts until the creator MVP has three manually produced videos.
-
-### Blocked
-
-- Anonymous presenter-led generation has no remaining local implementation
-  blocker. Its production pack contains a checksum-pinned fictional synthetic
-  human with generator provenance; a target-environment canary remains an
-  operator release gate. Auth, billing, credits, actor onboarding/twins, KYC,
-  earnings, payouts, marketplace, and customer social posting are not product
-  scope.
-
-- Final target-host readiness is not complete until
-  `tmp/generation-readiness/report.json` has `targetHostReady: true`.
-  Current open case checks:
-  - `marketing-render-modes`: `social-posting-prereqs` (YouTube or Instagram OAuth env)
-  - `worker-render-pro`: `render-pro-live-proof` (real approved Worker reel id + R2 playback proof)
-  - `lesson-video`: `lesson-live-prereqs` (DeepSeek, ElevenLabs, Pexels env)
-  - `creator-mvp`: `creator-mvp-reviewed` (three manual story videos reviewed)
+Open work is tracked only in [GitHub Issues](https://github.com/sarthakagrawal927/reel-pipeline/issues).
+An open issue is a to-do, a linked pull request is in progress, and merge plus
+issue closure makes the work done.

@@ -222,7 +222,7 @@ export function normalizeReelDraftInput(input, options = {}) {
     template: input.template,
     screenshots: input.screenshots,
     demoSteps: input.demoSteps ?? input.demo_steps,
-    renderMode: input.renderMode ?? input.render_mode ?? 'stock',
+    renderMode: input.renderMode ?? input.render_mode ?? 'html-composition',
     durationSeconds: input.durationSeconds ?? input.duration_seconds,
   });
 

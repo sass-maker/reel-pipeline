@@ -1,12 +1,12 @@
 //! Production render engine — shells out to the existing
-//! `scripts/render-pro.js`.
+//! `content-factory/scripts/render-pro.js`.
 //!
 //! This is the ONE production render path. `render-pro.js` already does the
 //! Chrome scroll-tour capture, Edge TTS voiceover, ffmpeg scene compositing /
 //! xfade stitching, ambient bed, and the `wrangler r2 object put` upload, then
 //! patches the reel record on the worker. The Node `auto-render-watcher.js`
 //! just `spawn`s it per approved reel id. We replace that watcher glue: this
-//! adapter builds the exact `node scripts/render-pro.js <reelId>` invocation
+//! adapter builds the exact `node content-factory/scripts/render-pro.js <reelId>` invocation
 //! (with `REEL_VARIANT_COUNT`) and runs it through a [`CommandRunner`].
 //!
 //! We intentionally do NOT port the renderer's internals into Rust.
@@ -21,7 +21,7 @@ use crate::runner::{CommandRunner, CommandSpec};
 
 pub struct RenderProEngine<R: CommandRunner> {
     runner: R,
-    /// Repo root (where `scripts/render-pro.js` lives). Used as the cwd.
+    /// Reel Pipeline root. Used as the cwd for the Content Factory renderer.
     repo_root: PathBuf,
     /// `node` binary (overridable for environments with a pinned runtime).
     node_bin: String,
@@ -34,7 +34,7 @@ impl<R: CommandRunner> RenderProEngine<R> {
             runner,
             repo_root: repo_root.into(),
             node_bin: "node".to_string(),
-            script_path: "scripts/render-pro.js".to_string(),
+            script_path: "content-factory/scripts/render-pro.js".to_string(),
         }
     }
 
@@ -107,7 +107,13 @@ mod tests {
         let engine = RenderProEngine::new(RecordingRunner::new(), "/repo");
         let spec = engine.command_for("demo-linkchat-1", 2);
         assert_eq!(spec.program, "node");
-        assert_eq!(spec.args, vec!["scripts/render-pro.js", "demo-linkchat-1"]);
+        assert_eq!(
+            spec.args,
+            vec![
+                "content-factory/scripts/render-pro.js",
+                "demo-linkchat-1"
+            ]
+        );
         assert_eq!(spec.cwd.as_deref(), Some(std::path::Path::new("/repo")));
         assert_eq!(
             spec.env.get("REEL_VARIANT_COUNT").map(String::as_str),

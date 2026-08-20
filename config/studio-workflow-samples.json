@@ -1,0 +1,58 @@
+{
+  "$schema": "fleet.studio-workflow-samples.v1",
+  "version": 1,
+  "sampleSetId": "five-after-dark",
+  "title": "Five after dark",
+  "samples": [
+    {
+      "id": "you-wont-believe-this",
+      "title": "You won't believe this",
+      "prompt": "Three friends lean into a street camera after midnight and shout, You are not going to believe this, then burst into laughter as the handheld camera pulls back. Candid flash photography, natural faces, one decisive reaction, hair and clothing moving naturally, no morphing, and nobody new entering the frame.",
+      "referenceImage": ".reel-pipeline/projects/night-out-themed/assets/00-hook.png",
+      "seed": 2307,
+      "aspectRatio": "9:16",
+      "durationSeconds": 3.375,
+      "lane": "final"
+    },
+    {
+      "id": "last-chorus",
+      "title": "The last chorus",
+      "prompt": "An original anime karaoke crew reaches the final chorus together. The camera arcs gently through the group while shoulders bounce, microphones rise, hair and jacket fabric follow the motion, and everyone lands on one exuberant final pose. Preserve the exact illustrated character designs and clean linework.",
+      "referenceImage": ".reel-pipeline/projects/night-out-themed/assets/01-anime-karaoke.png",
+      "seed": 8819,
+      "aspectRatio": "9:16",
+      "durationSeconds": 3.375,
+      "lane": "final"
+    },
+    {
+      "id": "tavern-spell",
+      "title": "One more spell",
+      "prompt": "A dragonborn, an elf mage, an armored rogue, and a dwarf bard celebrate in a fantasy tavern as the mage spins one violet spell above the table. The spell throws moving light across armor and scales, the bard strums once, mugs rise, and the camera pushes through the party with grounded weight and coherent silhouettes.",
+      "referenceImage": ".reel-pipeline/projects/night-out-themed/assets/02-fantasy-tavern.png",
+      "seed": 17421,
+      "aspectRatio": "9:16",
+      "durationSeconds": 3.375,
+      "lane": "final"
+    },
+    {
+      "id": "orbit-dancefloor",
+      "title": "Dancefloor in orbit",
+      "prompt": "Reveal a retro-future space disco orbiting Earth: dancers and friendly robots hit one synchronized groove while the camera glides from the smiling foreground robot toward the curved windows and star field. Chrome reflections travel across the room, bodies keep their geometry, and the destination of the move is the blue planet outside.",
+      "referenceImage": ".reel-pipeline/projects/night-out-themed/assets/03-space-disco.png",
+      "seed": 42077,
+      "aspectRatio": "9:16",
+      "durationSeconds": 3.375,
+      "lane": "final"
+    },
+    {
+      "id": "wrong-note",
+      "title": "The gloriously wrong note",
+      "prompt": "Reaction close-up at a gothic karaoke party: the glamorous quartet sustains one gloriously wrong note, realizes it together, then breaks into delighted laughter. Microphones dip, eyes meet, candlelight flickers, and the camera makes one restrained push-in while faces, fangs, hands, and costumes remain coherent.",
+      "referenceImage": ".reel-pipeline/projects/night-out-themed/assets/04-monster-karaoke.png",
+      "seed": 73103,
+      "aspectRatio": "9:16",
+      "durationSeconds": 3.375,
+      "lane": "final"
+    }
+  ]
+}

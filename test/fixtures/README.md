@@ -1,27 +1,13 @@
-# Verify fixtures
+# Test fixtures
 
-Fake SaaS Maker pending posts + a generated test clip used by the M5 loop verify.
+Fixtures are local-only evidence and must not contain credentials or real
+provider integration IDs.
 
-## test-clip.mp4 — one-time generation
-
-The `saas-maker-pending.json` fixture points at `./test/fixtures/test-clip.mp4`. Generate it once with ffmpeg (~2 seconds of 9:16 black-frame video with a sine-wave audio track, ~30KB):
-
-```bash
-ffmpeg -f lavfi -i color=c=black:s=1080x1920:d=2 \
-       -f lavfi -i "sine=frequency=440:duration=2" \
-       -c:v libx264 -pix_fmt yuv420p -c:a aac -shortest \
-       test/fixtures/test-clip.mp4
-```
-
-Re-run if it ever gets deleted. The file is gitignored (binary, regenerable) — don't commit it.
-
-## saas-maker-pending.json
-
-Two seeded posts:
-
-| ID | created_at | Expected behavior |
-|---|---|---|
-| `fixture-aged-yt` | 2020-01-01 (far past) | Past the hold window → autopilot auto-accepts → uploads to your test YT channel as Private |
-| `fixture-fresh-yt` | 2099-01-01 (far future) | Inside the hold window → autopilot leaves it `pending` → never posts |
-
-Verifies three things at once: auto-accept on aged posts, hold-window protection on fresh ones, real YT upload via the configured OAuth account.
+- `render-mode-brief.json` — direct VideoBrief renderer smoke.
+- `approved-content-package.json` — package/render contract smoke.
+- `postiz-contract.json` and `postiz-integrations.json` — fake Postiz API and
+  integration mapping tests.
+- `high-signal-reel-brief.json` and `saas-maker-improvement.json` — source
+  intake compatibility tests.
+- `significant-content-reels-v1.json` — versioned Significant Content handoff.
+- `lessons/` and `presenters/` — specialized renderer fixtures.

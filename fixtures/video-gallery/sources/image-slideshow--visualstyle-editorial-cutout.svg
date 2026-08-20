@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="640" viewBox="0 0 360 640">
+  <defs>
+    <linearGradient id="wash" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0c0b12"/><stop offset="1" stop-color="#382d50"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="360" height="640" fill="url(#wash)"/>
+  <circle cx="310" cy="76" r="82" fill="#c5a7ff" opacity=".12" filter="url(#soft)"/>
+  <text x="28" y="39" fill="#c5a7ff" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="700" letter-spacing="1.8">FLEET · FIXTURE PREVIEW</text>
+  <g><rect x="43" y="102" width="274" height="252" fill="#f5efff" opacity=".08"/><circle cx="226" cy="214" r="91" fill="#c5a7ff"/><path d="M94 336V166h88v170z" fill="#382d50"/><text x="63" y="151" fill="#f5efff" font-family="Arial" font-size="42" font-weight="900">A</text><path d="M194 321c18-94 83-125 107-118v118z" fill="#f5efff" opacity=".72"/></g>
+  <text x="28" y="430" fill="#f5efff" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="800" letter-spacing="-.8">IMAGE SLIDESHOW</text>
+  <text x="28" y="510" fill="#c5a7ff" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700">Editorial Cutout</text>
+  <line x1="28" y1="596" x2="332" y2="596" stroke="#c5a7ff" opacity=".34"/>
+  <text x="28" y="618" fill="#f5efff" opacity=".7" font-family="Arial,Helvetica,sans-serif" font-size="10">HTML / Canvas · 2/48</text>
+</svg>

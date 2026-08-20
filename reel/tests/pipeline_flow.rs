@@ -1,4 +1,4 @@
-//! Integration test: the marketing/autopilot render flow end-to-end with fakes.
+//! Integration test: the provider-neutral render flow end-to-end with fakes.
 //!
 //! Mirrors what `pipeline.js renderReelVariants` does — plan variants, render
 //! each via the engine, publish artifacts, score — but using the in-memory mock
@@ -84,7 +84,7 @@ fn recording_runner_captures_render_pro_invocation() {
     assert_eq!(calls.len(), 1);
     assert_eq!(
         calls[0].args,
-        vec!["scripts/render-pro.js", "demo-reader-1"]
+        vec!["content-factory/scripts/render-pro.js", "demo-reader-1"]
     );
     assert_eq!(
         calls[0].env.get("REEL_VARIANT_COUNT").map(String::as_str),

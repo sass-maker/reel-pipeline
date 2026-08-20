@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="640" viewBox="0 0 360 640">
+  <defs>
+    <linearGradient id="wash" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0c0b12"/><stop offset="1" stop-color="#382d50"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="360" height="640" fill="url(#wash)"/>
+  <circle cx="310" cy="76" r="82" fill="#c5a7ff" opacity=".12" filter="url(#soft)"/>
+  <text x="28" y="39" fill="#c5a7ff" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="700" letter-spacing="1.8">FLEET · FIXTURE PREVIEW</text>
+  <g><circle cx="180" cy="192" r="70" fill="#c5a7ff" opacity=".2"/><circle cx="180" cy="185" r="35" fill="#c5a7ff" opacity=".65"/><path d="M70 300v-35m18 35v-62m18 62v-28m18 28v-84m18 84v-48m18 48v-99m18 99v-55m18 55v-79m18 79v-39m18 39v-68m18 68v-31m18 31v-52" stroke="#c5a7ff" stroke-width="7"/></g>
+  <text x="28" y="430" fill="#f5efff" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="800" letter-spacing="-.8">PODCAST SHORT</text>
+  <text x="28" y="510" fill="#c5a7ff" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700">Split</text>
+  <line x1="28" y1="596" x2="332" y2="596" stroke="#c5a7ff" opacity=".34"/>
+  <text x="28" y="618" fill="#f5efff" opacity=".7" font-family="Arial,Helvetica,sans-serif" font-size="10">Editorial · 44/48</text>
+</svg>

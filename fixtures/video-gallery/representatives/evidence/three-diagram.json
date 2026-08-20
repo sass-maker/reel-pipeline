@@ -1,0 +1,18 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "threejs-scene",
+  "proofRole": "range",
+  "rangeLabel": "Three.js · orbital diagram",
+  "motionTags": [
+    "dolly-in",
+    "node-orbit"
+  ],
+  "renderer": "three-webgl-visual-lab@2",
+  "sourcePosture": "specialist-proof",
+  "durationSeconds": 8,
+  "sha256": "f1486c8c2722150cde217549dd1ff0a1802f96cf63fff24b02b1d0c6152507c0",
+  "source": {
+    "kind": "live-browser-capture",
+    "capturedBy": "scripts/capture-live-gallery-proofs.js"
+  }
+}

@@ -9,30 +9,17 @@ use std::path::Path;
 use anyhow::{Context, Result};
 use clap::Parser;
 
-use reel::autopilot::{load_fixture_posts, run_autopilot_tick, AutopilotConfig};
-use reel::autopilot_daemon::{run_autopilot_daemon, AutopilotDaemonConfig};
 use reel::brief::normalize_from_value;
-use reel::config::{load_project_urls, resolve_social_accounts};
-use reel::engine::factory::create_renderer;
+use reel::config::load_project_urls;
 use reel::engine::render_pro::RenderProEngine;
 use reel::engine::RenderEngine;
 use reel::engine::RenderOptions;
-use reel::marketing::{
-    render_accepted_marketing_posts, ArtifactPublisherConfig, RenderAcceptedOptions,
-};
-use reel::marketing_metrics::{
-    sync_marketing_post_metrics, ChannelRoutingMetricsFetcher, MetricsSyncOptions,
-};
-use reel::marketing_posting::{create_poster, post_ready_marketing_videos, PostReadyOptions};
 use reel::orchestrator::render_reel_variants;
 use reel::publisher::NoopPublisher;
 use reel::quality::{score_variant, ScoreInput};
 use reel::runner::ProcessRunner;
-use reel::saas_maker::stub::StubMarketingClient;
-use reel::saas_maker::SaaSMakerClient;
 use reel::templates::build_variant_plan;
 use reel::watcher::{run_watch, WatchConfig};
-use time::{format_description::well_known::Rfc3339, OffsetDateTime};
 
 use cli::{Cli, Command, ConfigKind};
 
@@ -45,10 +32,6 @@ fn main() -> Result<()> {
         Command::ValidateBrief(args) => cmd_validate(args),
         Command::Score(args) => cmd_score(args),
         Command::Config(args) => cmd_config(&cli.repo_root, args),
-        Command::Autopilot(args) => cmd_autopilot(&cli.repo_root, args),
-        Command::RenderAccepted(args) => cmd_render_accepted(&cli.repo_root, args),
-        Command::Post(args) => cmd_post(&cli.repo_root, args),
-        Command::Metrics(args) => cmd_metrics(&cli.repo_root, args),
     }
 }
 
@@ -160,200 +143,6 @@ fn cmd_score(args: &cli::BriefArgs) -> Result<()> {
     Ok(())
 }
 
-fn cmd_autopilot(repo_root: &Path, args: &cli::AutopilotArgs) -> Result<()> {
-    let now = OffsetDateTime::now_utc();
-    let config = AutopilotConfig {
-        hold_window_ms: args.hold_window_ms,
-        intake_status: args.intake_status.clone(),
-        created_at_field: args.created_at_field.clone(),
-        limit: args.limit,
-        render_mode: args.render_mode.clone(),
-        posting_provider: args.posting_provider.clone(),
-        ..Default::default()
-    };
-
-    if !args.execute {
-        println!(
-            "[dry-run] would run autopilot tick · render={} · posting={} · limit={}",
-            config.render_mode, config.posting_provider, config.limit
-        );
-        if !args.once {
-            println!(
-                "[dry-run] would daemon loop every {}ms until SIGINT",
-                args.interval_ms.max(15_000)
-            );
-        }
-        return Ok(());
-    }
-
-    let poster = create_poster(&config.posting_provider, repo_root, now)?;
-    let mut log = |message: &str| {
-        println!("[{}] {message}", now.format(&Rfc3339).unwrap_or_default());
-    };
-
-    if let Some(fixture) = &args.fixture {
-        let posts = load_fixture_posts(fixture)?;
-        let client = StubMarketingClient::new(posts);
-        let report = run_autopilot_tick(&client, repo_root, &poster, now, &config, &mut log)?;
-        print_tick_summary(&report);
-        if args.once {
-            return Ok(());
-        }
-        return run_autopilot_daemon(
-            repo_root,
-            &poster,
-            &client,
-            &config,
-            &AutopilotDaemonConfig {
-                interval_ms: args.interval_ms,
-            },
-        );
-    }
-
-    let client = SaaSMakerClient::from_env();
-    let report = run_autopilot_tick(&client, repo_root, &poster, now, &config, &mut log)?;
-    print_tick_summary(&report);
-    if args.once {
-        return Ok(());
-    }
-    run_autopilot_daemon(
-        repo_root,
-        &poster,
-        &client,
-        &config,
-        &AutopilotDaemonConfig {
-            interval_ms: args.interval_ms,
-        },
-    )
-}
-
-fn print_tick_summary(report: &reel::autopilot::AutopilotTickReport) {
-    println!(
-        "✓ tick complete: accepted={} rendered={} posted={}",
-        report.accepted.len(),
-        report.rendered.results.len(),
-        report.posted.results.len()
-    );
-}
-
-fn cmd_render_accepted(repo_root: &Path, args: &cli::RenderAcceptedArgs) -> Result<()> {
-    let options = RenderAcceptedOptions {
-        limit: args.limit,
-        project_slug: args.project_slug.clone(),
-        channel: args.channel.clone(),
-        poll_limit: args.poll_limit,
-        poll_interval_ms: args.poll_interval_ms,
-    };
-
-    if !args.execute {
-        println!(
-            "[dry-run] would render accepted marketing posts · mode={} · limit={}",
-            args.render_mode, args.limit
-        );
-        if args.fixture.is_some() {
-            println!(
-                "[dry-run] fixture={}",
-                args.fixture.as_ref().unwrap().display()
-            );
-        } else {
-            println!("[dry-run] requires SAASMAKER_SESSION_TOKEN for live SaaS Maker");
-        }
-        return Ok(());
-    }
-
-    let engine = create_renderer(&args.render_mode, repo_root, ProcessRunner)?;
-    let publisher = reel::marketing::resolve_artifact_publisher(
-        repo_root,
-        ProcessRunner,
-        ArtifactPublisherConfig {
-            r2_bucket: args.artifact_r2_bucket.clone(),
-            public_base_url: args.artifact_base_url.clone(),
-        },
-    );
-
-    let report = if let Some(fixture) = &args.fixture {
-        let posts = load_fixture_posts(fixture)?;
-        let client = StubMarketingClient::new(posts);
-        render_accepted_marketing_posts(&client, &engine, &publisher, repo_root, &options)?
-    } else {
-        let client = SaaSMakerClient::from_env();
-        render_accepted_marketing_posts(&client, &engine, &publisher, repo_root, &options)?
-    };
-
-    println!("{}", serde_json::to_string_pretty(&report)?);
-    Ok(())
-}
-
-fn cmd_post(repo_root: &Path, args: &cli::PostArgs) -> Result<()> {
-    if !args.execute {
-        println!(
-            "[dry-run] would post ready marketing videos · provider={} · limit={}",
-            args.posting_provider, args.limit
-        );
-        return Ok(());
-    }
-    let now = OffsetDateTime::now_utc();
-    let poster = create_poster(&args.posting_provider, repo_root, now)?;
-    let options = PostReadyOptions {
-        limit: args.limit,
-        project_slug: args.project_slug.clone(),
-        channel: args.channel.clone(),
-        include_unscheduled: args.include_unscheduled,
-        missed_only: args.missed_only,
-        confirm_post: true,
-    };
-    let report = if let Some(fixture) = &args.fixture {
-        let posts = load_fixture_posts(fixture)?;
-        let client = StubMarketingClient::new(posts);
-        post_ready_marketing_videos(&client, &poster, now, &options)?
-    } else {
-        let client = SaaSMakerClient::from_env();
-        post_ready_marketing_videos(&client, &poster, now, &options)?
-    };
-    println!("{}", serde_json::to_string_pretty(&report)?);
-    Ok(())
-}
-
-fn cmd_metrics(repo_root: &Path, args: &cli::MetricsArgs) -> Result<()> {
-    if !args.execute {
-        println!(
-            "[dry-run] would sync sent post metrics · status={} · limit={}",
-            args.status, args.limit
-        );
-        if args.fixture.is_some() {
-            println!(
-                "[dry-run] fixture={}",
-                args.fixture.as_ref().unwrap().display()
-            );
-        } else {
-            println!(
-                "[dry-run] requires SAASMAKER_SESSION_TOKEN plus configured YouTube/Instagram accounts"
-            );
-        }
-        return Ok(());
-    }
-
-    let now = OffsetDateTime::now_utc();
-    let options = MetricsSyncOptions {
-        limit: args.limit,
-        project_slug: args.project_slug.clone(),
-        channel: args.channel.clone(),
-        status: args.status.clone(),
-        confirm_sync: true,
-    };
-    let fetcher = ChannelRoutingMetricsFetcher::from_config(repo_root)?;
-    let report = if let Some(fixture) = &args.fixture {
-        let posts = load_fixture_posts(fixture)?;
-        let client = StubMarketingClient::new(posts);
-        sync_marketing_post_metrics(&client, &fetcher, now, &options)?
-    } else {
-        let client = SaaSMakerClient::from_env();
-        sync_marketing_post_metrics(&client, &fetcher, now, &options)?
-    };
-    println!("{}", serde_json::to_string_pretty(&report)?);
-    Ok(())
-}
-
 fn cmd_config(repo_root: &Path, args: &cli::ConfigArgs) -> Result<()> {
     match args.which {
         ConfigKind::ProjectUrls => {
@@ -365,23 +154,6 @@ fn cmd_config(repo_root: &Path, args: &cli::ConfigArgs) -> Result<()> {
             for (slug, url) in &urls {
                 println!("{slug} → {url}");
             }
-        }
-        ConfigKind::SocialAccounts => {
-            let path = args
-                .path
-                .clone()
-                .unwrap_or_else(|| repo_root.join("config/social-accounts.json"));
-            let raw = std::fs::read_to_string(&path)
-                .with_context(|| format!("reading social accounts {}", path.display()))?;
-            let cfg = resolve_social_accounts(&raw, |k| std::env::var(k).ok())?;
-            println!(
-                "youtube accounts: {}",
-                cfg.youtube.keys().cloned().collect::<Vec<_>>().join(", ")
-            );
-            println!(
-                "instagram accounts: {}",
-                cfg.instagram.keys().cloned().collect::<Vec<_>>().join(", ")
-            );
         }
     }
     Ok(())

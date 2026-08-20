@@ -15,8 +15,8 @@ const receipt = {
   provider: 'brand-video-local', status: 'rendered', artifact: '/tmp/proof.mp4', publicUrl: 'https://assets.example.test/proof.mp4',
 };
 
-test('distribution envelope survives a SaaS Maker notes round trip', () => {
-  const request = buildDistributionRequest(approved, receipt, { provider: 'native', createdAt: '2026-07-12T12:00:00Z' });
+test('distribution envelope survives a persisted notes round trip', () => {
+  const request = buildDistributionRequest(approved, receipt, { provider: 'postiz', createdAt: '2026-07-12T12:00:00Z' });
   const envelope = buildDistributionEnvelope(approved, { mediaReceipt: receipt, distributionRequest: request });
   const notes = upsertDistributionEnvelope('Human-readable operator note.', envelope);
   const parsed = parseDistributionEnvelope(notes);

@@ -1,0 +1,38 @@
+{
+  "schema": "fleet.lyric-video-canary.v1",
+  "id": "twinkle-literal-canary",
+  "title": "Twinkle, Literally",
+  "durationSeconds": 12,
+  "timedLyricsFormat": "lrc",
+  "timedLyrics": "[00:00.00]Twinkle, twinkle, little star\n[00:03.00]How I wonder what you are\n[00:06.00]Up above the world so high\n[00:09.00]Like a diamond in the sky",
+  "attribution": "Words: “The Star,” Jane Taylor (1783–1824). Melody: traditional “Ah! vous dirai-je, maman.” Recording: newly synthesized by Fleet for this canary.",
+  "rights": {
+    "composition": "public-domain",
+    "master": "original-recording",
+    "evidence": "Library of Congress item 2023834988 identifies an 1880 score in a public-domain collection; Project Gutenberg identifies the poem and Jane Taylor. The audio is generated locally from declared note frequencies and uses no source recording.",
+    "evidenceUrl": "https://www.loc.gov/item/2023834988/",
+    "assertedBy": "Fleet canary fixture"
+  },
+  "sources": [
+    {
+      "label": "Library of Congress public-domain score",
+      "url": "https://www.loc.gov/item/2023834988/"
+    },
+    {
+      "label": "Project Gutenberg text and Jane Taylor attribution",
+      "url": "https://www.gutenberg.org/cache/epub/2619/pg2619-images.html#THE_STAR"
+    }
+  ],
+  "visualStyle": "blender-literal",
+  "useBlender": true,
+  "reducedMotion": false,
+  "recording": {
+    "kind": "fleet-synthesized-original",
+    "sampleRate": 44100,
+    "channels": 1,
+    "bitsPerSample": 16,
+    "waveform": "sine with quiet second harmonic",
+    "tempo": "3 seconds per lyric phrase",
+    "sourceRecordingUsed": false
+  }
+}

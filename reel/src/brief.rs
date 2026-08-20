@@ -6,7 +6,6 @@
 //! duration bounds, the reel-channel body shape check) mirror the JS exactly so
 //! the Rust orchestrator accepts/rejects the same inputs as the Node glue.
 
-use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -54,11 +53,7 @@ pub const PROOF_TYPES: &[&str] = &[
 ];
 
 pub const RENDER_MODES: &[&str] = &[
-    "stock",
-    "remotion",
-    "reel-maker",
     "mock",
-    "moneyprinterturbo",
     "grok",
     "grok-video",
     "grok-videos",
@@ -69,6 +64,7 @@ pub const RENDER_MODES: &[&str] = &[
     "html",
     "html-composition",
     "web-composition",
+    "blender",
 ];
 
 pub fn is_reel_channel(channel: &str) -> bool {
@@ -180,7 +176,7 @@ fn normalize_proof_type(input: &RawInput) -> Result<Option<String>, BriefError> 
 
 fn normalize_render_mode(input: &RawInput) -> Result<String, BriefError> {
     let value = optional_string(lookup(input, &["renderMode", "render_mode"]))
-        .unwrap_or_else(|| "stock".to_string());
+        .unwrap_or_else(|| "html-composition".to_string());
     if RENDER_MODES.contains(&value.as_str()) {
         Ok(value)
     } else {
@@ -317,120 +313,6 @@ pub fn normalize_from_value(value: &serde_json::Value) -> Result<VideoBrief, Bri
     normalize_video_brief(&map)
 }
 
-/// Port of `toMoneyPrinterRequest` — builds the MoneyPrinterTurbo `/api/v1/videos`
-/// request body. Pure data assembly; the HTTP call lives in the engine adapter.
-pub fn to_money_printer_request(brief: &VideoBrief) -> serde_json::Value {
-    let mut body = BTreeMap::new();
-    body.insert(
-        "video_subject".to_string(),
-        serde_json::json!(format!("{}: {}", brief.project_slug, brief.title)),
-    );
-    body.insert(
-        "video_script".to_string(),
-        serde_json::json!(build_narration_script(brief)),
-    );
-    body.insert(
-        "video_terms".to_string(),
-        serde_json::json!(extract_search_terms(brief)),
-    );
-    body.insert("video_aspect".to_string(), serde_json::json!("9:16"));
-    body.insert("video_concat_mode".to_string(), serde_json::json!("random"));
-    body.insert(
-        "video_transition_mode".to_string(),
-        serde_json::json!("FadeIn"),
-    );
-    body.insert("video_clip_duration".to_string(), serde_json::json!(4));
-    body.insert("video_count".to_string(), serde_json::json!(1));
-    body.insert("video_source".to_string(), serde_json::json!("pexels"));
-    body.insert(
-        "voice_name".to_string(),
-        serde_json::json!("en-US-AriaNeural-Female"),
-    );
-    body.insert("voice_rate".to_string(), serde_json::json!(1.05));
-    body.insert("bgm_type".to_string(), serde_json::json!("random"));
-    body.insert("bgm_volume".to_string(), serde_json::json!(0.12));
-    body.insert("subtitle_enabled".to_string(), serde_json::json!(true));
-    body.insert("subtitle_position".to_string(), serde_json::json!("bottom"));
-    body.insert("font_size".to_string(), serde_json::json!(68));
-    body.insert("stroke_color".to_string(), serde_json::json!("#000000"));
-    body.insert("stroke_width".to_string(), serde_json::json!(2));
-    serde_json::to_value(body).expect("static map serializes")
-}
-
-fn build_narration_script(brief: &VideoBrief) -> String {
-    let mut lines = vec![brief.hook.clone(), clean_for_narration(&brief.body)];
-    if let Some(cta) = &brief.cta {
-        lines.push(format!("Try this next: {cta}"));
-    }
-    lines.retain(|l| !l.trim().is_empty());
-    lines.join("\n\n")
-}
-
-fn extract_search_terms(brief: &VideoBrief) -> Vec<String> {
-    let mut terms = vec![brief.project_slug.replace('-', " ")];
-    if let Some(a) = &brief.audience {
-        terms.push(a.clone());
-    }
-    terms.push(brief.title.clone());
-    terms.push("software demo".to_string());
-    terms.push("startup product".to_string());
-    // de-dup preserving order, take first 5
-    let mut seen = Vec::new();
-    for t in terms.into_iter().filter(|t| !t.trim().is_empty()) {
-        if !seen.contains(&t) {
-            seen.push(t);
-        }
-    }
-    seen.into_iter().take(5).collect()
-}
-
-fn clean_for_narration(text: &str) -> String {
-    // Approximate the JS regex chain; good enough for narration text.
-    let mut out = String::new();
-    for line in text.lines() {
-        let mut l = line.trim_start();
-        // strip leading markdown heading markers `#+ `
-        while l.starts_with('#') {
-            l = &l[1..];
-        }
-        let l = l.trim_start();
-        let l = l.replace("**", "");
-        // strip leading list markers
-        let l = l.trim_start_matches(['-', '*', ' ']);
-        out.push_str(l);
-        out.push('\n');
-    }
-    let lowered_labels = [
-        "asset prompts:",
-        "asset prompt:",
-        "edit notes:",
-        "edit note:",
-        "shot list:",
-        "captions:",
-        "caption:",
-    ];
-    let mut cleaned = out;
-    for label in lowered_labels {
-        // case-insensitive removal of the label token
-        cleaned = remove_case_insensitive(&cleaned, label);
-    }
-    cleaned.trim().to_string()
-}
-
-fn remove_case_insensitive(haystack: &str, needle: &str) -> String {
-    let lower_hay = haystack.to_lowercase();
-    let lower_needle = needle.to_lowercase();
-    let mut result = String::with_capacity(haystack.len());
-    let mut idx = 0;
-    while let Some(pos) = lower_hay[idx..].find(&lower_needle) {
-        let start = idx + pos;
-        result.push_str(&haystack[idx..start]);
-        idx = start + needle.len();
-    }
-    result.push_str(&haystack[idx..]);
-    result
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -455,7 +337,7 @@ mod tests {
         })))
         .unwrap();
         assert_eq!(brief.project_slug, "linkchat");
-        assert_eq!(brief.render_mode, "stock");
+        assert_eq!(brief.render_mode, "html-composition");
         assert_eq!(brief.duration_seconds, 20.0);
         assert!(brief.cta.is_none());
     }
@@ -589,26 +471,4 @@ mod tests {
         assert_eq!(steps[1].action, "click");
     }
 
-    #[test]
-    fn money_printer_request_has_vertical_aspect_and_terms() {
-        let brief = normalize_video_brief(&raw(serde_json::json!({
-            "id": "b1",
-            "project_slug": "high-signal",
-            "channel": "blog",
-            "title": "Score before you post",
-            "hook": "Noise",
-            "body": "b",
-            "cta": "Try it"
-        })))
-        .unwrap();
-        let req = to_money_printer_request(&brief);
-        assert_eq!(req["video_aspect"], "9:16");
-        let terms = req["video_terms"].as_array().unwrap();
-        assert!(terms.iter().any(|t| t == "high signal"));
-        assert!(terms.len() <= 5);
-        assert!(req["video_script"]
-            .as_str()
-            .unwrap()
-            .contains("Try this next: Try it"));
-    }
 }

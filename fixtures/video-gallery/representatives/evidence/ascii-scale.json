@@ -1,0 +1,17 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "ascii-story",
+  "proofRole": "primary",
+  "rangeLabel": "ASCII · staged narrative",
+  "motionTags": [
+    "scene-progression",
+    "glyph-animation"
+  ],
+  "renderer": "ascii-raster-ffmpeg@2",
+  "sourcePosture": "local-render",
+  "durationSeconds": 8,
+  "sha256": "669c208c0989c31b813dc836230d9eb0090d0f6cb36746f9047687f537758174",
+  "source": {
+    "kind": "fleet-owned-local-proof"
+  }
+}

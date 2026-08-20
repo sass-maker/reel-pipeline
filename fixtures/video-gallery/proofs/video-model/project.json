@@ -1,0 +1,66 @@
+{
+  "schema": "reel-pipeline.local-video-forge.v0.1",
+  "project": {
+    "name": "marketing-gallery-video-model-range",
+    "aspectRatio": "9:16",
+    "fps": 24,
+    "targetDurationSeconds": 6,
+    "style": "three distinct rights-safe image-to-video capability proofs"
+  },
+  "shots": [
+    {
+      "id": "strict-continuity",
+      "narration": "",
+      "durationSeconds": 6,
+      "mode": "image-to-video",
+      "keyframe": "../../assets/image-stories/cinematic-world.webp",
+      "keyframeApproved": true,
+      "motionPrompt": "One continuous controlled cinematic shot. The small explorer remains perfectly recognizable and nearly still while the translucent alien leaves breathe gently in a light wind, distant dust drifts, and the camera makes a very slow stable push forward. Preserve the architecture, planet, anatomy, framing, and warm cinematic color grade with no cut.",
+      "negativePrompt": "character morphing, extra limbs, disappearing subject, fast camera, sudden cut, text, logo, watermark",
+      "preview": {
+        "preset": "draft",
+        "seeds": [6021, 6022, 6023],
+        "width": 384,
+        "height": 640,
+        "frames": 145,
+        "fps": 24
+      }
+    },
+    {
+      "id": "balanced-object-motion",
+      "narration": "",
+      "durationSeconds": 6,
+      "mode": "image-to-video",
+      "keyframe": "../../assets/image-stories/three-dimensional-world.webp",
+      "keyframeApproved": true,
+      "motionPrompt": "Premium product-film motion in one continuous studio shot. The central sculptural ribbons rotate slowly as one coherent object, transparent glass spheres orbit at different depths, metallic highlights travel across the surfaces, and the camera performs a restrained clockwise arc. Preserve object geometry, material quality, black gallery background, and elegant framing.",
+      "negativePrompt": "melting geometry, broken object, duplicated sculpture, camera shake, sudden cut, text, logo, watermark",
+      "preview": {
+        "preset": "draft",
+        "seeds": [7031, 7032, 7033],
+        "width": 384,
+        "height": 640,
+        "frames": 145,
+        "fps": 24
+      }
+    },
+    {
+      "id": "experimental-transformation",
+      "narration": "",
+      "durationSeconds": 6,
+      "mode": "image-to-video",
+      "keyframe": "../../assets/image-stories/editorial-world.webp",
+      "keyframeApproved": true,
+      "motionPrompt": "Experimental tactile editorial collage animation. Paper layers separate in depth, the blue window unfolds into a portal, the train glides behind the composition, the bicycle wheel turns, and the halftone hands rearrange the red and cream cutouts. Use crisp stop-motion rhythm, visible paper texture, strong parallax, and one coherent vertical composition.",
+      "negativePrompt": "photoreal face, extra fingers, illegible text, muddy colors, camera shake, logo, watermark",
+      "preview": {
+        "preset": "draft",
+        "seeds": [8041, 8042, 8043],
+        "width": 384,
+        "height": 640,
+        "frames": 145,
+        "fps": 24
+      }
+    }
+  ]
+}

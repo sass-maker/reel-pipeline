@@ -1,0 +1,55 @@
+{
+  "schema": "fleet.studio-theme-packs.v1",
+  "themes": [
+    {
+      "id": "auto",
+      "name": "Auto",
+      "description": "Infer a compatible theme from the prompt; otherwise use original nightlife.",
+      "sourcePosture": "original",
+      "contentScope": "general",
+      "promptFragment": "",
+      "negativePrompt": "",
+      "commercialRightsRequired": false
+    },
+    {
+      "id": "original-nightlife",
+      "name": "Original nightlife",
+      "description": "Original adult partygoers, neon clubs, karaoke, rooftops, and after-hours energy.",
+      "sourcePosture": "original",
+      "contentScope": "general",
+      "promptFragment": "original adult partygoers, neon nightclub, rooftop party, karaoke, dancing, candid nightlife energy",
+      "negativePrompt": "existing franchise character, celebrity, real person",
+      "commercialRightsRequired": false
+    },
+    {
+      "id": "original-anime",
+      "name": "Original anime",
+      "description": "Original adult anime cast with high-energy nightlife styling.",
+      "sourcePosture": "original",
+      "contentScope": "general",
+      "promptFragment": "original adult anime characters, expressive faces, stylish nightlife fashion, neon party, dynamic anime illustration",
+      "negativePrompt": "existing franchise character, child, school uniform",
+      "commercialRightsRequired": false
+    },
+    {
+      "id": "avengers-private",
+      "name": "Avengers — private concept",
+      "description": "Named Marvel characters for private concepting; commercial preparation requires operator-supplied rights evidence.",
+      "sourcePosture": "named-ip",
+      "contentScope": "general",
+      "promptFragment": "adult Avengers heroes, Captain America, Iron Man, Thor from Marvel, Black Widow from Marvel, fully clothed iconic superhero costumes",
+      "negativePrompt": "child, young-looking, nude, explicit",
+      "commercialRightsRequired": true
+    },
+    {
+      "id": "dc-private",
+      "name": "DC heroes — private concept",
+      "description": "Named DC characters for private concepting; commercial preparation requires operator-supplied rights evidence.",
+      "sourcePosture": "named-ip",
+      "contentScope": "general",
+      "promptFragment": "adult DC superheroes, Batman, Wonder Woman, Superman, Harley Quinn, fully clothed iconic superhero costumes",
+      "negativePrompt": "child, young-looking, nude, explicit",
+      "commercialRightsRequired": true
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import { mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 
-import { AsciiAnimationAdapter } from '../src/adapters/ascii-animation.js';
+import { AsciiAnimationAdapter, buildAsciiTheme } from '../src/adapters/ascii-animation.js';
 import { createDraftVideo, createRenderer } from '../src/pipeline.js';
 import { normalizeVideoBrief } from '../src/video-brief.js';
 
@@ -33,6 +33,20 @@ test('video brief accepts ascii render modes', () => {
   });
 
   assert.equal(brief.renderMode, 'ascii-fable');
+});
+
+test('ASCII palettes change both browser and raster color themes', () => {
+  const base = {
+    title: 'ASCII scale',
+    hook: 'A small signal becomes a moving story.',
+    body: reelBody,
+  };
+  const amber = buildAsciiTheme({ ...base, renderOptions: { palette: 'amber' } });
+  const cobalt = buildAsciiTheme({ ...base, renderOptions: { palette: 'cobalt' } });
+  assert.equal(cobalt.palette.id, 'cobalt');
+  assert.notEqual(cobalt.palette.bg, amber.palette.bg);
+  assert.notDeepEqual(cobalt.colors.bg, amber.colors.bg);
+  assert.notDeepEqual(cobalt.colors.blue, amber.colors.blue);
 });
 
 test('AsciiAnimationAdapter smoke proves request to status to artifact metadata', async () => {

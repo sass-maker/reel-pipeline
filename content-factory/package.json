@@ -1,0 +1,14 @@
+{
+  "name": "@fleet/content-factory",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Generation-only wrapper for versioned briefs and immutable artifact manifests.",
+  "scripts": {
+    "render:pro": "cd .. && node content-factory/scripts/render-pro.js",
+    "render:package": "cd .. && node content-factory/scripts/render-content-package.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

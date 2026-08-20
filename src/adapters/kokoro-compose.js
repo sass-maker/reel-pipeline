@@ -1,30 +1,18 @@
 import { spawnSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
-import { globSync } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { KokoroTts, isKokoroReady } from './kokoro.js';
 import { fetchScenebRoll } from './pexels.js';
 import { composeLesson } from '../composer/lesson-composer.js';
 
-const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const MPT_CONFIG = path.join(REPO_ROOT, 'engines', 'MoneyPrinterTurbo', 'config.toml');
 const DEFAULT_ARTIFACT_DIR = './artifacts/kokoro';
 
 /**
- * Resolve a Pexels API key: env first, then the local MoneyPrinterTurbo
- * config so the kokoro engine needs no new credentials. Never log the value.
+ * Resolve the Pexels API key without coupling the local renderer to another
+ * engine checkout. Never log the value.
  */
-export function resolvePexelsKey({ configPath = MPT_CONFIG } = {}) {
+export function resolvePexelsKey() {
   if (process.env.PEXELS_API_KEY?.trim()) return process.env.PEXELS_API_KEY.trim();
-  try {
-    const toml = readFileSync(configPath, 'utf8');
-    const match = toml.match(/^\s*pexels_api_keys\s*=\s*\[\s*"([^"]+)"/m);
-    if (match) return match[1];
-  } catch {
-    // fall through — caller raises the actionable error
-  }
   return null;
 }
 
@@ -32,8 +20,7 @@ let cachedFfmpegPath;
 
 /**
  * Captions need ffmpeg's drawtext filter, which some Homebrew builds lack.
- * Resolve: FFMPEG_PATH env → system ffmpeg if it has drawtext → the static
- * imageio ffmpeg bundled in the MoneyPrinterTurbo venv.
+ * Resolve: FFMPEG_PATH env → system ffmpeg.
  */
 export function resolveFfmpegPath() {
   if (process.env.FFMPEG_PATH?.trim()) return process.env.FFMPEG_PATH.trim();
@@ -42,15 +29,26 @@ export function resolveFfmpegPath() {
     cachedFfmpegPath = 'ffmpeg';
     return cachedFfmpegPath;
   }
-  const bundled = globSync(
-    path.join(REPO_ROOT, 'engines', 'MoneyPrinterTurbo', '.venv', 'lib', 'python*', 'site-packages', 'imageio_ffmpeg', 'binaries', 'ffmpeg-*'),
-  );
-  if (bundled.length && hasDrawtext(bundled[0])) {
-    cachedFfmpegPath = bundled[0];
-    return cachedFfmpegPath;
-  }
   cachedFfmpegPath = 'ffmpeg';
   return cachedFfmpegPath;
+}
+
+export function probeKokoroComposeReadiness(options = {}) {
+  const kokoroReady = options.kokoroReady ?? isKokoroReady(options.kokoroDir);
+  if (!kokoroReady) {
+    return { ready: false, blocker: 'Install the local Kokoro model with `npm run setup:kokoro`.' };
+  }
+  const pexelsReady = options.pexelsReady
+    ?? Boolean(options.pexelsApiKey || resolvePexelsKey());
+  if (!pexelsReady) {
+    return { ready: false, blocker: 'Configure a Pexels key before using local narrated video.' };
+  }
+  const ffmpegPath = options.ffmpegPath ?? resolveFfmpegPath();
+  const ffmpegReady = options.ffmpegReady ?? hasDrawtext(ffmpegPath);
+  if (!ffmpegReady) {
+    return { ready: false, blocker: 'Install an FFmpeg build with the drawtext filter before using local narrated video.' };
+  }
+  return { ready: true, blocker: null };
 }
 
 function hasDrawtext(binary) {
@@ -89,7 +87,7 @@ export class KokoroComposeAdapter {
     }
     const pexelsKey = this.pexelsKey ?? resolvePexelsKey();
     if (!pexelsKey) {
-      throw new Error('no Pexels key found — set PEXELS_API_KEY or configure engines/MoneyPrinterTurbo/config.toml');
+      throw new Error('no Pexels key found — set PEXELS_API_KEY');
     }
 
     const taskId = `kokoro_${brief.id}_${Date.now()}`;

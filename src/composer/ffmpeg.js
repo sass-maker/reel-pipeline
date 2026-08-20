@@ -50,5 +50,31 @@ export function createFfmpegRunner(options = {}) {
     }
   }
 
-  return { runFfmpeg, probeDurationSeconds, ffmpegPath, ffprobePath };
+  async function probeHasAudioStream(filePath) {
+    try {
+      const { stdout } = await execFileAsync(ffprobePath, [
+        '-v',
+        'error',
+        '-select_streams',
+        'a:0',
+        '-show_entries',
+        'stream=index',
+        '-of',
+        'csv=p=0',
+        filePath,
+      ]);
+      return String(stdout).trim().length > 0;
+    } catch (error) {
+      if (error?.code === 'ENOENT') throw new FfmpegNotFoundError(ffprobePath);
+      throw error;
+    }
+  }
+
+  return {
+    runFfmpeg,
+    probeDurationSeconds,
+    probeHasAudioStream,
+    ffmpegPath,
+    ffprobePath,
+  };
 }

@@ -1,6 +1,6 @@
 import { createReadStream } from 'node:fs';
 
-export function sendAnonymousArtifact(req, res, opened, { download = false } = {}) {
+export function sendAnonymousArtifact(req, res, opened, { download = false, cors = false } = {}) {
   if (!opened) return sendJson(res, 404, { error: { code: 'not_found', message: 'video not found' } });
   const state = opened.state ?? opened.status;
   if (state !== 'completed' || opened.reviewed === false || !opened.path) {
@@ -27,6 +27,7 @@ export function sendAnonymousArtifact(req, res, opened, { download = false } = {
     'cache-control': 'private, no-store',
     'content-disposition': `${download ? 'attachment' : 'inline'}; filename="${filename}"`,
   };
+  if (cors) headers['access-control-allow-origin'] = '*';
   if (range) {
     headers['content-range'] = `bytes ${range.start}-${range.end}/${size}`;
     headers['content-length'] = String(range.end - range.start + 1);

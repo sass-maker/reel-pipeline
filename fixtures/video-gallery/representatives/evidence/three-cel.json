@@ -1,0 +1,18 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "threejs-scene",
+  "proofRole": "primary",
+  "rangeLabel": "Three.js · tracked orbit",
+  "motionTags": [
+    "tracked-orbit",
+    "toon-world"
+  ],
+  "renderer": "three-webgl-visual-lab@2",
+  "sourcePosture": "specialist-proof",
+  "durationSeconds": 8,
+  "sha256": "060218d25ac07f3e5eb32cba3b4dc9ab6625f3ca46b6b37e673851d4796eb050",
+  "source": {
+    "kind": "live-browser-capture",
+    "capturedBy": "scripts/capture-live-gallery-proofs.js"
+  }
+}

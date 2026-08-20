@@ -1,7 +1,6 @@
 import http from 'node:http';
 import { FileReelStore } from '../file-reel-store.js';
-import { createDraftVideo, createRenderResponse, getDraftVideoStatus, renderAcceptedMarketingPosts, renderReelDraft } from '../pipeline.js';
-import { postReadyMarketingVideos } from '../posting.js';
+import { createDraftVideo, createRenderResponse, getDraftVideoStatus, renderReelDraft } from '../pipeline.js';
 import { createReelDraft, decideRenderedReel, decideReelDraft, listReelDrafts } from '../reel-intake.js';
 import { reelDraftInputFromSignal } from '../signal-intake.js';
 import { reviewPageHtml } from '../review-ui.js';
@@ -24,32 +23,36 @@ const port = Number(process.env.PORT ?? 4317);
 export function createServer(options = {}) {
   const reelOptions = { ...options, reelStore: options.reelStore ?? new FileReelStore(options.reelStoreOptions) };
   const lessonOptions = { ...options, lessonStore: options.lessonStore ?? new FileLessonStore(options.lessonStoreOptions) };
+  const studioOptions = options.studio ?? {};
   return http.createServer(async (req, res) => {
     try {
-      if (req.method === 'GET' && req.url === '/health') {
+      const requestUrl = new URL(req.url, 'http://127.0.0.1');
+      if (req.method === 'GET' && requestUrl.pathname === '/health') {
         return json(res, 200, { ok: true });
       }
-      if (req.method === 'GET' && req.url === '/') {
+      if (req.method === 'GET' && requestUrl.pathname === '/') {
         return anonymousHtml(res, anonymousVideoPageHtml());
       }
-      if (req.method === 'GET' && req.url === '/review') {
+      if (req.method === 'GET' && requestUrl.pathname === '/review') {
         return html(res, 200, reviewPageHtml());
       }
-      if (req.method === 'GET' && req.url === '/studio') {
+      if (req.method === 'GET' && requestUrl.pathname === '/studio') {
         return html(res, 200, studioPageHtml());
       }
       if (req.url?.startsWith('/studio/')) {
-        const url = new URL(req.url, 'http://127.0.0.1');
         const result = await handleStudioRequest(
           req.method,
-          url.pathname,
+          requestUrl.pathname,
           () => readJson(req),
-          options.studio ?? {},
-          Object.fromEntries(url.searchParams),
+          studioOptions,
+          Object.fromEntries(requestUrl.searchParams),
         );
         if (result?.raw) {
-          res.writeHead(result.status, { 'content-type': result.raw.contentType });
-          return res.end(result.raw.content);
+          return sendAnonymousArtifact(req, res, {
+            state: 'completed',
+            reviewed: true,
+            ...result.raw,
+          }, { cors: true });
         }
         if (result) return json(res, result.status, result.body);
       }
@@ -121,16 +124,6 @@ export function createServer(options = {}) {
         const body = await readJson(req);
         const data = await createDraftVideo(body, options);
         return json(res, 201, { data: createRenderResponse(data) });
-      }
-      if (req.method === 'POST' && req.url === '/marketing/render-accepted') {
-        const body = await readJson(req);
-        const data = await renderAcceptedMarketingPosts({ ...options, ...body });
-        return json(res, 200, { data });
-      }
-      if (req.method === 'POST' && req.url === '/marketing/post-ready') {
-        const body = await readJson(req);
-        const data = await postReadyMarketingVideos({ ...options, ...body });
-        return json(res, 200, { data });
       }
       if (req.method === 'POST' && req.url === '/lessons') {
         const body = await readJson(req);

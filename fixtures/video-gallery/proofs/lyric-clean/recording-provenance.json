@@ -1,0 +1,125 @@
+{
+  "schema": "fleet.original-recording-provenance.v1",
+  "fixture": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/test/fixtures/lyrics/twinkle-literal-canary.json",
+  "generatedAt": "2026-08-02T14:54:29.828Z",
+  "output": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/twinkle-fleet-original.wav",
+  "sampleRate": 44100,
+  "sampleCount": 529200,
+  "durationSeconds": 12,
+  "sourceRecordingUsed": false,
+  "generator": "scripts/render-lyric-canary.js",
+  "notes": [
+    {
+      "name": "C4",
+      "beats": 1
+    },
+    {
+      "name": "C4",
+      "beats": 1
+    },
+    {
+      "name": "G4",
+      "beats": 1
+    },
+    {
+      "name": "G4",
+      "beats": 1
+    },
+    {
+      "name": "A4",
+      "beats": 1
+    },
+    {
+      "name": "A4",
+      "beats": 1
+    },
+    {
+      "name": "G4",
+      "beats": 2
+    },
+    {
+      "name": "F4",
+      "beats": 1
+    },
+    {
+      "name": "F4",
+      "beats": 1
+    },
+    {
+      "name": "E4",
+      "beats": 1
+    },
+    {
+      "name": "E4",
+      "beats": 1
+    },
+    {
+      "name": "D4",
+      "beats": 1
+    },
+    {
+      "name": "D4",
+      "beats": 1
+    },
+    {
+      "name": "C4",
+      "beats": 2
+    },
+    {
+      "name": "G4",
+      "beats": 1
+    },
+    {
+      "name": "G4",
+      "beats": 1
+    },
+    {
+      "name": "F4",
+      "beats": 1
+    },
+    {
+      "name": "F4",
+      "beats": 1
+    },
+    {
+      "name": "E4",
+      "beats": 1
+    },
+    {
+      "name": "E4",
+      "beats": 1
+    },
+    {
+      "name": "D4",
+      "beats": 2
+    },
+    {
+      "name": "G4",
+      "beats": 1
+    },
+    {
+      "name": "G4",
+      "beats": 1
+    },
+    {
+      "name": "F4",
+      "beats": 1
+    },
+    {
+      "name": "F4",
+      "beats": 1
+    },
+    {
+      "name": "E4",
+      "beats": 1
+    },
+    {
+      "name": "E4",
+      "beats": 1
+    },
+    {
+      "name": "D4",
+      "beats": 2
+    }
+  ]
+}

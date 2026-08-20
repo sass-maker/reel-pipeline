@@ -1,0 +1,126 @@
+{
+  "schema": "fleet.forge-model-profiles.v1",
+  "profiles": [
+    {
+      "id": "auto",
+      "name": "Auto",
+      "family": "router",
+      "version": "1",
+      "generationModes": ["image-to-reel", "text-to-video", "image-to-video"],
+      "speed": "Best ready fit",
+      "quality": "Constraint-aware",
+      "resourceClass": "Varies",
+      "nativeAudio": false,
+      "license": "Depends on resolved model",
+      "contentScope": "model-independent",
+      "trust": { "tier": "router", "basis": "Routes only among compatible profiles explicitly approved for Auto." },
+      "autoEligible": false,
+      "requiredPaths": [],
+      "forcedBlocker": "Local generative-model execution is paused. Import approved external media; paid providers require a separate per-job budget and operator approval.",
+      "setup": null
+    },
+    {
+      "id": "wai-illustrious-v17-sdcpp",
+      "name": "WAI Illustrious v17",
+      "family": "SDXL image-to-reel",
+      "version": "v17.0",
+      "generationModes": ["image-to-reel"],
+      "speed": "About 2 minutes for four 640x896 cards",
+      "quality": "Strong anime and character concepts",
+      "resourceClass": "7 GB weights; about 7 GB active memory",
+      "nativeAudio": false,
+      "license": "Model license not declared on the current mirror; private/local use until cleared",
+      "contentScope": "mature-capable fictional adults; application age/consent gates still apply",
+      "trust": { "tier": "community-experimental", "basis": "Community checkpoint with a pinned hash but no declared model-card license." },
+      "autoEligible": false,
+      "forcedBlocker": "Local image generation is parked. Supply an approved image manifest with rights evidence instead.",
+      "runtime": {
+        "kind": "stable-diffusion.cpp-metal",
+        "revision": "ea7f0c87cfe4c673263b4c201c596c7f1cbe2528",
+        "path": ".reel-pipeline/engines/stable-diffusion.cpp/bin/sd-cli"
+      },
+      "model": {
+        "repository": "IbarakiDouji/WAI-NSFW-illustrious-SDXL",
+        "revision": "v17.0",
+        "sha256": "f116b0c78ff441467b0cdc8f1936e1ed18ea31e9997c7b132b1b8db533f0bd04",
+        "path": ".reel-pipeline/models/wai-illustrious-v17/waiIllustriousSDXL_v170.safetensors"
+      },
+      "requiredPaths": [
+        ".reel-pipeline/engines/stable-diffusion.cpp/bin/sd-cli",
+        ".reel-pipeline/models/wai-illustrious-v17/waiIllustriousSDXL_v170.safetensors"
+      ],
+      "setup": {
+        "requiresConfirmation": true,
+        "expectedDiskGb": 7.1,
+        "status": "parked; previously verified on this host"
+      }
+    },
+    {
+      "id": "ltx-2.3-mlx-q4",
+      "name": "LTX-2.3 Q4",
+      "family": "LTX-2.3 native video",
+      "version": "2.3-mlx-q4",
+      "generationModes": ["text-to-video", "image-to-video"],
+      "speed": "Measured about 3.5 minutes per 6-second final shot on this 48 GB Mac",
+      "quality": "Final-quality local lane and current production target",
+      "resourceClass": "48 GB unified-memory host profile; reserve 45 GB including runtime, prompt model, and safety margin",
+      "nativeAudio": true,
+      "license": "Profile records upstream model terms; verify per publication",
+      "contentScope": "general",
+      "trust": { "tier": "established-family", "basis": "Established LTX family with a pinned, locally proven MLX conversion." },
+      "autoEligible": false,
+      "forcedBlocker": "Local final-video generation is parked. Import an approved external clip; no paid provider runs automatically.",
+      "runtime": {
+        "kind": "ltx-2-mlx",
+        "revision": "pinned local checkout",
+        "path": ".reel-pipeline/engines/ltx-2-mlx"
+      },
+      "model": {
+        "repository": "dgrauet/ltx-2.3-mlx-q4",
+        "revision": "local-pinned",
+        "path": ".reel-pipeline/models/ltx-2.3-mlx-q4"
+      },
+      "requiredPaths": [
+        ".reel-pipeline/engines/ltx-2-mlx",
+        ".reel-pipeline/models/ltx-2.3-mlx-q4/transformer-distilled-1.1.safetensors",
+        ".reel-pipeline/models/ltx-2.3-mlx-q4/vae_decoder.safetensors"
+      ],
+      "setup": {
+        "requiresConfirmation": true,
+        "expectedDiskGb": 45,
+        "status": "parked on this host; retained only for historical reproducibility or an explicitly approved benchmark"
+      }
+    },
+    {
+      "id": "ltx-2b-comfy-preview",
+      "name": "LTX 2B preview",
+      "family": "LTX distilled Comfy preview",
+      "version": "0.9.6-distilled-04-25",
+      "generationModes": ["image-to-video"],
+      "speed": "About 16–42 seconds per short preview",
+      "quality": "Planning preview only; not a final or hero lane",
+      "resourceClass": "About 11.5 GB weights; measured 79.42% peak system RAM",
+      "nativeAudio": false,
+      "license": "LTX-Video model terms; verify before publication",
+      "contentScope": "general",
+      "trust": { "tier": "established-family", "basis": "Official Lightricks LTX family, pinned model hashes, and a real local Comfy canary." },
+      "autoEligible": false,
+      "forcedBlocker": "Local model previews are parked. Use deterministic previews or import an approved external clip.",
+      "runtime": {
+        "kind": "comfy-local",
+        "revision": "dec5d9450a5290bcf63430409ea41018e67f41c3",
+        "path": ".reel-pipeline/engines/comfyui"
+      },
+      "requiredPaths": [
+        ".reel-pipeline/engines/comfyui/main.py",
+        ".reel-pipeline/engines/comfyui/models/checkpoints/ltxv-2b-0.9.6-distilled-04-25.safetensors",
+        ".reel-pipeline/engines/comfyui/models/text_encoders/t5xxl_fp8_e4m3fn_scaled.safetensors"
+      ],
+      "setup": {
+        "requiresConfirmation": true,
+        "expectedDiskGb": 11.5,
+        "status": "parked after local preview qualification"
+      }
+    }
+  ]
+}

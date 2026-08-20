@@ -1,30 +1,38 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import socialTemplate from '../config/social-accounts.example.json' with { type: 'json' };
+import brandConfig from '../config/brand-channels.json' with { type: 'json' };
 import { checkSocialReadiness } from '../src/social-readiness.js';
 
-test('social template declares every pre-routed account', () => {
-  assert.equal(Object.keys(socialTemplate.youtube).length, 7);
-  assert.equal(Object.keys(socialTemplate.instagram).length, 7);
-  const report = checkSocialReadiness({ configPath: '/definitely/missing.json', templatePath: 'config/social-accounts.example.json', env: {}, ffmpegReady: true, fndBin: '/definitely/missing-fnd' });
-  assert.equal(report.summary.totalAccounts, 14);
-  assert.equal(report.summary.routedAccounts, 14);
+const EXPECTED_ACCOUNTS = 12;
+
+function completeConfig() {
+  return {
+    schema: 'fleet.internal-video-channels.v1',
+    channels: Object.entries(brandConfig.brands).flatMap(([brand, value]) => value.channels.map((channel) => ({
+      brand,
+      channel,
+      accountSlug: value.accountMappings[channel],
+      credentialEnv: channel === 'youtube_shorts'
+        ? { clientId: 'YT_CLIENT', clientSecret: 'YT_SECRET', refreshToken: 'YT_REFRESH' }
+        : { userId: 'IG_USER', accessToken: 'IG_TOKEN' },
+    }))),
+  };
+}
+
+test('missing internal channel map fails closed for every pre-routed account', () => {
+  const report = checkSocialReadiness({ configPath: '/definitely/missing.json', rawConfig: { schema: 'fleet.internal-video-channels.v1', channels: [] }, env: {}, ffmpegReady: true });
+  assert.equal(report.summary.totalAccounts, EXPECTED_ACCOUNTS);
+  assert.equal(report.summary.routedAccounts, 0);
   assert.equal(report.summary.connectedAccounts, 0);
   assert.equal(report.summary.readyForLivePosting, false);
-  assert.equal(report.accounts.every((entry) => entry.accountDeclared && entry.routeConfigured), true);
+  assert.equal(report.provider, 'fleet-internal');
 });
 
-test('readiness becomes true when all declared env and infrastructure inputs exist', () => {
-  const env = {
-    SAASMAKER_SESSION_TOKEN: 'present', REEL_ARTIFACT_R2_BUCKET: 'bucket', REEL_ARTIFACT_BASE_URL: 'https://assets.example.test', PATH: '',
-  };
-  for (const accounts of Object.values(socialTemplate)) {
-    for (const account of Object.values(accounts)) {
-      for (const [key, envName] of Object.entries(account)) if (key.endsWith('Env')) env[envName] = 'present';
-    }
-  }
-  const report = checkSocialReadiness({ configPath: '/definitely/missing.json', templatePath: 'config/social-accounts.example.json', env, ffmpegReady: true, kokoroReady: true, fndBin: '/definitely/missing-fnd' });
-  assert.equal(report.summary.connectedAccounts, 14);
+test('readiness becomes true when every declared environment reference exists', () => {
+  const env = { YT_CLIENT: 'present', YT_SECRET: 'present', YT_REFRESH: 'present', IG_USER: 'present', IG_TOKEN: 'present', PATH: '' };
+  const report = checkSocialReadiness({ rawConfig: completeConfig(), env, ffmpegReady: true });
+  assert.equal(report.summary.connectedAccounts, EXPECTED_ACCOUNTS);
   assert.equal(report.summary.readyForLivePosting, true);
+  assert.equal(report.accounts.every((entry) => entry.credentialsPresent), true);
 });

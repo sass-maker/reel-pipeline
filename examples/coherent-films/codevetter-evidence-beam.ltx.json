@@ -1,0 +1,35 @@
+{
+  "schema": "fleet.local-video-forge.generation.v1",
+  "assetId": "evidence-beam-motion",
+  "purpose": "Atmospheric bridge only. This output is never used as CodeVetter product evidence.",
+  "runtime": {
+    "name": "ltx-2-mlx",
+    "revision": "e1838a855bfd1640135c424c96cb27a0c0ad150e",
+    "command": "generate",
+    "pipeline": "distilled-two-stage"
+  },
+  "model": {
+    "id": "dgrauet/ltx-2.3-mlx-q4",
+    "snapshotRevision": "53a6f5f39d9c074bc73e6a18ba391f40ddffaa68"
+  },
+  "conditioning": {
+    "image": "../../artifacts/design/probes/codevetter-film/evidence-beam.png",
+    "imageSha256": "828a0230d019cb92867bf2ff43786f12c33d0aee5f274d1b43b6e3767580b778",
+    "frameIndex": 0,
+    "strength": 1
+  },
+  "prompt": "Cinematic macro product shot of uncertain code becoming evidence. A thin white evidence beam scans slowly downward through a dark physical code surface, isolating one red risky change and resolving into a calm green verified state. One continuous controlled camera push. Stable laptop geometry, stable code blocks, subtle tactile light, black negative space, no scene cut, no people, no hands, no speech, no new text, no logos, no extra screens, no morphing interface.",
+  "seed": 2307,
+  "format": {
+    "width": 384,
+    "height": 640,
+    "frames": 81,
+    "fps": 24
+  },
+  "render": {
+    "durationSeconds": 3.375,
+    "generationSeconds": 221.7,
+    "sha256": "020004e33fc478bd9f57c943f1e5b9357e2d85d20f25eea5e31f6318239fc4d2"
+  },
+  "output": "../../.reel-pipeline/coherent-scenes/codevetter-evidence-beam/generated/evidence-beam-seed-2307.mp4"
+}

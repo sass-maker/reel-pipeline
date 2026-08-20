@@ -14,7 +14,7 @@
     },
     {
       "id": "render-mode-matrix",
-      "description": "Accepted marketing posts render through every local/no-credential render mode.",
+      "description": "A direct VideoBrief fixture renders through every local/no-credential render mode.",
       "generationCases": ["marketing-render-modes"],
       "type": "report",
       "report": "tmp/render-mode-smoke/report.json",
@@ -34,44 +34,13 @@
       "command": "npm run smoke:lesson-local"
     },
     {
-      "id": "manual-posting-fallback",
-      "description": "Rendered marketing post can move into a manual posting handoff without setting posted_at.",
+      "id": "postiz-draft-handoff",
+      "description": "Approved rendered content creates a Postiz draft through the provider-neutral handoff contract.",
       "generationCases": ["marketing-render-modes"],
-      "type": "report",
-      "report": "tmp/full-pipeline-smoke/report.json",
-      "schema": "reel-pipeline.full-pipeline-smoke.v1",
-      "expect": [{ "path": "ok", "equals": true }],
+      "type": "command",
       "requiredForFullReadiness": true,
       "refreshable": true,
-      "command": "npm run smoke:full"
-    },
-    {
-      "id": "moneyprinter-real-mp4",
-      "description": "MoneyPrinterTurbo produced a real MP4 larger than 1 KB from local canary inputs.",
-      "generationCases": ["marketing-render-modes"],
-      "type": "report",
-      "report": "tmp/moneyprinter-canary-result.json",
-      "schema": "reel-pipeline.moneyprinter-canary.v1",
-      "expect": [
-        { "path": "ok", "equals": true },
-        { "path": "outputSize", "min": 1024 }
-      ],
-      "requiredForFullReadiness": true,
-      "refreshable": true,
-      "docs": "docs/operations/runbooks/generation-readiness.md#live-render-proof",
-      "command": "MONEYPRINTER_API_URL=http://127.0.0.1:18080 npm run canary:moneyprinter"
-    },
-    {
-      "id": "reel-maker-full",
-      "description": "reel-maker adapter generated at least one reviewable or ready variant.",
-      "generationCases": ["marketing-render-modes"],
-      "type": "report",
-      "report": "tmp/reel-maker-smoke/report.json",
-      "schema": "reel-pipeline.reel-maker-smoke.v1",
-      "expect": [{ "path": "ok", "equals": true }],
-      "requiredForFullReadiness": true,
-      "refreshable": true,
-      "command": "npm run smoke:reel-maker"
+      "command": "npm run smoke:postiz"
     },
     {
       "id": "artifact-worker-range-playback",
@@ -94,7 +63,7 @@
       "generationCases": ["worker-render-pro"],
       "type": "command",
       "command": "node",
-      "args": ["--check", "scripts/render-pro.js"],
+      "args": ["--check", "content-factory/scripts/render-pro.js"],
       "requiredForFullReadiness": true
     },
     {
@@ -117,17 +86,14 @@
       "command": "npm run lesson:render -- --input test/fixtures/lessons/closures.json --auto-approve"
     },
     {
-      "id": "social-posting-prereqs",
-      "description": "Auto posting has enough OAuth material to attempt YouTube and Instagram provider flows.",
+      "id": "postiz-prereqs",
+      "description": "Postiz access and exact brand-channel integration mappings are available for draft handoff.",
       "generationCases": ["marketing-render-modes"],
-      "type": "envAnyGroup",
-      "groups": [
-        ["YOUTUBE_OAUTH_CLIENT_ID", "YOUTUBE_OAUTH_CLIENT_SECRET", "YOUTUBE_OAUTH_REFRESH_TOKEN"],
-        ["IG_APP_ID", "IG_APP_SECRET"]
-      ],
+      "type": "env",
+      "env": ["POSTIZ_API_KEY"],
       "requiredForFullReadiness": false,
       "docs": "docs/operations/runbooks/target-host-readiness.md#social-posting-prereqs",
-      "command": "npm run post:ready -- --posting-provider auto --limit 1"
+      "command": "npm run check:social -- --strict"
     },
     {
       "id": "creator-mvp-reviewed",

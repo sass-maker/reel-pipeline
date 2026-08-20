@@ -1,0 +1,43 @@
+{
+  "schema": "fleet.studio-episode-sample.v1",
+  "id": "signal-after-midnight-v4",
+  "title": "Signal After Midnight",
+  "concept": "An original adult radio engineer follows a mysterious midnight transmission through an abandoned coastal observatory and discovers that the signal is a message sent by her future self.",
+  "targetDurationSeconds": 120,
+  "seed": 4813,
+  "character": {
+    "id": "mara",
+    "revision": 1,
+    "referenceImage": "assets/episode-samples/mara-v2.png",
+    "referenceSha256": "52cf49f44158b288eff42b7a9ee23425f2ff838e4ad6f91270bd47829931f8e4",
+    "description": "Mara is the same original 38-year-old South Asian woman in every character shot, with warm brown skin, a short dark bob under a plain mustard-yellow rain hood, a completely unmarked mustard-yellow rain suit, and brown work boots.",
+    "shotIds": ["shot-02", "shot-04", "shot-06", "shot-07", "shot-08", "shot-09", "shot-11", "shot-12", "shot-14", "shot-15", "shot-18", "shot-19", "shot-20"]
+  },
+  "environment": {
+    "referenceImage": "assets/episode-samples/observatory-style-v1.png",
+    "referenceSha256": "d592b59011d172fa0edfbbf10ce284a142d5c9ed2a94c4aac11acfa591f76ffd",
+    "shotIds": ["shot-01", "shot-03", "shot-05", "shot-10", "shot-13", "shot-16", "shot-17"]
+  },
+  "beats": [
+    "The abandoned coastal observatory stands above the stormy ocean at midnight as its red radio beacon turns through the rain; no people are visible.",
+    "Inside the analog control room, Mara watches an old circular receiver glow to life.",
+    "A pulse of amber light travels along a thick brass cable from the radio tower toward the observatory dome; no people are visible.",
+    "Mara raises a simple brass compass as its needle turns toward the observatory visible through the rain-streaked window.",
+    "A compact utility van follows the wet cliff road toward the distant observatory; no driver is visible.",
+    "Mara stands alone at the chained observatory gate as the midnight pulse echoes from inside the dome.",
+    "Mara enters with a flashlight, revealing dust, salt-stained instruments, and a telescope frozen toward the horizon.",
+    "A row of dormant analog consoles with only round amber indicator lamps illuminates one by one as Mara walks deeper into the observatory.",
+    "Mara connects her portable receiver to an old patch panel and the dome machinery shudders awake.",
+    "The telescope rotates toward a patch of empty ocean rather than the night sky; no people are visible.",
+    "Mara hears her own voice emerge from the circular receiver and slowly reaches toward its pulsing amber light.",
+    "Mara notices seawater vibrating inside an old glass storm gauge as the level suddenly climbs toward a red marker.",
+    "A storm surge strikes the observatory seawall below the dome while the red beacon keeps turning; no people are visible.",
+    "Mara races through the dome and opens manual drainage gates as seawater climbs the cliff stairs.",
+    "Mara reroutes the transmitter through the telescope drive while controlled blue sparks scatter across the control room.",
+    "The observatory beacon broadcasts concentric amber evacuation pulses over the cliffs and stormy ocean; no people are visible.",
+    "Warm lights turn on in distant houses and a line of vehicles moves inland beneath the dark rain; no people are visible.",
+    "Mara watches a compass needle swing toward a safe hilltop as the receiver gives one final gentle pulse.",
+    "Mara reaches the hill and watches the first wave strike the empty observatory below while its red beacon keeps turning.",
+    "At dawn, Mara records a new message into the portable transmitter and completes the loop with a calm smile."
+  ]
+}

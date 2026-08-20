@@ -1,0 +1,278 @@
+{
+  "schema": "fleet.post-ready-video-receipt.v1",
+  "runId": "protected-hour-reference-2026-08-03T05-31-25-269Z",
+  "briefId": "protected-hour-reference",
+  "startedAt": "2026-08-03T05:31:25.269Z",
+  "completedAt": "2026-08-03T05:32:02.928Z",
+  "status": "completed",
+  "technicalStatus": "passed",
+  "editorialStatus": "pending",
+  "postReady": false,
+  "stages": {
+    "readiness": {
+      "status": "completed",
+      "blockers": []
+    },
+    "sources": {
+      "status": "completed",
+      "visualCount": 5,
+      "fallbacks": []
+    },
+    "audio-sources": {
+      "status": "completed"
+    },
+    "visual-render": {
+      "status": "completed",
+      "frameCount": 750,
+      "picture": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/visual-render/protected-hour-reference-2026-08-03T05-31-28-907Z/picture.mp4",
+      "renderer": "coherent-canvas-v1"
+    },
+    "final-master": {
+      "status": "completed",
+      "finalPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/final.mp4",
+      "captionsPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/captions.srt",
+      "mixPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/audio/final-mix.wav"
+    },
+    "technical-review": {
+      "status": "passed",
+      "findingsPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/review/technical-review.json"
+    },
+    "editorial-review": {
+      "status": "pending"
+    }
+  },
+  "blockers": [],
+  "engines": {
+    "ffmpeg": {
+      "ready": true,
+      "version": "ffmpeg version 8.1.2 Copyright (c) 2000-2026 the FFmpeg developers"
+    },
+    "ffprobe": {
+      "ready": true,
+      "version": "ffprobe version 8.1.2 Copyright (c) 2007-2026 the FFmpeg developers"
+    },
+    "chromium": {
+      "ready": true,
+      "version": "MacOS",
+      "blocker": null
+    },
+    "kokoro": {
+      "ready": true,
+      "version": "kokoro-onnx-v1.0",
+      "blocker": null
+    },
+    "localVideo": {
+      "ready": true,
+      "version": "ltx-2-mlx",
+      "optional": true,
+      "blocker": null
+    }
+  },
+  "sources": {
+    "visuals": [
+      {
+        "sceneId": "arrival",
+        "source": "assets/scene-01-arrival.png",
+        "resolvedSource": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/post-ready/reference-protected-hour/assets/scene-01-arrival.png",
+        "fallbackUsed": false,
+        "sourceType": "generated-image",
+        "license": "Fleet-owned OpenAI-generated image",
+        "hash": {
+          "sha256": "414f660f58e802426c41766cab22e960cf077dee3ea8dda3a665e500f25c3d82",
+          "bytes": 1887396
+        }
+      },
+      {
+        "sceneId": "choice",
+        "source": "assets/scene-02-choice.png",
+        "resolvedSource": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/post-ready/reference-protected-hour/assets/scene-02-choice.png",
+        "fallbackUsed": false,
+        "sourceType": "generated-image",
+        "license": "Fleet-owned OpenAI-generated image",
+        "hash": {
+          "sha256": "61081c05f72e9d003c1587c73f344b6ed0df2da43cbacdf8aca6aff9b8b7d1b5",
+          "bytes": 1957926
+        }
+      },
+      {
+        "sceneId": "making",
+        "source": "assets/scene-03-motion.mp4",
+        "resolvedSource": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/post-ready/reference-protected-hour/assets/scene-03-motion.mp4",
+        "fallbackUsed": false,
+        "sourceType": "generated-atmosphere",
+        "license": "Fleet-owned LTX-generated motion from an approved Fleet image",
+        "hash": {
+          "sha256": "75d8a56cdc6d1521ad91f252b76aa613b30f73bb395c5df93e574f3462a1075d",
+          "bytes": 1111511
+        }
+      },
+      {
+        "sceneId": "memory",
+        "source": "assets/scene-04-memory.png",
+        "resolvedSource": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/post-ready/reference-protected-hour/assets/scene-04-memory.png",
+        "fallbackUsed": false,
+        "sourceType": "generated-image",
+        "license": "Fleet-owned OpenAI-generated image",
+        "hash": {
+          "sha256": "f299f88905b96ee4aee4c09915dcda3bf7e7e7cd48aa999d22da7b115f3e9b42",
+          "bytes": 2223283
+        }
+      },
+      {
+        "sceneId": "close",
+        "source": "assets/scene-05-close.png",
+        "resolvedSource": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/post-ready/reference-protected-hour/assets/scene-05-close.png",
+        "fallbackUsed": false,
+        "sourceType": "generated-image",
+        "license": "Fleet-owned OpenAI-generated image",
+        "hash": {
+          "sha256": "925c9fef2b581e1ae9dbfb2f1e90824e424cdb074c2dae312b84851f121bfc8e",
+          "bytes": 2160520
+        }
+      }
+    ],
+    "narration": {
+      "mode": "kokoro",
+      "engine": "kokoro-onnx-v1.0",
+      "voice": "af_bella",
+      "speed": 1.04,
+      "language": "en-us",
+      "sceneHashes": {
+        "arrival": "88d468f6fce1818448640b4e56f69446863d3a23dcd46fa4f87bce4da3f8e7dc",
+        "choice": "b93f8e7969a1579afe07dd3ce2caaed9900f23f566d351955d811796087daa76",
+        "making": "fb5db5d15d5ad5cfccfb31756f527c2d0efe925d716c468e9d5a7ebe60129025",
+        "memory": "a4a40721db8b5172cf26c88d917031e6a19578e13f432892667dd83e5efe127c",
+        "close": "42e76ab89fcd37136233a753d919a318f69376ee17ceaff10adb677e79663d85"
+      }
+    },
+    "music": {
+      "mode": "generated",
+      "recipe": "fleet-arranged-bed@1",
+      "mood": "intimate, warm, quietly determined",
+      "recipePath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/audio/music-recipe.json",
+      "license": "Fleet-authored procedural audio"
+    }
+  },
+  "audio": {
+    "narration": {
+      "durationSeconds": 25,
+      "meanDb": -25.9,
+      "peakDb": -3.7,
+      "bytes": 7200102,
+      "sha256": "1573ea116b15650089366ab054567acfcd925aa242931aad9bd2bac9a295afac"
+    },
+    "music": {
+      "durationSeconds": 25,
+      "meanDb": -24,
+      "peakDb": -13.2,
+      "bytes": 28800102,
+      "sha256": "007f2a9a1964fa2b78962e7e884ec49aa701c4272ea853da459c532602a6b60e"
+    },
+    "mix": {
+      "durationSeconds": 25.002667,
+      "meanDb": -17.1,
+      "peakDb": -1.5,
+      "bytes": 14401638,
+      "sha256": "56db2bca2ea46bf2ac7a606fd703eafbb703a176a5e8ba10fdd2cb4c5190d97c",
+      "filter": "[1:a]highpass=f=75,acompressor=threshold=-20dB:ratio=2.2:attack=12:release=120:makeup=1.4,alimiter=limit=0.93,asplit=2[voice][sidechain];[2:a]afade=t=in:st=0:d=0.6,afade=t=out:st=23.8:d=1.2,volume=0.95[bed];[bed][sidechain]sidechaincompress=threshold=0.025:ratio=8:attack=18:release=360:makeup=1[ducked];[voice][ducked]amix=inputs=2:duration=longest:normalize=0,atrim=0:25,loudnorm=I=-14:TP=-1.5:LRA=9[mix]"
+    }
+  },
+  "outputs": {
+    "video": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/final.mp4",
+      "sha256": "c8cb0055df0c4a2dba9c84a3a4ab639479b83a7c6d9b545b1aa1971c1d785d97",
+      "bytes": 17261274
+    },
+    "captions": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/captions.srt",
+      "sha256": "4760ba94626bfc84ba8973f6881f15ae54a9e14ceccb5299b59baa5f823f85c6",
+      "bytes": 290
+    },
+    "narration": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/audio/narration.wav",
+      "sha256": "1573ea116b15650089366ab054567acfcd925aa242931aad9bd2bac9a295afac",
+      "bytes": 7200102
+    },
+    "music": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/audio/music.wav",
+      "sha256": "007f2a9a1964fa2b78962e7e884ec49aa701c4272ea853da459c532602a6b60e",
+      "bytes": 28800102
+    },
+    "mix": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/audio/final-mix.wav",
+      "sha256": "56db2bca2ea46bf2ac7a606fd703eafbb703a176a5e8ba10fdd2cb4c5190d97c",
+      "bytes": 14401638
+    },
+    "plan": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/production-plan.json",
+      "sha256": "e3226db6292bf2c3d50c9908f8c070c84cbb9a59096530c3c7607a2c621e209b",
+      "bytes": 5259
+    },
+    "coherentManifest": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/coherent-film.json",
+      "sha256": "9e9adc70494bcadc0c878f27ce622671caac4f0b8655135a428fffe19b145da4",
+      "bytes": 7180
+    },
+    "contactSheet": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/review/contact-sheet.jpg",
+      "sha256": "3e3630fe87e876e2514c3c5901123311606fa21f7320ce24ef18ce537b89be2a",
+      "bytes": 223157
+    },
+    "audioEvidence": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/review/audio-evidence.png",
+      "sha256": "5e7d056bcabf05fb4d3640b26f1dc2f41221daf5a8ef59524efe661d215ba097",
+      "bytes": 340600
+    },
+    "technicalReview": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/review/technical-review.json",
+      "sha256": "33bcc036d07dfd85edc20059bccd90bcbc10df7e678db2bfb3adb904ac703102",
+      "bytes": 1236
+    }
+  },
+  "review": {
+    "technical": {
+      "schema": "fleet.post-ready-technical-review.v1",
+      "status": "passed",
+      "decodedFullDuration": true,
+      "expected": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 30,
+        "durationSeconds": 25
+      },
+      "observed": {
+        "durationSeconds": 25,
+        "format": "mov,mp4,m4a,3gp,3g2,mj2",
+        "video": {
+          "codec": "h264",
+          "width": 1080,
+          "height": 1920,
+          "fps": 30
+        },
+        "audio": {
+          "codec": "aac",
+          "sampleRate": 96000,
+          "channels": 2
+        },
+        "sampledFrames": 25
+      },
+      "errors": [],
+      "warnings": [
+        "possible frozen visual for 3.13s"
+      ],
+      "evidence": {
+        "contactSheet": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/review/contact-sheet.jpg",
+        "framesDir": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/review/frames-1fps",
+        "audioEvidence": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/review/audio-evidence.png"
+      },
+      "findingsPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/.reel-pipeline/post-ready/protected-hour-reference-2026-08-03T05-31-25-269Z/review/technical-review.json"
+    },
+    "editorial": {
+      "status": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "categories": {},
+      "issues": []
+    }
+  }
+}

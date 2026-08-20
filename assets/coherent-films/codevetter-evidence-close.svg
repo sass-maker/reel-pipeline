@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="44%" r="58%">
+      <stop offset="0" stop-color="#17392c" stop-opacity=".74"/>
+      <stop offset=".6" stop-color="#0a1612" stop-opacity=".2"/>
+      <stop offset="1" stop-color="#060808" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="beam" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#8cffb0" stop-opacity="0"/>
+      <stop offset=".28" stop-color="#8cffb0"/>
+      <stop offset=".72" stop-color="#f4f2ec"/>
+      <stop offset="1" stop-color="#f4f2ec" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="1080" height="1920" fill="#060808"/>
+  <rect width="1080" height="1920" fill="url(#glow)"/>
+  <g opacity=".12" stroke="#8cffb0">
+    <path d="M120 360H960M120 560H960M120 760H960M120 960H960M120 1160H960M120 1360H960"/>
+    <path d="M240 240V1500M440 240V1500M640 240V1500M840 240V1500"/>
+  </g>
+  <rect x="526" y="250" width="28" height="1050" rx="14" fill="#8cffb0" opacity=".18" filter="url(#soft)"/>
+  <rect x="536" y="250" width="8" height="1050" rx="4" fill="url(#beam)"/>
+  <circle cx="540" cy="1258" r="18" fill="#8cffb0"/>
+  <circle cx="540" cy="1258" r="52" fill="none" stroke="#8cffb0" stroke-opacity=".35"/>
+  <g fill="#f4f2ec" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+    <text x="540" y="1480" font-size="38" font-weight="700" letter-spacing="10">CODEVETTER</text>
+    <text x="540" y="1596" font-size="76" font-weight="760">Ship with evidence.</text>
+  </g>
+  <text x="540" y="1690" fill="#8d9895" text-anchor="middle" font-size="24" letter-spacing="4" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">CHANGE → HISTORY → CHECKS → VERDICT</text>
+</svg>

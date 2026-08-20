@@ -1,13 +1,18 @@
 #!/usr/bin/env node
-import { planIdeas, produceNext, factoryStatus } from '../src/studio/factory.js';
+import { planIdeas, produceNext, factoryStatus, inspectStudioArsenal, runFactoryAutopilot } from '../src/studio/factory.js';
 
 const USAGE = `Usage: npm run factory -- <command> [flags]
 
 Commands:
   plan     --niche <niche> [--count N]     Fill the backlog with ideas
-  produce  [--count N] [--engine kokoro|moneyprinterturbo|mock]
+  produce  [--count N] [--engine kokoro|mock]
            [--duration S] [--out DIR]      Render the next N backlog ideas
   status                                    Pipeline counts + recent renders
+  arsenal [--recipe <id>] [--channel <id>] [--owner <name>]
+          [--spend-ceiling <class>] [--readiness all|ready|blocked]
+                                            Read-only machine inventory for agent planning
+  autopilot (--policy <id> | --all) [--dry-run | --execute] [--count N]
+                                            Discover safely by default; --execute writes, renders, and may create Postiz work
 
 The conveyor: plan → produce → review renders at /studio → post.
 Produce defaults to the kokoro engine (fully local).`;
@@ -54,6 +59,35 @@ async function main() {
   }
   if (command === 'status') {
     console.log(JSON.stringify(await factoryStatus({}), null, 2));
+    return;
+  }
+  if (command === 'arsenal') {
+    const result = await inspectStudioArsenal({
+      filters: {
+        recipe: flags.recipe,
+        channel: flags.channel,
+        owner: flags.owner,
+        spendCeiling: flags['spend-ceiling'],
+        readiness: flags.readiness,
+      },
+    });
+    console.log(JSON.stringify(result, null, 2));
+    return;
+  }
+  if (command === 'autopilot') {
+    if (Boolean(flags.policy) === Boolean(flags.all)) {
+      throw new Error('autopilot requires exactly one of --policy <id> or --all');
+    }
+    if (flags['dry-run'] && flags.execute) throw new Error('choose either --dry-run or --execute');
+    const result = await runFactoryAutopilot({
+      policy: typeof flags.policy === 'string' ? flags.policy : undefined,
+      all: flags.all === true,
+      execute: flags.execute === true,
+      count: flags.count ? Number(flags.count) : undefined,
+      outputDir: typeof flags.out === 'string' ? flags.out : undefined,
+    });
+    console.log(JSON.stringify(result, null, 2));
+    if (result.totals.blocked > 0 && flags.execute) process.exitCode = 2;
     return;
   }
   throw new Error(`unknown command: ${command}\n\n${USAGE}`);

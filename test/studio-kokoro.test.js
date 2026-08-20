@@ -5,7 +5,11 @@ import path from 'node:path';
 import test from 'node:test';
 
 import { KokoroTts, isKokoroReady, normalizeKokoroVoice } from '../src/adapters/kokoro.js';
-import { KokoroComposeAdapter, resolvePexelsKey } from '../src/adapters/kokoro-compose.js';
+import {
+  KokoroComposeAdapter,
+  probeKokoroComposeReadiness,
+  resolvePexelsKey,
+} from '../src/adapters/kokoro-compose.js';
 import { resolveTtsSynthesizer } from '../src/lesson-pipeline.js';
 import { StudioLlm } from '../src/studio/llm.js';
 import { generateScript } from '../src/studio/script.js';
@@ -59,20 +63,35 @@ test('lesson tts provider selection honours explicit provider', () => {
   assert.throws(() => resolveTtsSynthesizer({ ttsProvider: 'bogus' }), /unsupported LESSON_TTS_PROVIDER/);
 });
 
-test('resolvePexelsKey prefers env then falls back to the MPT config file', async (t) => {
-  const dir = await mkdtemp(path.join(tmpdir(), 'kokoro-cfg-'));
-  const configPath = path.join(dir, 'config.toml');
-  await writeFile(configPath, 'pexels_api_keys = ["file-key-123"]\n');
+test('resolvePexelsKey reads only the explicit environment variable', async (t) => {
   const original = process.env.PEXELS_API_KEY;
   t.after(() => {
     if (original === undefined) delete process.env.PEXELS_API_KEY;
     else process.env.PEXELS_API_KEY = original;
   });
   process.env.PEXELS_API_KEY = 'env-key';
-  assert.equal(resolvePexelsKey({ configPath }), 'env-key');
+  assert.equal(resolvePexelsKey(), 'env-key');
   delete process.env.PEXELS_API_KEY;
-  assert.equal(resolvePexelsKey({ configPath }), 'file-key-123');
-  assert.equal(resolvePexelsKey({ configPath: path.join(dir, 'missing.toml') }), null);
+  assert.equal(resolvePexelsKey(), null);
+});
+
+test('kokoro compose readiness includes model, Pexels, and drawtext requirements', () => {
+  assert.deepEqual(probeKokoroComposeReadiness({ kokoroReady: false }), {
+    ready: false,
+    blocker: 'Install the local Kokoro model with `npm run setup:kokoro`.',
+  });
+  assert.deepEqual(probeKokoroComposeReadiness({ kokoroReady: true, pexelsReady: false }), {
+    ready: false,
+    blocker: 'Configure a Pexels key before using local narrated video.',
+  });
+  assert.deepEqual(probeKokoroComposeReadiness({ kokoroReady: true, pexelsReady: true, ffmpegReady: false }), {
+    ready: false,
+    blocker: 'Install an FFmpeg build with the drawtext filter before using local narrated video.',
+  });
+  assert.deepEqual(probeKokoroComposeReadiness({ kokoroReady: true, pexelsReady: true, ffmpegReady: true }), {
+    ready: true,
+    blocker: null,
+  });
 });
 
 test('kokoro compose adapter runs tts, broll, and composer in order', async () => {

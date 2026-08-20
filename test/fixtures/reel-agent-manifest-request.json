@@ -1,0 +1,7 @@
+{
+  "schema": "fleet.video-agent-operation.v1",
+  "product": "reel-pipeline",
+  "operation": "manifest",
+  "operationId": "fixture-manifest",
+  "input": {}
+}

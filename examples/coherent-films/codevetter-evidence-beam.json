@@ -1,0 +1,334 @@
+{
+  "schema": "fleet.coherent-scene-film.v1",
+  "id": "codevetter-evidence-beam",
+  "title": "CodeVetter — Ship with evidence",
+  "filmSkill": {
+    "id": "evidence-beam",
+    "version": 1
+  },
+  "spine": "Uncertain agent-written code becomes a qualified shipping decision through one continuous evidence path.",
+  "directionId": "evidence-beam",
+  "publicationTier": "review-only",
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 24
+  },
+  "style": {
+    "background": "#060808",
+    "foreground": "#f4f2ec",
+    "muted": "#8d9895",
+    "accent": "#8cffb0",
+    "danger": "#ff5e68"
+  },
+  "approval": {
+    "status": "approved",
+    "approvedBy": "operator-delegated-direction",
+    "approvedAt": "2026-07-27"
+  },
+  "assets": [
+    {
+      "id": "evidence-beam-motion",
+      "kind": "video",
+      "source": "../../.reel-pipeline/coherent-scenes/codevetter-evidence-beam/generated/evidence-beam-seed-2307.mp4",
+      "sourceType": "generated-atmosphere",
+      "sourceRevision": "dgrauet/ltx-2.3-mlx-q4 seed 2307",
+      "license": "LTX-generated review asset; verify model terms before external publication",
+      "tier": "proof-only",
+      "evidence": false
+    },
+    {
+      "id": "change-proof",
+      "kind": "image",
+      "source": "../../.reel-pipeline/coherent-scenes/codevetter-evidence-beam/captures/proof-change.png",
+      "sourceType": "real-capture",
+      "sourceRevision": "c59097fa5dda601e1e42ca025c20b9915012ba7a",
+      "license": "Fleet-owned CodeVetter product capture with editorial crop and label",
+      "tier": "production-safe",
+      "evidence": true
+    },
+    {
+      "id": "trace-proof",
+      "kind": "image",
+      "source": "../../.reel-pipeline/coherent-scenes/codevetter-evidence-beam/captures/proof-trace.png",
+      "sourceType": "real-capture",
+      "sourceRevision": "c59097fa5dda601e1e42ca025c20b9915012ba7a",
+      "license": "Fleet-owned CodeVetter product capture with editorial crop and label",
+      "tier": "production-safe",
+      "evidence": true
+    },
+    {
+      "id": "verdict-proof",
+      "kind": "image",
+      "source": "../../.reel-pipeline/coherent-scenes/codevetter-evidence-beam/captures/proof-verdict.png",
+      "sourceType": "real-capture",
+      "sourceRevision": "c59097fa5dda601e1e42ca025c20b9915012ba7a",
+      "license": "Fleet-owned CodeVetter product capture with editorial crop and label",
+      "tier": "production-safe",
+      "evidence": true
+    },
+    {
+      "id": "close-card",
+      "kind": "image",
+      "source": "../../assets/coherent-films/codevetter-evidence-close.svg",
+      "sourceType": "fleet-authored-graphic",
+      "license": "Fleet-owned",
+      "tier": "production-safe",
+      "evidence": false
+    },
+    {
+      "id": "narration",
+      "kind": "audio",
+      "source": "../../.reel-pipeline/coherent-scenes/codevetter-evidence-beam/audio/narration-af-bella.wav",
+      "sourceType": "local-synthesis",
+      "sourceRevision": "kokoro-v1.0 af_bella speed 0.94",
+      "license": "Locally generated review voice; verify model and voice terms before external publication",
+      "tier": "proof-only",
+      "evidence": false
+    },
+    {
+      "id": "sound-bed",
+      "kind": "audio",
+      "source": "../../.reel-pipeline/coherent-scenes/codevetter-evidence-beam/audio/evidence-bed.wav",
+      "sourceType": "procedural-audio",
+      "sourceRevision": "ffmpeg lavfi sine plus pink noise",
+      "license": "Fleet-authored procedural audio",
+      "tier": "production-safe",
+      "evidence": false
+    },
+    {
+      "id": "scan-effect",
+      "kind": "audio",
+      "source": "../../.reel-pipeline/coherent-scenes/codevetter-evidence-beam/audio/scan.wav",
+      "sourceType": "procedural-audio",
+      "sourceRevision": "ffmpeg lavfi 880Hz scan",
+      "license": "Fleet-authored procedural audio",
+      "tier": "production-safe",
+      "evidence": false
+    },
+    {
+      "id": "verdict-effect",
+      "kind": "audio",
+      "source": "../../.reel-pipeline/coherent-scenes/codevetter-evidence-beam/audio/verdict.wav",
+      "sourceType": "procedural-audio",
+      "sourceRevision": "ffmpeg lavfi 440Hz plus 660Hz chime",
+      "license": "Fleet-authored procedural audio",
+      "tier": "production-safe",
+      "evidence": false
+    }
+  ],
+  "scenes": [
+    {
+      "id": "agent-volume",
+      "role": "setup",
+      "purpose": "Establish fast agent output as motion without presenting it as confidence.",
+      "start": 0,
+      "end": 3.4,
+      "dominant": {
+        "kind": "full-bleed-product-capture",
+        "assetId": "evidence-beam-motion",
+        "params": {
+          "clipStartSeconds": 0.25,
+          "push": 0.035,
+          "focusX": 0.5,
+          "focusY": 0.48
+        }
+      },
+      "supporting": [],
+      "principalAction": "The evidence beam begins scanning through uncertain code.",
+      "cameraMove": "Slow controlled push.",
+      "transition": "cut",
+      "spokenLine": "AI agents write fast.",
+      "caption": "AI AGENTS WRITE FAST."
+    },
+    {
+      "id": "confidence-gap",
+      "role": "tension",
+      "purpose": "Separate generated volume from a justified shipping decision.",
+      "start": 3.4,
+      "end": 7.2,
+      "dominant": {
+        "kind": "full-bleed-product-capture",
+        "assetId": "change-proof",
+        "params": {
+          "push": 0.015,
+          "focusX": 0.59,
+          "focusY": 0.45
+        }
+      },
+      "supporting": [],
+      "principalAction": "The broad review surface contracts around one risky change.",
+      "cameraMove": "Mask zoom toward the risky diff.",
+      "transition": "beam-wipe",
+      "spokenLine": "But volume is not confidence.",
+      "caption": "VOLUME IS NOT CONFIDENCE."
+    },
+    {
+      "id": "isolate-change",
+      "role": "analysis",
+      "purpose": "Make the risky change the only dominant subject.",
+      "start": 7.2,
+      "end": 11,
+      "dominant": {
+        "kind": "focus-pull",
+        "assetId": "change-proof",
+        "params": {
+          "focusX": 0.59,
+          "focusY": 0.49,
+          "radius": 0.22
+        }
+      },
+      "supporting": [],
+      "principalAction": "Focus resolves on the isolated finding.",
+      "cameraMove": "Optical focus pull.",
+      "transition": "fade",
+      "spokenLine": "CodeVetter isolates the change.",
+      "caption": "ISOLATE THE CHANGE."
+    },
+    {
+      "id": "follow-evidence",
+      "role": "analysis",
+      "purpose": "Connect the change to the surrounding evidence in one continuous path.",
+      "start": 11,
+      "end": 16.6,
+      "dominant": {
+        "kind": "full-bleed-product-capture",
+        "assetId": "trace-proof",
+        "params": {
+          "push": 0.012,
+          "focusX": 0.5,
+          "focusY": 0.48
+        }
+      },
+      "supporting": [
+        {
+          "kind": "evidence-path",
+          "assetId": "trace-proof",
+          "params": {
+            "points": [
+              [0.31, 0.34],
+              [0.72, 0.34],
+              [0.31, 0.47],
+              [0.72, 0.47]
+            ]
+          }
+        }
+      ],
+      "principalAction": "One beam traverses change, context, checks, and verdict.",
+      "cameraMove": "Locked frame.",
+      "transition": "beam-wipe",
+      "spokenLine": "It follows the diff, its history, and the checks that matter.",
+      "caption": "FOLLOW THE DIFF. THE HISTORY. THE CHECKS."
+    },
+    {
+      "id": "qualified-verdict",
+      "role": "verdict",
+      "purpose": "Resolve the evidence path into one qualified verdict.",
+      "start": 16.6,
+      "end": 22,
+      "dominant": {
+        "kind": "full-bleed-product-capture",
+        "assetId": "verdict-proof",
+        "params": {
+          "push": 0.012,
+          "focusX": 0.5,
+          "focusY": 0.48
+        }
+      },
+      "supporting": [],
+      "principalAction": "The trace resolves into a critical verdict and required patch.",
+      "cameraMove": "Minimal push toward the explicit action.",
+      "transition": "beam-wipe",
+      "spokenLine": "Not another opinion. A trail of evidence, from risky diff to qualified verdict.",
+      "caption": "ONE QUALIFIED VERDICT."
+    },
+    {
+      "id": "ship-with-evidence",
+      "role": "close",
+      "purpose": "Close on the product and the single promise earned by the film.",
+      "start": 22,
+      "end": 26,
+      "dominant": {
+        "kind": "full-bleed-product-capture",
+        "assetId": "close-card",
+        "params": {
+          "push": 0.012,
+          "focusX": 0.5,
+          "focusY": 0.69
+        }
+      },
+      "supporting": [],
+      "principalAction": "The evidence beam settles into the CodeVetter signature.",
+      "cameraMove": "Nearly imperceptible push.",
+      "transition": "fade",
+      "spokenLine": "CodeVetter. Ship with evidence.",
+      "caption": "SHIP WITH EVIDENCE."
+    }
+  ],
+  "captions": [
+    {
+      "start": 0.5,
+      "end": 2.15,
+      "text": "AI AGENTS WRITE FAST."
+    },
+    {
+      "start": 4.1,
+      "end": 6.1,
+      "text": "VOLUME IS NOT CONFIDENCE.",
+      "position": "top"
+    },
+    {
+      "start": 7.8,
+      "end": 9.85,
+      "text": "ISOLATE THE CHANGE.",
+      "position": "top"
+    },
+    {
+      "start": 11.5,
+      "end": 15,
+      "text": "FOLLOW THE DIFF. THE HISTORY. THE CHECKS.",
+      "position": "top"
+    },
+    {
+      "start": 17,
+      "end": 22.2,
+      "text": "CRITICAL. PATCH REQUIRED.",
+      "position": "top"
+    },
+    {
+      "start": 22.5,
+      "end": 24.5,
+      "text": "SHIP WITH EVIDENCE.",
+      "burn": false
+    }
+  ],
+  "audio": {
+    "narration": {
+      "assetId": "narration",
+      "start": 0,
+      "end": 26,
+      "gainDb": 2
+    },
+    "soundBed": {
+      "assetId": "sound-bed",
+      "start": 0,
+      "end": 26,
+      "gainDb": -20,
+      "duckUnderNarrationDb": 8
+    },
+    "effects": [
+      {
+        "assetId": "scan-effect",
+        "sceneId": "follow-evidence",
+        "start": 0,
+        "gainDb": -4
+      },
+      {
+        "assetId": "verdict-effect",
+        "sceneId": "qualified-verdict",
+        "start": 0,
+        "gainDb": -3
+      }
+    ]
+  }
+}

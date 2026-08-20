@@ -1,0 +1,44 @@
+{
+  "schema": "content-factory.render-engine-fixtures.v1",
+  "engines": [
+    { "mode": "mock", "provider": "mock", "file": "mock.mp4", "content": "mock-video" },
+    {
+      "mode": "html-composition",
+      "provider": "html-composition",
+      "file": "composition.html",
+      "content": "<main>preview</main>"
+    },
+    {
+      "mode": "ascii",
+      "provider": "ascii-animation",
+      "file": "ascii.mp4",
+      "content": "ascii-video"
+    },
+    {
+      "mode": "blender",
+      "provider": "blender",
+      "file": "blender-frame.png",
+      "content": "blender-literal-scene"
+    },
+    { "mode": "grok-video", "provider": "grok-video", "file": "grok.mp4", "content": "grok-video" },
+    {
+      "mode": "render-pro",
+      "provider": "render-pro",
+      "file": "render-pro.mp4",
+      "content": "render-pro-video"
+    },
+    { "mode": "kokoro", "provider": "kokoro", "file": "kokoro.mp4", "content": "kokoro-video" },
+    {
+      "mode": "night-out-carousel",
+      "provider": "night-out-carousel",
+      "file": "night-out.mp4",
+      "content": "night-out-video"
+    },
+    {
+      "mode": "brand-video",
+      "provider": "brand-video-local",
+      "file": "brand-video.mp4",
+      "content": "brand-video"
+    }
+  ]
+}

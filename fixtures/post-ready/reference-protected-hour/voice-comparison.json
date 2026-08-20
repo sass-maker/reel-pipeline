@@ -1,0 +1,38 @@
+{
+  "schema": "fleet.post-ready-voice-comparison.v1",
+  "script": "You don't need more free time. You need one protected hour.",
+  "speed": 1.04,
+  "runtime": "kokoro-onnx-v1.0",
+  "candidates": [
+    {
+      "voice": "af_bella",
+      "durationSeconds": 3.349333,
+      "meanDb": -20.9,
+      "peakDb": -5.6,
+      "sha256": "88d468f6fce1818448640b4e56f69446863d3a23dcd46fa4f87bce4da3f8e7dc"
+    },
+    {
+      "voice": "af_heart",
+      "durationSeconds": 3.434667,
+      "meanDb": -22.1,
+      "peakDb": -3.8,
+      "sha256": "19387fd6924104c0f5ab90849037bc7b70c0bed4dcec8e68e330fdefe0ac67a7"
+    },
+    {
+      "voice": "af_sky",
+      "durationSeconds": 3.562667,
+      "meanDb": -23.3,
+      "peakDb": -6,
+      "sha256": "9199ddbecbaefbeef187bacc16267a7f5344f18885b087061976b81af9ea1a2c"
+    },
+    {
+      "voice": "bf_emma",
+      "durationSeconds": 3.434667,
+      "meanDb": -20,
+      "peakDb": -1.5,
+      "sha256": "e0b411fb9c2abdd4619c0b90dd213b985355bf4b6fe4ce1e2241f5ca334617d0"
+    }
+  ],
+  "selected": "af_bella",
+  "selectionBasis": "Bella was selected after owner feedback called for a friendlier, poppier delivery. Its measured opening read is the quickest candidate while retaining useful peak headroom. Final subjective listening remains part of the operator review because automated metrics do not establish vocal taste."
+}

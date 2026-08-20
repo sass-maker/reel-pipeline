@@ -1,0 +1,11 @@
+{
+  "schema": "fleet.video-agent-channels.v1",
+  "channels": [
+    {
+      "brand": "example",
+      "channel": "youtube_shorts",
+      "provider": "internal",
+      "mode": "draft_only"
+    }
+  ]
+}

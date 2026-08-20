@@ -1,0 +1,140 @@
+name: fleet-postiz
+
+# Source-only deployment intent. Every service requires the explicit manual
+# profile, and all credentials/configuration remain in machine-local env files.
+x-postiz-manual: &postiz-manual
+  profiles: [postiz-manual]
+  restart: unless-stopped
+
+services:
+  postiz:
+    <<: *postiz-manual
+    image: ghcr.io/gitroomhq/postiz-app:v2.22.1@sha256:edcc9a8e3bfaafac72ccae30b630e5eed873b9538f726fcb97c5a7529e6ed10a
+    env_file:
+      - ${POSTIZ_ENV_FILE:?set POSTIZ_ENV_FILE to a machine-local file}
+    ports:
+      - 127.0.0.1:4007:5000
+    volumes:
+      - type: bind
+        source: ${POSTIZ_DATA_ROOT:?set POSTIZ_DATA_ROOT outside the checkout}/postiz-config
+        target: /config
+      - type: bind
+        source: ${POSTIZ_DATA_ROOT:?set POSTIZ_DATA_ROOT outside the checkout}/postiz-uploads
+        target: /uploads
+    # Postiz alone gets outbound HTTPS for OAuth and provider publishing.
+    # Databases and Temporal remain isolated on internal networks.
+    networks: [postiz, temporal, egress]
+    depends_on:
+      postiz-postgres:
+        condition: service_healthy
+      postiz-redis:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, node, -e, "const r=require('http').get('http://localhost:5000/',res=>process.exit(res.statusCode<500?0:1));r.on('error',()=>process.exit(1));r.setTimeout(4000,()=>{r.destroy();process.exit(1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+  postiz-postgres:
+    <<: *postiz-manual
+    image: postgres:17-alpine
+    env_file:
+      - ${POSTIZ_POSTGRES_ENV_FILE:?set POSTIZ_POSTGRES_ENV_FILE to a machine-local file}
+    volumes:
+      - type: bind
+        source: ${POSTIZ_DATA_ROOT:?set POSTIZ_DATA_ROOT outside the checkout}/postgres
+        target: /var/lib/postgresql/data
+    networks: [postiz]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  postiz-redis:
+    <<: *postiz-manual
+    image: redis:7.2
+    volumes:
+      - type: bind
+        source: ${POSTIZ_DATA_ROOT:?set POSTIZ_DATA_ROOT outside the checkout}/redis
+        target: /data
+    networks: [postiz]
+    healthcheck:
+      test: [CMD-SHELL, "redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  temporal-postgres:
+    <<: *postiz-manual
+    image: postgres:16
+    env_file:
+      - ${POSTIZ_TEMPORAL_ENV_FILE:?set POSTIZ_TEMPORAL_ENV_FILE to a machine-local file}
+    volumes:
+      - type: bind
+        source: ${POSTIZ_DATA_ROOT:?set POSTIZ_DATA_ROOT outside the checkout}/temporal-postgres
+        target: /var/lib/postgresql/data
+    networks: [temporal]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U \"$${POSTGRES_USER}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  temporal-elasticsearch:
+    <<: *postiz-manual
+    image: elasticsearch:7.17.27
+    env_file:
+      - ${POSTIZ_ELASTICSEARCH_ENV_FILE:?set POSTIZ_ELASTICSEARCH_ENV_FILE to a machine-local file}
+    volumes:
+      - type: bind
+        source: ${POSTIZ_DATA_ROOT:?set POSTIZ_DATA_ROOT outside the checkout}/temporal-elasticsearch
+        target: /usr/share/elasticsearch/data
+    networks: [temporal]
+    healthcheck:
+      test: [CMD-SHELL, "curl -fsS 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  temporal:
+    <<: *postiz-manual
+    image: temporalio/auto-setup:1.28.1
+    env_file:
+      - ${POSTIZ_TEMPORAL_ENV_FILE:?set POSTIZ_TEMPORAL_ENV_FILE to a machine-local file}
+    volumes:
+      - type: bind
+        source: ./dynamicconfig
+        target: /etc/temporal/config/dynamicconfig
+        read_only: true
+    ports:
+      - 127.0.0.1:7233:7233
+    networks: [temporal]
+    depends_on:
+      temporal-postgres:
+        condition: service_healthy
+      temporal-elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, temporal, operator, cluster, health, --address, temporal:7233]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+networks:
+  postiz:
+    driver: bridge
+    internal: true
+  temporal:
+    driver: bridge
+    internal: true
+  egress:
+    driver: bridge

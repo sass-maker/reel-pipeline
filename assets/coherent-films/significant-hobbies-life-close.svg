@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <radialGradient id="warm-glow" cx="50%" cy="38%" r="62%">
+      <stop offset="0" stop-color="#5b4315" stop-opacity=".56"/>
+      <stop offset=".55" stop-color="#211b10" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#0b0b0d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="horizon" x1="0" x2="1">
+      <stop offset="0" stop-color="#f4c84f" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#f4c84f"/>
+      <stop offset="1" stop-color="#f4c84f" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft-glow">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+  </defs>
+
+  <rect width="1080" height="1920" fill="#0b0b0d"/>
+  <rect width="1080" height="1920" fill="url(#warm-glow)"/>
+
+  <g transform="translate(145 245)" fill="none" stroke="#f4c84f" stroke-width="2">
+    <g opacity=".18">
+      <rect x="0" y="0" width="54" height="54" rx="7"/>
+      <rect x="70" y="0" width="54" height="54" rx="7"/>
+      <rect x="140" y="0" width="54" height="54" rx="7"/>
+      <rect x="210" y="0" width="54" height="54" rx="7"/>
+      <rect x="280" y="0" width="54" height="54" rx="7"/>
+      <rect x="350" y="0" width="54" height="54" rx="7"/>
+      <rect x="420" y="0" width="54" height="54" rx="7"/>
+      <rect x="490" y="0" width="54" height="54" rx="7"/>
+      <rect x="560" y="0" width="54" height="54" rx="7"/>
+      <rect x="630" y="0" width="54" height="54" rx="7"/>
+      <rect x="700" y="0" width="54" height="54" rx="7"/>
+      <rect x="770" y="0" width="54" height="54" rx="7"/>
+    </g>
+    <g opacity=".34">
+      <rect x="0" y="70" width="54" height="54" rx="7" fill="#f4c84f" fill-opacity=".13"/>
+      <rect x="70" y="70" width="54" height="54" rx="7" fill="#f4c84f" fill-opacity=".13"/>
+      <rect x="140" y="70" width="54" height="54" rx="7" fill="#f4c84f" fill-opacity=".13"/>
+      <rect x="210" y="70" width="54" height="54" rx="7" fill="#f4c84f" fill-opacity=".13"/>
+      <rect x="280" y="70" width="54" height="54" rx="7" fill="#f4c84f" fill-opacity=".13"/>
+      <rect x="350" y="70" width="54" height="54" rx="7"/>
+      <rect x="420" y="70" width="54" height="54" rx="7"/>
+      <rect x="490" y="70" width="54" height="54" rx="7"/>
+      <rect x="560" y="70" width="54" height="54" rx="7"/>
+      <rect x="630" y="70" width="54" height="54" rx="7"/>
+      <rect x="700" y="70" width="54" height="54" rx="7"/>
+      <rect x="770" y="70" width="54" height="54" rx="7"/>
+    </g>
+  </g>
+
+  <rect x="170" y="445" width="740" height="7" rx="4" fill="url(#horizon)" filter="url(#soft-glow)" opacity=".75"/>
+  <rect x="170" y="445" width="740" height="2" rx="1" fill="url(#horizon)"/>
+
+  <g fill="#f8f7f2" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif">
+    <text x="540" y="680" font-size="92" font-weight="600">What will you do</text>
+    <text x="540" y="790" font-size="92" font-weight="600">with the time</text>
+    <text x="540" y="900" font-size="92" font-weight="600">you have?</text>
+  </g>
+
+  <text x="540" y="1050" fill="#b7b1a6" text-anchor="middle" font-size="31" letter-spacing="1.5" font-family="Inter, Arial, sans-serif">
+    The rest is still unwritten.
+  </text>
+
+  <g transform="translate(204 1165)">
+    <rect width="672" height="118" rx="59" fill="#f4c84f"/>
+    <text x="336" y="72" fill="#17140c" text-anchor="middle" font-size="34" font-weight="760" font-family="Inter, Arial, sans-serif">
+      See your life in weeks  →
+    </text>
+  </g>
+
+  <text x="540" y="1350" fill="#8f8a82" text-anchor="middle" font-size="25" letter-spacing=".8" font-family="Inter, Arial, sans-serif">
+    Takes 10 seconds. No sign-up required.
+  </text>
+
+  <g text-anchor="middle" font-family="Inter, Arial, sans-serif">
+    <text x="540" y="1590" fill="#f4c84f" font-size="24" font-weight="740" letter-spacing="8">SIGNIFICANT</text>
+    <text x="540" y="1645" fill="#f8f7f2" font-size="46" font-weight="720" letter-spacing="3">HOBBIES</text>
+  </g>
+</svg>

@@ -1,0 +1,302 @@
+{
+  "schema": "fleet.coherent-scene-film.v1",
+  "id": "significant-hobbies-life-in-weeks",
+  "title": "Significant Hobbies — The time still yours",
+  "spine": "A finite life becomes visible, then turns into one inviting next choice.",
+  "directionId": "finite-life-invitation",
+  "publicationTier": "review-only",
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 24
+  },
+  "style": {
+    "background": "#0b0b0d",
+    "foreground": "#f8f7f2",
+    "muted": "#aaa49a",
+    "accent": "#f4c84f",
+    "danger": "#d96b52"
+  },
+  "approval": {
+    "status": "approved",
+    "approvedBy": "operator-requested-marketing-video",
+    "approvedAt": "2026-07-27"
+  },
+  "assets": [
+    {
+      "id": "hobby-horizon",
+      "kind": "video",
+      "source": "../../../../../significanthobbies/landing-astro/public/hero/hobby-horizon.mp4",
+      "sourceType": "generated-atmosphere",
+      "sourceRevision": "Significant Hobbies f7c7d0ab8f06b6813070b747deeeec97759df45a landing hero asset",
+      "license": "Existing Significant Hobbies landing asset; confirm source-model publication terms before external use",
+      "tier": "proof-only",
+      "evidence": false
+    },
+    {
+      "id": "landing-live",
+      "kind": "image",
+      "source": "../../.reel-pipeline/coherent-scenes/significant-hobbies/captures/landing-live.png",
+      "sourceType": "real-capture",
+      "sourceRevision": "significanthobbies.com captured 2026-07-27 from f7c7d0ab8f06b6813070b747deeeec97759df45a",
+      "license": "Fleet-owned product capture",
+      "tier": "production-safe",
+      "evidence": true
+    },
+    {
+      "id": "life-entry-live",
+      "kind": "image",
+      "source": "../../.reel-pipeline/coherent-scenes/significant-hobbies/captures/life-entry-live.png",
+      "sourceType": "real-capture",
+      "sourceRevision": "significanthobbies.com/life-in-weeks captured 2026-07-27 from f7c7d0ab8f06b6813070b747deeeec97759df45a",
+      "license": "Fleet-owned product capture",
+      "tier": "production-safe",
+      "evidence": true
+    },
+    {
+      "id": "life-result-live",
+      "kind": "image",
+      "source": "../../.reel-pipeline/coherent-scenes/significant-hobbies/captures/life-result-live.png",
+      "sourceType": "real-capture",
+      "sourceRevision": "significanthobbies.com/life-in-weeks illustrative 1990 result captured 2026-07-27 from f7c7d0ab8f06b6813070b747deeeec97759df45a",
+      "license": "Fleet-owned product capture; birth year is illustrative",
+      "tier": "production-safe",
+      "evidence": true
+    },
+    {
+      "id": "quiz-live",
+      "kind": "image",
+      "source": "../../.reel-pipeline/coherent-scenes/significant-hobbies/captures/quiz-live.png",
+      "sourceType": "real-capture",
+      "sourceRevision": "significanthobbies.com/quiz captured 2026-07-27 from f7c7d0ab8f06b6813070b747deeeec97759df45a",
+      "license": "Fleet-owned product capture",
+      "tier": "production-safe",
+      "evidence": true
+    },
+    {
+      "id": "close-card",
+      "kind": "image",
+      "source": "../../assets/coherent-films/significant-hobbies-life-close.svg",
+      "sourceType": "fleet-authored-graphic",
+      "sourceRevision": "finite-life-invitation 2026-07-27",
+      "license": "Fleet-owned",
+      "tier": "production-safe",
+      "evidence": false
+    },
+    {
+      "id": "narration",
+      "kind": "audio",
+      "source": "../../.reel-pipeline/coherent-scenes/significant-hobbies/audio/narration-af-bella.wav",
+      "sourceType": "local-synthesis",
+      "sourceRevision": "kokoro-v1.0 af_bella speed 0.94; scene-timed assembly",
+      "license": "Locally generated review voice; verify model and voice terms before external publication",
+      "tier": "proof-only",
+      "evidence": false
+    },
+    {
+      "id": "sound-bed",
+      "kind": "audio",
+      "source": "../../.reel-pipeline/coherent-scenes/significant-hobbies/audio/warm-horizon-bed.wav",
+      "sourceType": "procedural-audio",
+      "sourceRevision": "ffmpeg lavfi warm drone and pink-noise bed",
+      "license": "Fleet-authored procedural audio",
+      "tier": "production-safe",
+      "evidence": false
+    }
+  ],
+  "scenes": [
+    {
+      "id": "finite-horizon",
+      "role": "setup",
+      "purpose": "Open with a human scale and a sense of finite time.",
+      "start": 0,
+      "end": 3.3,
+      "dominant": {
+        "kind": "full-bleed-product-capture",
+        "assetId": "hobby-horizon",
+        "params": {
+          "clipStartSeconds": 1.1,
+          "push": 0.025,
+          "focusX": 0.5,
+          "focusY": 0.5
+        }
+      },
+      "supporting": [],
+      "principalAction": "A solitary figure faces a wide horizon.",
+      "cameraMove": "Slow controlled push.",
+      "transition": "fade",
+      "spokenLine": "A life is not an abstract thing.",
+      "caption": "A life is not an abstract thing."
+    },
+    {
+      "id": "weeks-in-view",
+      "role": "tension",
+      "purpose": "Connect the emotional premise to the product's current front door.",
+      "start": 3.3,
+      "end": 6,
+      "dominant": {
+        "kind": "full-bleed-product-capture",
+        "assetId": "landing-live",
+        "params": {
+          "push": 0.015,
+          "focusX": 0.5,
+          "focusY": 0.48
+        }
+      },
+      "supporting": [],
+      "principalAction": "The landscape resolves into the Significant Hobbies invitation.",
+      "cameraMove": "Subtle push through the hero.",
+      "transition": "fade",
+      "spokenLine": "It is made of weeks.",
+      "caption": "It is made of weeks."
+    },
+    {
+      "id": "birth-year",
+      "role": "proof",
+      "purpose": "Show the real, low-friction input that begins the experience.",
+      "start": 6,
+      "end": 13.3,
+      "dominant": {
+        "kind": "mask-zoom",
+        "assetId": "life-entry-live",
+        "params": {
+          "zoom": 0.12,
+          "focusX": 0.5,
+          "focusY": 0.38
+        }
+      },
+      "supporting": [],
+      "principalAction": "One birth year becomes the only requested input.",
+      "cameraMove": "Quiet reveal into the birth-year field.",
+      "transition": "beam-wipe",
+      "spokenLine": "Significant Hobbies turns one birth year into a picture of the time behind you, and the time still yours.",
+      "caption": "See the time behind you — and the time still yours."
+    },
+    {
+      "id": "saturdays-left",
+      "role": "analysis",
+      "purpose": "Make finite time concrete without turning the moment into fear.",
+      "start": 13.3,
+      "end": 17.3,
+      "dominant": {
+        "kind": "full-bleed-product-capture",
+        "assetId": "life-result-live",
+        "params": {
+          "push": 0.01,
+          "focusX": 0.5,
+          "focusY": 0.45
+        }
+      },
+      "supporting": [],
+      "principalAction": "The result grid resolves around the Saturdays still available.",
+      "cameraMove": "Minimal push toward the life grid.",
+      "transition": "fade",
+      "spokenLine": "Not to scare you. To make the next choice feel real.",
+      "caption": "Not to scare you. To make the next choice feel real."
+    },
+    {
+      "id": "find-a-fit",
+      "role": "analysis",
+      "purpose": "Turn awareness into a personally fitting route forward.",
+      "start": 17.3,
+      "end": 22.1,
+      "dominant": {
+        "kind": "full-bleed-product-capture",
+        "assetId": "quiz-live",
+        "params": {
+          "push": 0.012,
+          "focusX": 0.5,
+          "focusY": 0.45
+        }
+      },
+      "supporting": [],
+      "principalAction": "The hobby finder opens with one approachable question.",
+      "cameraMove": "Minimal push toward the first choice.",
+      "transition": "beam-wipe",
+      "spokenLine": "Find a hobby that fits how you actually want to spend your time.",
+      "caption": "Find a hobby that fits your life."
+    },
+    {
+      "id": "time-still-yours",
+      "role": "close",
+      "purpose": "Leave the viewer with one question and one low-friction action.",
+      "start": 22.1,
+      "end": 30.3,
+      "dominant": {
+        "kind": "full-bleed-product-capture",
+        "assetId": "close-card",
+        "params": {
+          "push": 0.008,
+          "focusX": 0.5,
+          "focusY": 0.56
+        }
+      },
+      "supporting": [],
+      "principalAction": "The remaining weeks become an invitation to begin.",
+      "cameraMove": "Nearly imperceptible push.",
+      "transition": "fade",
+      "spokenLine": "Turn someday into one small experiment you can begin. Significant Hobbies. What will you do with the time you have?",
+      "caption": "What will you do with the time you have?"
+    }
+  ],
+  "captions": [
+    {
+      "start": 0.2,
+      "end": 2.8,
+      "text": "A life is not an abstract thing.",
+      "position": "bottom"
+    },
+    {
+      "start": 3.5,
+      "end": 5.3,
+      "text": "It is made of weeks.",
+      "position": "bottom"
+    },
+    {
+      "start": 6.2,
+      "end": 12.9,
+      "text": "See the time behind you — and the time still yours.",
+      "position": "bottom"
+    },
+    {
+      "start": 13.5,
+      "end": 16.8,
+      "text": "Not to scare you. To make the next choice feel real.",
+      "position": "bottom"
+    },
+    {
+      "start": 17.5,
+      "end": 21.6,
+      "text": "Find a hobby that fits your life.",
+      "position": "bottom"
+    },
+    {
+      "start": 22.3,
+      "end": 26.9,
+      "text": "Turn someday into one small experiment you can begin.",
+      "position": "top"
+    },
+    {
+      "start": 27.1,
+      "end": 30,
+      "text": "What will you do with the time you have?",
+      "burn": false
+    }
+  ],
+  "audio": {
+    "narration": {
+      "assetId": "narration",
+      "start": 0,
+      "end": 30.3,
+      "gainDb": 2
+    },
+    "soundBed": {
+      "assetId": "sound-bed",
+      "start": 0,
+      "end": 30.3,
+      "gainDb": -18,
+      "duckUnderNarrationDb": 8
+    },
+    "effects": []
+  }
+}

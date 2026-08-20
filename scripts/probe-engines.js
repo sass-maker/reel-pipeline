@@ -5,7 +5,6 @@ const checks = [
   commandCheck('uv', ['--version']),
   commandCheck('ffmpeg', ['-version'], { firstLineOnly: true }),
   commandCheck('docker', ['info', '--format', '{{.ServerVersion}}']),
-  uvDryRun(),
 ];
 
 let failed = false;
@@ -23,28 +22,5 @@ function commandCheck(name, args, options = {}) {
     name,
     ok: result.status === 0,
     detail: options.firstLineOnly ? output.split('\n')[0] : output.split('\n').slice(0, 2).join(' '),
-  };
-}
-
-function uvDryRun() {
-  const result = spawnSync('uv', ['sync', '--frozen', '--dry-run'], {
-      cwd: 'engines/MoneyPrinterTurbo',
-      encoding: 'utf8',
-      maxBuffer: 1024 * 1024,
-  });
-  const output = [result.stdout, result.stderr].filter(Boolean).join('\n');
-  if (result.status !== 0) {
-    return {
-      name: 'MoneyPrinterTurbo uv dry-run',
-      ok: false,
-      detail: output.trim(),
-    };
-  }
-  const installMatch = output.match(/Would install (\d+) packages/);
-  const downloadMatch = output.match(/Would download (\d+) packages/);
-  return {
-    name: 'MoneyPrinterTurbo uv dry-run',
-    ok: true,
-    detail: `${installMatch?.[1] ?? '?'} installs, ${downloadMatch?.[1] ?? '?'} downloads`,
   };
 }

@@ -1,0 +1,17 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "product-proof",
+  "proofRole": "primary",
+  "rangeLabel": "Product capture · before and after",
+  "motionTags": [
+    "screen-capture",
+    "zoom"
+  ],
+  "renderer": "ffmpeg-product-proof@1",
+  "sourcePosture": "specialist-proof",
+  "durationSeconds": 6.417,
+  "sha256": "89cdfcb6d4e7d8f58212c9987d50e57acb30a0cf01f9aa6fe552a8b211929e48",
+  "source": {
+    "kind": "fleet-owned-local-proof"
+  }
+}

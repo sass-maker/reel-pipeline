@@ -1,0 +1,30 @@
+{
+  "schema": "reel-pipeline.local-video-forge.v0.1",
+  "project": {
+    "name": "local-video-forge-first-deliverable",
+    "aspectRatio": "9:16",
+    "fps": 24,
+    "targetDurationSeconds": 4,
+    "style": "clean technical documentary, subtle cinematic lighting"
+  },
+  "shots": [
+    {
+      "id": "s01",
+      "narration": "A local video pipeline should turn a deliberate frame into controlled motion.",
+      "durationSeconds": 3.4,
+      "mode": "image-to-video",
+      "keyframe": "../../assets/presenters/synthetic-presenter-v1.png",
+      "keyframeApproved": true,
+      "motionPrompt": "The presenter remains composed while the camera makes a very slow controlled push forward. Subtle natural breathing and a slight head movement. Stable framing, consistent face and lighting, no scene change.",
+      "negativePrompt": "distorted face, excessive camera shake, morphing objects, duplicate objects, sudden cuts, generated text",
+      "preview": {
+        "preset": "draft",
+        "seeds": [41, 42, 43],
+        "width": 384,
+        "height": 640,
+        "frames": 81,
+        "fps": 24
+      }
+    }
+  ]
+}

@@ -1,42 +1,11 @@
-# Submodule Sync Policy
+# Engine Checkout Policy
 
-`reel-pipeline` pins upstream engines as git submodules. They are not copied into
-our product layer and they should not auto-update.
+Reel Pipeline has no third-party render-engine submodules. MoneyPrinterTurbo
+and reel-maker were removed on 2026-08-01 because their checkouts were not part
+of the working local product and the UI already had repository-owned render
+paths.
 
-## Current Engines
-
-```bash
-git submodule status
-```
-
-- `engines/MoneyPrinterTurbo` — default cheap stock-footage renderer.
-- `engines/reel-maker` — internal Remotion/Modal prototype engine.
-
-## Fresh Clone
-
-```bash
-git clone --recurse-submodules <repo-url>
-# or, after cloning without submodules:
-git submodule update --init --recursive
-```
-
-## Update Rule
-
-Do not update submodules on main casually. Upgrade only on a branch:
-
-```bash
-git checkout -b upgrade/video-engines-YYYY-MM-DD
-git submodule update --remote engines/MoneyPrinterTurbo
-npm test
-npm run smoke:mock
-```
-
-Before accepting an update, run at least one real render canary for the affected
-engine and record the output artifact URL/path in the PR or task.
-
-## Adapter Boundary
-
-Our code must call engines through adapters under `src/adapters/`. Avoid editing
-files inside `engines/*`. If an upstream patch is unavoidable, document it in
-[`architecture/engines.md`](../architecture/engines.md) and prefer sending it
-upstream or carrying a tiny patch file.
+New engine capabilities should be implemented behind adapters in
+`src/adapters/`, described in `config/render-modes.json`, and proven with a
+fixture-backed smoke test. Do not add a third-party engine checkout merely to
+expose another dropdown option.

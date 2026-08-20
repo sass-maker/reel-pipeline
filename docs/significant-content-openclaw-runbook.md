@@ -2,7 +2,7 @@
 
 This runbook is the bounded, file-based bridge from an approved Significant
 Hobbies content package into Reel Pipeline. It does not grant authority to
-approve creative, accept a SaaS Maker queue item, schedule, upload, post,
+approve creative, create a Postiz draft, schedule, upload, post,
 publish an article, edit claims, or use credentials.
 
 ## Contract

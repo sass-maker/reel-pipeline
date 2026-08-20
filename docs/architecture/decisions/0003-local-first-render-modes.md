@@ -3,6 +3,10 @@
 - **Status:** Accepted
 - **Date:** 2026-07
 
+This decision now applies to deterministic rendering and cost-effective local
+utilities, not frontier image, video, or music models. ADR 0006 parks those
+models and sets automatic paid generation spend to $0.
+
 ## Context
 
 The pipeline needs reviewable artifacts and tests that run without paid
@@ -13,7 +17,7 @@ every smoke and draft cycle depend on live infrastructure.
 ## Decision
 
 Ship a set of local, no-credential render modes that share the same
-accepted-marketing-post / `VideoBrief` contract as the real renderers:
+`VideoBrief` contract as the real renderers:
 
 - `mock` — placeholder renderer for tests and dry runs.
 - `html-composition` — deterministic HTML/CSS preview + `timeline.json` +
@@ -22,8 +26,6 @@ accepted-marketing-post / `VideoBrief` contract as the real renderers:
   art with a raster fallback).
 - `grok-video` — copies approved local Grok/Imagine MP4 exports; no Grok
   credentials in repo.
-- `reel-maker` — Remotion shell-out adapter, skippable via
-  `REEL_MAKER_SKIP_REMOTION=1` for adapter/orchestrator-only smokes.
 - `kokoro` — fully local faceless renderer: Kokoro-82M narration (local ONNX)
   + Pexels b-roll + FFmpeg compose.
 - `brand-video` — source-backed brand motion graphics with local Kokoro,
@@ -31,13 +33,18 @@ accepted-marketing-post / `VideoBrief` contract as the real renderers:
 
 ## Consequences
 
-- `npm run smoke:render-modes` proves the unified `render:accepted` path for
-  every local mode without external credentials.
-- Live-only modes (`moneyprinterturbo`, `render-pro`) are reported separately
-  in the readiness matrix because they require running services or mutate real
-  state.
+- `npm run smoke:render-modes` proves direct VideoBrief rendering for every
+  local mode without external credentials.
+- The live-only `render-pro` path is reported separately in the readiness
+  matrix because it mutates real state.
 - Draft and review cycles can run end-to-end on a laptop at $0; paid services
   are opt-in upgrades, not prerequisites.
 - The mode matrix is the operator-facing source of truth
   (`config/render-modes.json`); see
   [`render-modes.md`](../render-modes.md).
+
+## 2026-08-01 amendment
+
+MoneyPrinterTurbo and reel-maker were removed with their uninitialized engine
+submodules and checkout-backed adapters. The local-first decision remains; its
+supported mode list is now entirely repository-owned.

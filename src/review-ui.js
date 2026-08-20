@@ -1181,7 +1181,7 @@ export function reviewPageHtml() {
         const res = await fetch('/reels/' + encodeURIComponent(reel.id) + '/render', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ mode: 'remotion', variantCount }),
+          body: JSON.stringify({ mode: 'html-composition', variantCount }),
         });
         const payload = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(payload.error || 'Render failed');

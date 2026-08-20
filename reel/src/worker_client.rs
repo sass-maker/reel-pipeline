@@ -49,12 +49,14 @@ pub fn needs_render(reel: &ReelRecord) -> bool {
 
 pub struct WorkerClient {
     base_url: String,
+    internal_token: Option<String>,
 }
 
 impl WorkerClient {
     pub fn new(base_url: impl Into<String>) -> Self {
         Self {
             base_url: base_url.into().trim_end_matches('/').to_string(),
+            internal_token: std::env::var("REEL_INTERNAL_TOKEN").ok(),
         }
     }
 
@@ -71,7 +73,11 @@ impl WorkerClient {
 
     pub fn fetch_approved(&self) -> Result<Vec<ReelRecord>> {
         let url = format!("{}/reels?status=approved", self.base_url);
+        let token = self.internal_token.as_deref().ok_or_else(|| {
+            anyhow!("REEL_INTERNAL_TOKEN is required for internal Reel Pipeline Worker routes")
+        })?;
         let mut response = ureq::get(&url)
+            .header("authorization", &format!("Bearer {token}"))
             .call()
             .map_err(|err| anyhow!("worker GET {url} failed: {err}"))?;
         let status = response.status();

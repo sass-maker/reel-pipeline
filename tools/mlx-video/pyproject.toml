@@ -1,0 +1,10 @@
+[project]
+name = "reel-pipeline-mlx-video-runtime"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "mlx-video @ git+https://github.com/Blaizzy/mlx-video.git@87db56a51758fefb748a359b90a5283bb8ba4837",
+]
+
+[tool.uv]
+package = false

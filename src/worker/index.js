@@ -1,26 +1,42 @@
 import { assertRenderableReel, attachReelRender, createReelDraft, decideRenderedReel, decideReelDraft, listReelDrafts, R2ReelStore } from '../reel-intake.js';
 import { reelDraftInputFromSignal } from '../signal-intake.js';
 import { reviewPageHtml } from '../review-ui.js';
+import { handleForgeWorkerRequest } from '../local-video-forge-coordinator.js';
+import { GENERATIVE_MEDIA_POLICY } from '../studio/generation-policy.js';
+import { timingSafeEqual } from 'node:crypto';
 
 const JSON_HEADERS = {
   'content-type': 'application/json; charset=utf-8',
-  'access-control-allow-origin': '*',
-  'access-control-allow-methods': 'GET,POST,PATCH,OPTIONS',
-  'access-control-allow-headers': 'content-type',
 };
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: JSON_HEADERS });
+      return new Response(null, { status: 204 });
     }
     if (request.method === 'GET' && url.pathname === '/health') {
       return json({ ok: true });
     }
 
+    if (isInternalRoute(request.method, url.pathname) && !(await isAuthorized(request, env))) {
+      return unauthorized();
+    }
+
     if (request.method === 'GET' && (url.pathname === '/' || url.pathname === '/review')) {
       return html(reviewPageHtml());
+    }
+
+    if (request.method === 'GET' && url.pathname === '/forge') {
+      return html(parkedForgePageHtml(), 200, { 'cache-control': 'private, no-store' });
+    }
+
+    if (url.pathname.startsWith('/forge/')) {
+      if (!['GET', 'HEAD'].includes(request.method)) {
+        return json({ error: GENERATIVE_MEDIA_POLICY.blocker }, 410);
+      }
+      const response = await handleForgeWorkerRequest(request, env);
+      if (response) return response;
     }
 
     if (request.method === 'POST' && url.pathname === '/reels/signal') {
@@ -84,6 +100,60 @@ export default {
     return json({ error: 'not found' }, 404);
   },
 };
+
+function parkedForgePageHtml() {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Local Video Forge parked</title></head><body><main><h1>Local Video Forge is parked</h1><p>${GENERATIVE_POLICY_HTML}</p><p>Existing history and artifacts remain readable. Automatic paid generation spend is $0.</p></main></body></html>`;
+}
+
+const GENERATIVE_POLICY_HTML = 'Import approved external media. Any paid generation requires a separate per-job budget and operator approval.';
+
+function isInternalRoute(method, pathname) {
+  if (pathname === '/forge' || pathname.startsWith('/forge/')) return true;
+  if (method === 'GET' && ['/', '/review', '/reels'].includes(pathname)) return true;
+  if (method === 'POST' && ['/reels', '/reels/signal'].includes(pathname)) return true;
+  return (
+    (method === 'PATCH' && /^\/reels\/[^/]+\/(?:decision|video-decision)$/.test(pathname)) ||
+    (method === 'POST' && /^\/reels\/[^/]+\/render$/.test(pathname))
+  );
+}
+
+async function isAuthorized(request, env) {
+  const expected = typeof env.REEL_INTERNAL_TOKEN === 'string' ? env.REEL_INTERNAL_TOKEN : '';
+  const provided = internalTokenFrom(request.headers.get('authorization'));
+  if (!expected || !provided) return false;
+
+  const encoder = new TextEncoder();
+  const [expectedDigest, providedDigest] = await Promise.all([
+    crypto.subtle.digest('SHA-256', encoder.encode(expected)),
+    crypto.subtle.digest('SHA-256', encoder.encode(provided)),
+  ]);
+  return timingSafeEqual(new Uint8Array(expectedDigest), new Uint8Array(providedDigest));
+}
+
+function internalTokenFrom(authorization) {
+  if (!authorization) return null;
+  if (authorization.startsWith('Bearer ')) return authorization.slice('Bearer '.length).trim();
+  if (!authorization.startsWith('Basic ')) return null;
+  try {
+    const decoded = atob(authorization.slice('Basic '.length));
+    const separator = decoded.indexOf(':');
+    if (separator === -1 || decoded.slice(0, separator) !== 'foundry') return null;
+    return decoded.slice(separator + 1);
+  } catch {
+    return null;
+  }
+}
+
+function unauthorized() {
+  return new Response(JSON.stringify({ error: 'authentication required' }), {
+    status: 401,
+    headers: {
+      ...JSON_HEADERS,
+      'cache-control': 'no-store',
+      'www-authenticate': 'Basic realm="Foundry Reel Review", charset="UTF-8"',
+    },
+  });
+}
 
 async function renderWorkerMockReel(record, env, reelStore, requestUrl, options = {}) {
   if (!env.REEL_ARTIFACTS) throw new Error('missing REEL_ARTIFACTS binding');
@@ -217,9 +287,9 @@ function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
 }
 
-function html(body, status = 200) {
+function html(body, status = 200, extraHeaders = {}) {
   return new Response(body, {
     status,
-    headers: { 'content-type': 'text/html; charset=utf-8' },
+    headers: { 'content-type': 'text/html; charset=utf-8', ...extraHeaders },
   });
 }

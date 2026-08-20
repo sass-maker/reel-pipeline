@@ -1,0 +1,15 @@
+1
+00:00:00,000 --> 00:00:03,000
+Twinkle, twinkle, little star
+
+2
+00:00:03,000 --> 00:00:06,000
+How I wonder what you are
+
+3
+00:00:06,000 --> 00:00:09,000
+Up above the world so high
+
+4
+00:00:09,000 --> 00:00:12,000
+Like a diamond in the sky

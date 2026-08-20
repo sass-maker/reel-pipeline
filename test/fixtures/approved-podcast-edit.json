@@ -1,0 +1,108 @@
+{
+  "schema": "fleet.podcast-edit.v1",
+  "id": "zeropod-conviction-short",
+  "revision": 1,
+  "createdAt": "2026-07-29T07:06:22.000Z",
+  "approval": {
+    "status": "approved",
+    "approvedAt": "2026-07-29T07:06:22.000Z",
+    "approvedBy": "operator"
+  },
+  "presentation": {
+    "sourceHeading": true,
+    "watermark": true,
+    "watermarkText": "ZEROPOD",
+    "subtitles": "sidecar"
+  },
+  "sources": [
+    {
+      "id": "01-believe-in-something",
+      "title": "01 Believe In Something",
+      "path": "fixtures/podcast/01-believe-in-something.mp3",
+      "creator": "The Zero Rights Media Collective",
+      "sourceUrl": "https://example.com/zeropod/01-believe-in-something.mp3",
+      "collectionUrl": "https://example.com/zeropod/feed.xml",
+      "license": "CC0 / zero rights reserved",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "visualCues": [
+    {
+      "kind": "kinetic-quote",
+      "start": 18,
+      "end": 28,
+      "text": "CONVICTION",
+      "style": "editorial-primary"
+    },
+    {
+      "kind": "ascii-signal",
+      "start": 28,
+      "end": 38,
+      "text": "STAY CURIOUS",
+      "style": "terminal-accent"
+    }
+  ],
+  "editorial": {
+    "version": 1,
+    "strategy": "short",
+    "prompt": "A sharp argument about conviction instead of chasing money.",
+    "target_duration": 45,
+    "generated_at": "2026-07-29T07:06:22.000Z",
+    "clips": [
+      {
+        "index": 0,
+        "segment_id": "01-believe-in-something:0089",
+        "segment_ids": [
+          "01-believe-in-something:0089"
+        ],
+        "source_id": "01-believe-in-something",
+        "source_title": "01 Believe In Something",
+        "source_path": "fixtures/podcast/01-believe-in-something.mp3",
+        "start": 3396.238,
+        "end": 3442.498,
+        "render_start": 3396.238,
+        "render_end": 3442.498,
+        "text": "Find something that you believe in more than just making money and dedicate time and energy and effort to that.",
+        "summary": "Advice about conviction instead of chasing money.",
+        "role": "closer",
+        "energy": 0.9,
+        "topics": [
+          "advice",
+          "conviction"
+        ],
+        "visuals": [],
+        "transition": "cut",
+        "edited": false,
+        "note": null
+      }
+    ],
+    "score": 0.749290306282043,
+    "terms": {
+      "relevance": 0.6604515314102173,
+      "context_completeness": 1,
+      "non_repetition": 1,
+      "progression": 1,
+      "escalation": 0.5,
+      "callback": 0,
+      "duration_fit": 0.9719999999999952,
+      "source_diversity": 0
+    },
+    "weights": {
+      "relevance": 0.2,
+      "context_completeness": 0.18,
+      "non_repetition": 0.12,
+      "progression": 0.12,
+      "escalation": 0.2,
+      "callback": 0.04,
+      "duration_fit": 0.1,
+      "source_diversity": 0.04
+    },
+    "calibration": {
+      "source": "corpus:135"
+    },
+    "rationale": [
+      "short-form: one contiguous source-faithful window"
+    ]
+  }
+}

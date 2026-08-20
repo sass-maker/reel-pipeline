@@ -1,0 +1,243 @@
+{
+  "schema": "fleet.lyric-video-production.v1",
+  "briefId": "twinkle-literal-canary",
+  "title": "Twinkle, Literally",
+  "durationMs": 12000,
+  "lyric": {
+    "schema": "fleet.lyric-video-details.v1",
+    "audioPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/twinkle-fleet-original.wav",
+    "audioDurationMs": 12000,
+    "timedLyrics": "[00:00.00]Twinkle, twinkle, little star\n[00:03.00]How I wonder what you are\n[00:06.00]Up above the world so high\n[00:09.00]Like a diamond in the sky",
+    "timedLyricsFormat": "lrc",
+    "cues": [
+      {
+        "startMs": 0,
+        "endMs": 3000,
+        "text": "Twinkle, twinkle, little star"
+      },
+      {
+        "startMs": 3000,
+        "endMs": 6000,
+        "text": "How I wonder what you are"
+      },
+      {
+        "startMs": 6000,
+        "endMs": 9000,
+        "text": "Up above the world so high"
+      },
+      {
+        "startMs": 9000,
+        "endMs": 12000,
+        "text": "Like a diamond in the sky"
+      }
+    ],
+    "parseError": null,
+    "attribution": "Words: “The Star,” Jane Taylor (1783–1824). Melody: traditional “Ah! vous dirai-je, maman.” Recording: newly synthesized by Fleet for this canary.",
+    "rights": {
+      "composition": "public-domain",
+      "master": "original-recording",
+      "evidence": "Library of Congress item 2023834988 identifies an 1880 score in a public-domain collection; Project Gutenberg identifies the poem and Jane Taylor. The audio is generated locally from declared note frequencies and uses no source recording.",
+      "evidenceUrl": "https://www.loc.gov/item/2023834988/",
+      "assertedBy": "Fleet canary fixture",
+      "assertedAt": null
+    },
+    "visualStyle": "blender-literal",
+    "useBlender": true,
+    "reducedMotion": false,
+    "scenePlan": [
+      {
+        "id": "lyric-scene-1",
+        "cueIndex": 0,
+        "startMs": 0,
+        "endMs": 3000,
+        "lyric": "Twinkle, twinkle, little star",
+        "interpretation": "Show bright stars twinkling visibly in a deep, physically grounded night sky.",
+        "objects": [
+          "bright stars"
+        ],
+        "action": "twinkling visibly",
+        "environment": "a deep, physically grounded night sky",
+        "camera": "slow-push",
+        "palette": "midnight-gold",
+        "assetSource": "deterministic-literal-plan"
+      },
+      {
+        "id": "lyric-scene-2",
+        "cueIndex": 1,
+        "startMs": 3000,
+        "endMs": 6000,
+        "lyric": "How I wonder what you are",
+        "interpretation": "Show bright stars being observed with wonder in a concrete, uncluttered environment.",
+        "objects": [
+          "bright stars"
+        ],
+        "action": "being observed with wonder",
+        "environment": "a concrete, uncluttered environment",
+        "camera": "gentle-orbit",
+        "palette": "blue-silver",
+        "assetSource": "deterministic-literal-plan"
+      },
+      {
+        "id": "lyric-scene-3",
+        "cueIndex": 2,
+        "startMs": 6000,
+        "endMs": 9000,
+        "lyric": "Up above the world so high",
+        "interpretation": "Show the curved world below performing the stated action in a deep, physically grounded night sky.",
+        "objects": [
+          "the curved world below"
+        ],
+        "action": "performing the stated action",
+        "environment": "a deep, physically grounded night sky",
+        "camera": "slow-push",
+        "palette": "midnight-gold",
+        "assetSource": "deterministic-literal-plan"
+      },
+      {
+        "id": "lyric-scene-4",
+        "cueIndex": 3,
+        "startMs": 9000,
+        "endMs": 12000,
+        "lyric": "Like a diamond in the sky",
+        "interpretation": "Show a cut diamond, the open night sky performing the stated action in a deep, physically grounded night sky.",
+        "objects": [
+          "a cut diamond",
+          "the open night sky"
+        ],
+        "action": "performing the stated action",
+        "environment": "a deep, physically grounded night sky",
+        "camera": "gentle-orbit",
+        "palette": "blue-silver",
+        "assetSource": "deterministic-literal-plan"
+      }
+    ],
+    "operatorSupplied": true
+  },
+  "rights": {
+    "composition": "public-domain",
+    "master": "original-recording",
+    "evidence": "Library of Congress item 2023834988 identifies an 1880 score in a public-domain collection; Project Gutenberg identifies the poem and Jane Taylor. The audio is generated locally from declared note frequencies and uses no source recording.",
+    "evidenceUrl": "https://www.loc.gov/item/2023834988/",
+    "attribution": "Words: “The Star,” Jane Taylor (1783–1824). Melody: traditional “Ah! vous dirai-je, maman.” Recording: newly synthesized by Fleet for this canary.",
+    "independentlyVerified": false
+  },
+  "runtime": {
+    "blenderReady": true,
+    "blenderVersion": "5.2.0",
+    "blenderExecutable": "/Applications/Blender.app/Contents/MacOS/Blender",
+    "blenderBlocker": null
+  },
+  "generatedAt": "2026-08-02T14:54:35.400Z",
+  "audio": {
+    "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/twinkle-fleet-original.wav",
+    "durationSeconds": 12,
+    "hasAudio": true,
+    "sha256": "6ed1cc1346d8d34c95a0b85dfa6b37c5c9eaf4a35807f44443592448012c08d1"
+  },
+  "blender": {
+    "provider": "blender",
+    "version": "5.2.0",
+    "executable": "/Applications/Blender.app/Contents/MacOS/Blender",
+    "builderVersion": "literal-scene-builder-v2",
+    "manifestHash": "90e62c3d254e82249af399a387c1def081eed73f57c231dbdb8c2364c96edae9",
+    "plates": [
+      {
+        "sceneId": "lyric-scene-1",
+        "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/001-lyric-scene-1.png",
+        "bytes": 586201,
+        "sha256": "649bf9f54e04baafbfe1c0c8843d48180919b1aef959704bd558f0c9aef4be91"
+      },
+      {
+        "sceneId": "lyric-scene-2",
+        "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/002-lyric-scene-2.png",
+        "bytes": 573147,
+        "sha256": "b5a0ee33d04566897d2d3200982ea0e83293b7606543b5ab9387404a22fd4b1b"
+      },
+      {
+        "sceneId": "lyric-scene-3",
+        "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/003-lyric-scene-3.png",
+        "bytes": 586201,
+        "sha256": "94a4075787e5a937dad8c90fde0e5c49f188cddae336e65e6491ab8118d0c60d"
+      },
+      {
+        "sceneId": "lyric-scene-4",
+        "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/004-lyric-scene-4.png",
+        "bytes": 573147,
+        "sha256": "5c7bc07d4d46f0d51f4c9f937efc7709c8fe869b896a31d22b23d00f47c75675"
+      }
+    ]
+  },
+  "output": {
+    "videoPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/twinkle-literally.mp4",
+    "captionsPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/lyrics.srt",
+    "scenePlanPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/literal-scene-plan.json",
+    "rightsPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/rights.json",
+    "qualityPath": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/quality.json",
+    "width": 540,
+    "height": 960,
+    "fps": 30
+  },
+  "artifacts": {
+    "audio": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/twinkle-fleet-original.wav",
+      "bytes": 1058444,
+      "sha256": "6ed1cc1346d8d34c95a0b85dfa6b37c5c9eaf4a35807f44443592448012c08d1"
+    },
+    "video": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/twinkle-literally.mp4",
+      "bytes": 468626,
+      "sha256": "85e500e11c7e6ff8705ee5972a2dd4bfb896b9602f8a9d245332ec496c3de1b9"
+    },
+    "captions": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/lyrics.srt",
+      "bytes": 240,
+      "sha256": "7c3616c4bfce40ca1b2409372c7a98714c42ea2884f59972b158f2318736874f"
+    },
+    "scenePlan": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/literal-scene-plan.json",
+      "bytes": 2084,
+      "sha256": "44fb07a1b9cf0d2262edee79e7c50eddae1f2ef0f0f981defb460c3c0ff63e56"
+    },
+    "rights": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/rights.json",
+      "bytes": 595,
+      "sha256": "c87cba09ebefbc3511524d72b82620055702a9f5640255483cd8e2ca0e1d1477"
+    },
+    "blenderPlate1": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/001-lyric-scene-1.png",
+      "bytes": 586201,
+      "sha256": "649bf9f54e04baafbfe1c0c8843d48180919b1aef959704bd558f0c9aef4be91"
+    },
+    "blenderPlate2": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/002-lyric-scene-2.png",
+      "bytes": 573147,
+      "sha256": "b5a0ee33d04566897d2d3200982ea0e83293b7606543b5ab9387404a22fd4b1b"
+    },
+    "blenderPlate3": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/003-lyric-scene-3.png",
+      "bytes": 586201,
+      "sha256": "94a4075787e5a937dad8c90fde0e5c49f188cddae336e65e6491ab8118d0c60d"
+    },
+    "blenderPlate4": {
+      "path": "/Users/sarthak/Desktop/fleet/.worktrees/gallery-final/foundry/marketing/reel-pipeline/fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/blender/blender_twinkle-literal-canary_1785682470557/plates/004-lyric-scene-4.png",
+      "bytes": 573147,
+      "sha256": "5c7bc07d4d46f0d51f4c9f937efc7709c8fe869b896a31d22b23d00f47c75675"
+    }
+  },
+  "quality": {
+    "schema": "fleet.lyric-video-quality.v1",
+    "verdict": "pass",
+    "durationSeconds": 12,
+    "audioPresent": true,
+    "cueCount": 4,
+    "sceneCount": 4,
+    "cueCoverage": 1,
+    "exactLyricText": true,
+    "safeArea": {
+      "horizontalPx": 42,
+      "bottomPx": 74
+    },
+    "contrastBacking": true,
+    "reducedMotion": false
+  }
+}

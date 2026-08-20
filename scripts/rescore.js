@@ -9,9 +9,12 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
+import { reelWorkerHeaders } from '../src/reel-worker-auth.js';
+
 const execFileAsync = promisify(execFile);
 
 const BASE = process.env.REEL_WORKER_URL ?? 'https://reel-pipeline-artifacts.sarthakagrawal927.workers.dev';
+const WORKER_HEADERS = reelWorkerHeaders();
 const BUCKET = process.env.REEL_ARTIFACT_R2_BUCKET ?? 'reel-artifacts';
 const WORK = path.resolve('./tmp/rescore');
 await mkdir(WORK, { recursive: true });
@@ -100,7 +103,9 @@ function round(value) {
 async function listReels(statuses) {
   const seen = new Map();
   for (const status of statuses) {
-    const res = await fetch(`${BASE}/reels?status=${status}`);
+    const res = await fetch(`${BASE}/reels?status=${status}`, {
+      headers: WORKER_HEADERS,
+    });
     if (!res.ok) continue;
     const payload = await res.json();
     for (const reel of payload.data || []) {

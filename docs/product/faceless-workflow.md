@@ -39,20 +39,18 @@ plan), `render.json`.
 - `--engine kokoro` — fully local render: Kokoro-82M narration (local ONNX,
   no network at synth time) + Pexels b-roll + FFmpeg compose with burned
   captions. One-time setup: `npm run setup:kokoro` (~340MB model download).
-  The Pexels key resolves from `PEXELS_API_KEY` or the local
-  MoneyPrinterTurbo config; captions auto-select a drawtext-capable ffmpeg.
+  The Pexels key resolves from `PEXELS_API_KEY`; captions require a
+  drawtext-capable FFmpeg build.
   Voice: `af_heart` default, override with `KOKORO_VOICE` (Kokoro-style
   names like `am_adam`).
-- `--engine moneyprinterturbo` — stock footage + Edge-TTS + subtitles through
-  the local MoneyPrinterTurbo API. Start it first: `npm run moneyprinter:api`.
 
 `render-pro.js` remains the canonical production renderer; this workflow is a
 draft-production path that feeds the same review/post queue.
 
 ## Voice
 
-Single narration voice by default — `af_heart` (Kokoro engine) or
-`en-US-AriaNeural-Female` (MoneyPrinterTurbo), override with `--voice`.
+Single narration voice by default — `af_heart` (Kokoro engine), override with
+`--voice`.
 Per-scene rotation reads as disjointed for non-dialog scripts, so it requires
 an explicit `--voice-rotation` opt-in. Pass a brand-voice profile from
 `npm run studio -- voice` with `--voice-profile profile.json`.
@@ -63,7 +61,7 @@ Lesson videos share the same voice stack: `LESSON_TTS_PROVIDER` selects
 ## Batch production
 
 ```bash
-npm run faceless -- --topics-file topics.txt --engine moneyprinterturbo
+npm run faceless -- --topics-file topics.txt --engine kokoro
 ```
 
 `topics.txt` is one topic per line (`#` comments allowed) or a JSON array.
@@ -104,12 +102,12 @@ The workflow never posts automatically. Rendered videos enter the normal
 posting path — review, then:
 
 ```bash
-npm run post:ready
+npm run distribution -- --file <content-package.json> --receipt <media-receipt.json> --provider postiz
 ```
 
 Pass `--post-handoff` to have the run summary include that command explicitly.
-Posting capability rules, preflight, and recovery are unchanged (see
-[auto-posting.md](../operations/auto-posting.md)).
+See [`postiz-handoff.md`](../operations/postiz-handoff.md) for the draft-only
+contract and target-host proof.
 
 ## Verification
 

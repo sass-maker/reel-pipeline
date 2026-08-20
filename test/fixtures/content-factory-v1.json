@@ -1,0 +1,123 @@
+{
+  "approvedBrief": {
+    "schema_version": 1,
+    "brief_id": "brief-high-signal-001",
+    "brief_version": 2,
+    "project_id": "high-signal",
+    "campaign_id": "campaign-launch-proof",
+    "experiment_id": "experiment-hook-a",
+    "input_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "source": {
+      "kind": "foundry-marketing-queue",
+      "id": "marketing-post-001",
+      "revision": "2"
+    },
+    "requested_formats": ["vertical_video_9_16"],
+    "channel_intent": ["instagram_reels", "youtube_shorts"],
+    "content": {
+      "title": "A proof-first launch",
+      "hook": "Show the evidence before the claim.",
+      "body": "A concise product proof reel.",
+      "call_to_action": "Review the full launch note."
+    },
+    "content_approval": {
+      "stage": "content",
+      "status": "approved",
+      "decided_by": "owner-001",
+      "decided_at": "2026-07-20T08:00:00.000Z",
+      "evidence_ref": "approval://content/001"
+    },
+    "submitted_at": "2026-07-20T08:05:00.000Z"
+  },
+  "unapprovedBrief": {
+    "schema_version": 1,
+    "brief_id": "brief-high-signal-002",
+    "brief_version": 1,
+    "project_id": "high-signal",
+    "campaign_id": "campaign-launch-proof",
+    "experiment_id": null,
+    "input_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "source": {
+      "kind": "foundry-marketing-queue",
+      "id": "marketing-post-002",
+      "revision": null
+    },
+    "requested_formats": ["vertical_video_9_16"],
+    "channel_intent": ["youtube_shorts"],
+    "content": {
+      "title": "Pending copy",
+      "hook": "Not approved yet.",
+      "body": "This must not render.",
+      "call_to_action": "Wait for review."
+    },
+    "content_approval": {
+      "stage": "content",
+      "status": "pending",
+      "decided_by": null,
+      "decided_at": null,
+      "evidence_ref": null
+    },
+    "submitted_at": "2026-07-20T08:10:00.000Z"
+  },
+  "approvedManifest": {
+    "schema_version": 1,
+    "manifest_id": "manifest-high-signal-001",
+    "generation_run_id": "generation-run-001",
+    "brief": {
+      "id": "brief-high-signal-001",
+      "version": 2
+    },
+    "project_id": "high-signal",
+    "campaign_id": "campaign-launch-proof",
+    "experiment_id": "experiment-hook-a",
+    "input_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "renderer": {
+      "id": "vertical-proof-renderer",
+      "version": "1.4.0"
+    },
+    "variants": [
+      {
+        "id": "variant-vertical-001",
+        "format": "vertical_video_9_16",
+        "channel_intent": ["instagram_reels", "youtube_shorts"]
+      }
+    ],
+    "assets": [
+      {
+        "id": "asset-video-001",
+        "variant_id": "variant-vertical-001",
+        "media_type": "video/mp4",
+        "location": "artifact://generation-run-001/video.mp4",
+        "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "size_bytes": 2048000
+      }
+    ],
+    "quality": {
+      "status": "passed",
+      "checks": [
+        {
+          "id": "vertical-dimensions",
+          "status": "passed",
+          "observed_at": "2026-07-20T08:20:00.000Z",
+          "evidence_ref": "quality://generation-run-001/dimensions",
+          "message": null
+        }
+      ]
+    },
+    "provenance": [
+      {
+        "kind": "foundry-marketing-queue",
+        "id": "marketing-post-001",
+        "revision": "2"
+      }
+    ],
+    "review": {
+      "stage": "artifact_review",
+      "status": "approved",
+      "decided_by": "owner-001",
+      "decided_at": "2026-07-20T08:30:00.000Z",
+      "evidence_ref": "approval://artifact/001"
+    },
+    "created_at": "2026-07-20T08:25:00.000Z"
+  }
+}

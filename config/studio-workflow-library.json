@@ -1,0 +1,188 @@
+{
+  "$schema": "fleet.studio-workflow-library.v1",
+  "version": 1,
+  "archetypes": [
+    {
+      "id": "cinematic-moment",
+      "version": 1,
+      "name": "Cinematic moment",
+      "description": "One composed character or environment shot with restrained cinematic motion.",
+      "intentTags": ["cinematic", "atmosphere", "film", "portrait", "scene"],
+      "keywords": ["cinematic", "atmosphere", "moody", "film", "portrait", "scene", "beautiful"],
+      "promptGuide": "one principal action, natural cinematic motion, coherent subject, deliberate camera movement",
+      "shotGrammar": "single composed shot",
+      "defaultAspectRatio": "9:16",
+      "defaultDurationSeconds": 3.375
+    },
+    {
+      "id": "full-body-performance",
+      "version": 1,
+      "name": "Full-body performance",
+      "description": "Preserve a complete silhouette while the subject walks, dances, performs, or models an outfit.",
+      "intentTags": ["character", "full-body", "fashion", "dance", "performance"],
+      "keywords": ["full body", "whole body", "walk", "walking", "dance", "dancing", "outfit", "fashion", "perform"],
+      "promptGuide": "full body visible head to toe, coherent anatomy, grounded footwork, changing camera angle, no static portrait crop",
+      "shotGrammar": "full-body performance shot",
+      "defaultAspectRatio": "9:16",
+      "defaultDurationSeconds": 5
+    },
+    {
+      "id": "dialogue-beat",
+      "version": 1,
+      "name": "Dialogue beat",
+      "description": "A character-led conversational beat with space reserved for separately generated dialogue audio.",
+      "intentTags": ["dialogue", "conversation", "character", "acting", "voice"],
+      "keywords": ["dialogue", "conversation", "talk", "talking", "speaks", "speaking", "says", "voice", "scene together"],
+      "promptGuide": "natural acting beat, readable eyeline, conversational pause, coherent face and hands, no false lip sync claim",
+      "shotGrammar": "dialogue coverage shot",
+      "defaultAspectRatio": "9:16",
+      "defaultDurationSeconds": 5
+    },
+    {
+      "id": "action-beat",
+      "version": 1,
+      "name": "Action beat",
+      "description": "A short high-energy movement with one readable action and one motivated camera move.",
+      "intentTags": ["action", "fight", "chase", "sport", "dynamic"],
+      "keywords": ["action", "fight", "fighting", "chase", "running", "sprint", "jump", "battle", "dynamic", "explosion"],
+      "promptGuide": "one readable action beat, dynamic but stable camera, coherent body motion, decisive beginning and end",
+      "shotGrammar": "single action beat",
+      "defaultAspectRatio": "9:16",
+      "defaultDurationSeconds": 3.375
+    },
+    {
+      "id": "reaction-closeup",
+      "version": 1,
+      "name": "Reaction close-up",
+      "description": "A face-led emotional beat with restrained camera motion and readable expression.",
+      "intentTags": ["reaction", "emotion", "close-up", "character", "comedy"],
+      "keywords": ["reaction", "close up", "close-up", "expression", "surprised", "laughing", "crying", "realizes"],
+      "promptGuide": "one readable emotional change, coherent face and eyes, restrained camera move, natural micro-expression",
+      "shotGrammar": "reaction close-up",
+      "defaultAspectRatio": "9:16",
+      "defaultDurationSeconds": 3.375
+    },
+    {
+      "id": "suspense-reveal",
+      "version": 1,
+      "name": "Suspense reveal",
+      "description": "Hold visual tension before one clear reveal for thriller, mystery, or horror beats.",
+      "intentTags": ["suspense", "horror", "mystery", "reveal", "tension"],
+      "keywords": ["suspense", "horror", "mystery", "scary", "creepy", "thriller", "reveal", "behind them"],
+      "promptGuide": "controlled tension, motivated slow camera movement, one legible reveal, coherent lighting and spatial continuity",
+      "shotGrammar": "suspense and reveal beat",
+      "defaultAspectRatio": "9:16",
+      "defaultDurationSeconds": 5
+    },
+    {
+      "id": "creature-fantasy",
+      "version": 1,
+      "name": "Creature & fantasy",
+      "description": "Reference-led motion for creatures, armor, magic, and deliberately impossible fantasy subjects.",
+      "intentTags": ["fantasy", "creature", "magic", "myth", "character"],
+      "keywords": ["fantasy", "creature", "dragon", "monster", "magic", "magical", "warrior", "mythical"],
+      "promptGuide": "preserve the reference creature design, readable silhouette, grounded weight, one coherent magical or physical action",
+      "shotGrammar": "fantasy character beat",
+      "defaultAspectRatio": "9:16",
+      "defaultDurationSeconds": 5
+    },
+    {
+      "id": "vehicle-motion",
+      "version": 1,
+      "name": "Vehicle motion",
+      "description": "A single readable car, bike, aircraft, or spacecraft move with stable geometry.",
+      "intentTags": ["vehicle", "driving", "speed", "travel", "machine"],
+      "keywords": ["car", "driving", "motorcycle", "bike", "aircraft", "spaceship", "vehicle", "racing", "drive"],
+      "promptGuide": "preserve vehicle geometry, grounded motion and reflections, one motivated tracking move, consistent direction of travel",
+      "shotGrammar": "vehicle tracking shot",
+      "defaultAspectRatio": "16:9",
+      "defaultDurationSeconds": 5
+    },
+    {
+      "id": "transformation-beat",
+      "version": 1,
+      "name": "Transformation beat",
+      "description": "A short before-to-after visual transformation centered on one subject and one transition idea.",
+      "intentTags": ["transformation", "morph", "transition", "before-after", "magic"],
+      "keywords": ["transform", "transformation", "morph", "turns into", "before and after", "costume change", "transition"],
+      "promptGuide": "one continuous transformation, preserve subject position and identity cues, clear before and after states, no unrelated cuts",
+      "shotGrammar": "single transformation beat",
+      "defaultAspectRatio": "9:16",
+      "defaultDurationSeconds": 5
+    },
+    {
+      "id": "night-out-rush",
+      "version": 1,
+      "name": "Night Out rush",
+      "description": "A kinetic party image-to-video shot designed for later multi-shot carousel assembly.",
+      "intentTags": ["party", "nightlife", "club", "montage", "music"],
+      "keywords": ["party", "night out", "nightlife", "club", "dance floor", "wild night", "carousel", "montage", "funky"],
+      "promptGuide": "wild candid party moment, full bodies in motion, playful handheld energy, colorful practical lighting, decisive cut point",
+      "shotGrammar": "party montage source shot",
+      "defaultAspectRatio": "9:16",
+      "defaultDurationSeconds": 3.375
+    },
+    {
+      "id": "stylized-character",
+      "version": 1,
+      "name": "Stylized character",
+      "description": "Reference-led animation for anime, comic, illustrated, or deliberately non-photoreal characters.",
+      "intentTags": ["anime", "cartoon", "comic", "illustration", "stylized"],
+      "keywords": ["anime", "cartoon", "comic", "illustrated", "illustration", "stylized", "cel shaded", "manga"],
+      "promptGuide": "preserve the reference design language, clean silhouette, expressive pose, coherent line and color treatment",
+      "shotGrammar": "stylized character shot",
+      "defaultAspectRatio": "9:16",
+      "defaultDurationSeconds": 3.375
+    },
+    {
+      "id": "world-reveal",
+      "version": 1,
+      "name": "World reveal",
+      "description": "Reveal an environment or location with controlled parallax and a clear visual destination.",
+      "intentTags": ["environment", "landscape", "world", "travel", "establishing"],
+      "keywords": ["environment", "landscape", "world", "city", "location", "travel", "establishing", "reveal", "vista"],
+      "promptGuide": "environment-led establishing reveal, controlled parallax, clear depth, one destination for the camera move",
+      "shotGrammar": "environment reveal",
+      "defaultAspectRatio": "16:9",
+      "defaultDurationSeconds": 5
+    },
+    {
+      "id": "product-atmosphere",
+      "version": 1,
+      "name": "Product atmosphere",
+      "description": "Generated atmosphere around an approved product reference without inventing product behavior or claims.",
+      "intentTags": ["product", "brand", "object", "launch", "commercial"],
+      "keywords": ["product", "brand", "launch", "commercial", "object", "packshot", "hero product"],
+      "promptGuide": "preserve the approved product reference exactly, generated motion only for atmosphere, no invented interface or claim",
+      "shotGrammar": "product atmosphere insert",
+      "defaultAspectRatio": "9:16",
+      "defaultDurationSeconds": 3.375
+    },
+    {
+      "id": "rhythm-cut",
+      "version": 1,
+      "name": "Rhythm cut",
+      "description": "A visually decisive short motion beat intended to cut cleanly against music in final assembly.",
+      "intentTags": ["music", "rhythm", "performance", "transition", "montage"],
+      "keywords": ["music video", "song", "beat", "rhythm", "transition", "cut to music", "performance"],
+      "promptGuide": "one motion phrase with a clear accent and clean cut point, visual rhythm, no generated audio claim",
+      "shotGrammar": "music-timed source shot",
+      "defaultAspectRatio": "9:16",
+      "defaultDurationSeconds": 3.375
+    }
+  ],
+  "lanes": {
+    "final": {
+      "workflowRecipeId": "ltx-2.3-mlx-q4-final",
+      "modelProfileId": "ltx-2.3-mlx-q4",
+      "label": "LTX 2.3 final",
+      "quality": "final"
+    },
+    "preview": {
+      "workflowRecipeId": "ltx-2b-comfy-i2v-preview",
+      "modelProfileId": "ltx-2b-comfy-preview",
+      "label": "LTX 2B Comfy preview",
+      "quality": "preview"
+    }
+  }
+}

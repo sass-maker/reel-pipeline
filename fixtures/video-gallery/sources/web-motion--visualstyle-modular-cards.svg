@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="640" viewBox="0 0 360 640">
+  <defs>
+    <linearGradient id="wash" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07101a"/><stop offset="1" stop-color="#203d5f"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="360" height="640" fill="url(#wash)"/>
+  <circle cx="310" cy="76" r="82" fill="#79b8ff" opacity=".12" filter="url(#soft)"/>
+  <text x="28" y="39" fill="#79b8ff" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="700" letter-spacing="1.8">FLEET · FIXTURE PREVIEW</text>
+  <g><rect x="46" y="94" width="268" height="74" fill="#79b8ff" opacity=".32"/><rect x="46" y="181" width="128" height="162" fill="#edf7ff" opacity=".1"/><rect x="186" y="181" width="128" height="74" fill="#203d5f" stroke="#79b8ff"/><rect x="186" y="269" width="128" height="74" fill="#79b8ff" opacity=".18"/><circle cx="83" cy="131" r="19" fill="#79b8ff"/><path d="M116 123h154M116 140h96" stroke="#edf7ff" opacity=".6" stroke-width="8"/></g>
+  <text x="28" y="430" fill="#edf7ff" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="800" letter-spacing="-.8">WEB MOTION</text>
+  <text x="28" y="510" fill="#79b8ff" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700">Modular Cards</text>
+  <line x1="28" y1="596" x2="332" y2="596" stroke="#79b8ff" opacity=".34"/>
+  <text x="28" y="618" fill="#edf7ff" opacity=".7" font-family="Arial,Helvetica,sans-serif" font-size="10">HTML / Canvas · 10/48</text>
+</svg>

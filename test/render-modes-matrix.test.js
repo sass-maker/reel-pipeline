@@ -34,11 +34,11 @@ test('render mode matrix entries have smoke metadata', () => {
   }
 });
 
-test('render-accepted matrix modes and aliases are accepted by Node pipeline', () => {
-  const renderAcceptedModes = matrix.modes.filter((mode) => mode.surface === 'render-accepted');
-  assert.ok(renderAcceptedModes.length >= 1);
+test('video-brief matrix modes and aliases are accepted by Node pipeline', () => {
+  const videoBriefModes = matrix.modes.filter((mode) => mode.surface === 'video-brief');
+  assert.ok(videoBriefModes.length >= 1);
 
-  for (const mode of renderAcceptedModes) {
+  for (const mode of videoBriefModes) {
     for (const value of [mode.id, ...(mode.aliases ?? [])]) {
       const brief = normalizeVideoBrief({ ...baseBrief, renderMode: value });
       assert.equal(brief.renderMode, value);
@@ -52,8 +52,8 @@ test('render mode smoke report is stable machine-readable evidence', () => {
     matrix,
     now: new Date('2026-07-09T00:00:00.000Z'),
     checks: [
-      { name: 'mock', status: 'ok', detail: 'provider=mock status=completed' },
-      { name: 'moneyprinterturbo', status: 'skip', hint: 'start service' },
+      { name: 'mock', status: 'ok', detail: 'provider=mock status=completed manifest=/tmp/manifest.json' },
+      { name: 'render-pro', status: 'skip', hint: 'needs approved reel id' },
     ],
   });
 
@@ -65,14 +65,14 @@ test('render mode smoke report is stable machine-readable evidence', () => {
     {
       name: 'mock',
       status: 'ok',
-      detail: 'provider=mock status=completed',
+      detail: 'provider=mock status=completed manifest=/tmp/manifest.json',
       hint: null,
     },
     {
-      name: 'moneyprinterturbo',
+      name: 'render-pro',
       status: 'skip',
       detail: null,
-      hint: 'start service',
+      hint: 'needs approved reel id',
     },
   ]);
 });
@@ -81,7 +81,7 @@ test('render mode smoke fails closed for unsupported smoke types', () => {
   assert.deepEqual(runModeSmoke({
     id: 'unknown-mode',
     provider: 'unknown',
-    surface: 'render-accepted',
+    surface: 'video-brief',
     smoke: { type: 'mystery' },
   }), {
     name: 'unknown-mode',

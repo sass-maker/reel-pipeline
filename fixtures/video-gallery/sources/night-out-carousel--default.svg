@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="640" viewBox="0 0 360 640">
+  <defs>
+    <linearGradient id="wash" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07100f"/><stop offset="1" stop-color="#223f3a"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="360" height="640" fill="url(#wash)"/>
+  <circle cx="310" cy="76" r="82" fill="#79dcc8" opacity=".12" filter="url(#soft)"/>
+  <text x="28" y="39" fill="#79dcc8" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="700" letter-spacing="1.8">FLEET · FIXTURE PREVIEW</text>
+  <g transform="rotate(-5 180 220)"><rect x="66" y="96" width="228" height="286" rx="8" fill="#e8fff9"/><rect x="80" y="112" width="200" height="220" rx="4" fill="#79dcc8" opacity=".38"/><circle cx="130" cy="182" r="38" fill="#223f3a"/><circle cx="215" cy="167" r="45" fill="#e8fff9" opacity=".28"/><path d="M96 306l45-61 39 38 42-70 44 93z" fill="#223f3a"/><text x="180" y="361" text-anchor="middle" fill="#223f3a" font-family="Arial" font-size="18" font-weight="900">NIGHT OUT</text></g>
+  <text x="28" y="430" fill="#e8fff9" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="800" letter-spacing="-.8">NIGHT OUT CAROUSEL</text>
+  <text x="28" y="510" fill="#79dcc8" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700">Default</text>
+  <line x1="28" y1="596" x2="332" y2="596" stroke="#79dcc8" opacity=".34"/>
+  <text x="28" y="618" fill="#e8fff9" opacity=".7" font-family="Arial,Helvetica,sans-serif" font-size="10">Chrome + FFmpeg · 49/49</text>
+</svg>

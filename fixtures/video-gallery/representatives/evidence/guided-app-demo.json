@@ -1,0 +1,18 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "guided-app-demo",
+  "proofRole": "primary",
+  "rangeLabel": "App demo · guided capture",
+  "motionTags": [
+    "guided-capture",
+    "scroll-continuity"
+  ],
+  "renderer": "playwright-app-capture@1",
+  "sourcePosture": "local-render",
+  "durationSeconds": 8,
+  "sha256": "278daeb43bd1630006a34a63cc541bdb3b28a53436c0f15b65f71f7872fff1ba",
+  "source": {
+    "kind": "live-browser-capture",
+    "capturedBy": "scripts/capture-live-gallery-proofs.js"
+  }
+}

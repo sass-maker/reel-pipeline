@@ -1,0 +1,40 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
+  "root": true,
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "src/**/*.js",
+      "scripts/**/*.js",
+      "scripts/**/*.mjs",
+      "test/**/*.js"
+    ]
+  },
+  "formatter": {
+    "enabled": false
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "none",
+      "correctness": {
+        "noConstAssign": "error",
+        "noInvalidUseBeforeDeclaration": "error",
+        "noPrecisionLoss": "error",
+        "noUnreachable": "error",
+        "noUnreachableSuper": "error"
+      },
+      "suspicious": {
+        "noDuplicateCase": "error",
+        "noDuplicateClassMembers": "error",
+        "noDuplicateObjectKeys": "error",
+        "noImportAssign": "error",
+        "noRedeclare": "error",
+        "noSelfCompare": "error"
+      }
+    }
+  },
+  "assist": {
+    "enabled": false
+  }
+}

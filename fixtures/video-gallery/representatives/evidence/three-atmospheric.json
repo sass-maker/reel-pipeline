@@ -1,0 +1,18 @@
+{
+  "schema": "fleet.video-representative-proof-evidence.v2",
+  "recipeId": "threejs-scene",
+  "proofRole": "range",
+  "rangeLabel": "Three.js · camera flight",
+  "motionTags": [
+    "fly-through",
+    "atmospheric-depth"
+  ],
+  "renderer": "three-webgl-visual-lab@2",
+  "sourcePosture": "specialist-proof",
+  "durationSeconds": 8,
+  "sha256": "e314e91670e1a05b54e22ffb47fbf234d8a8bdc031e59e302eb5c09c47c4e048",
+  "source": {
+    "kind": "live-browser-capture",
+    "capturedBy": "scripts/capture-live-gallery-proofs.js"
+  }
+}

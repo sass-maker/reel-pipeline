@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 
 import { HtmlCompositionAdapter } from '../src/adapters/html-composition.js';
 import { normalizeVideoBrief } from '../src/video-brief.js';
+import { decorateRenderResult } from '../content-factory/src/manifest.js';
 
 const args = parseArgs(process.argv.slice(2));
 if (!args.brief) {
@@ -14,7 +15,7 @@ const brief = normalizeVideoBrief(JSON.parse(await readFile(args.brief, 'utf8'))
 const adapter = new HtmlCompositionAdapter({
   artifactDir: args.artifactDir,
 });
-const render = await adapter.createVideo(brief);
+const render = await decorateRenderResult({ brief, render: await adapter.createVideo(brief) });
 console.log(JSON.stringify(render));
 
 function parseArgs(argv) {
