@@ -246,6 +246,6 @@ interface may request a write only through an explicit per-channel policy.
 
 ## Work queue
 
-Open work is tracked only in [GitHub Issues](https://github.com/sarthakagrawal927/reel-pipeline/issues).
+Open work is tracked only in [GitHub Issues](https://github.com/sass-maker/reel-pipeline/issues).
 An open issue is a to-do, a linked pull request is in progress, and merge plus
 issue closure makes the work done.

@@ -26,7 +26,7 @@ manifest as `draft_only`, `approval_required`, or `autonomous`.
 ## Quick start
 
 ```bash
-gh repo clone sarthakagrawal927/reel-pipeline
+gh repo clone sass-maker/reel-pipeline
 cd reel-pipeline
 npm ci
 npm test
