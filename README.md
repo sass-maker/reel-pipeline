@@ -1,8 +1,8 @@
 # Reel Pipeline
 
 > Canonical source: this standalone repository. Content Factory is owned here
-> under `content-factory/`; Fleet Workspace retains catalog and receipt links
-> but does not embed the product source or UI.
+> under `content-factory/`; Site Health retains the portfolio catalog and
+> evidence links but does not embed the product source or UI.
 
 A local-first video-creation product. Its primary loop is request → inspectable
 workflow → explicit generation → playable result → reusable history. It also
