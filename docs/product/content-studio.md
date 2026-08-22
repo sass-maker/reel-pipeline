@@ -138,10 +138,12 @@ The optional Theme, Model, and Content scope controls appear only for eligible
 recipes. Auto selects only a compatible, locally ready profile explicitly
 approved for Auto; obscure community checkpoints require an explicit operator
 selection even when their files are present. Registry reads, selection, brief
-saves, and render requests never install or download a runtime. Unproven Wan
-Remix and MiniMax H3 profiles remain visible with their exact blocker. The model profile, checkpoint hash,
-runtime revision, sampling settings, theme posture, and content scope are saved
-in the render receipt.
+saves, and render requests never install or download a runtime. The unproven Wan
+Remix and MiniMax H3 profiles were removed from the registry under the
+cost-capped generation boundary, so `auto`, `wai-illustrious-v17-sdcpp`,
+`ltx-2.3-mlx-q4`, and `ltx-2b-comfy-preview` are the complete profile list. The
+model profile, checkpoint hash, runtime revision, sampling settings, theme
+posture, and content scope are saved in the render receipt.
 
 `general` excludes nudity and explicit content. `mature-enabled` permits prompts
 for fictional consenting adults age 25 or older while retaining hard negative

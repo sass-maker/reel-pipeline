@@ -37,6 +37,15 @@ interface may request a write only through an explicit per-channel policy.
 
 ## Timeline
 
+- **2026-08-23:** documented the local video workflow recipe and episode
+  manifest contracts — registry, resolved-run signature, Comfy node allowlist,
+  episode/run/assembly schemas, soundtrack rights gate, and the six Studio
+  episode endpoints — in
+  [`docs/architecture/local-video-recipes-and-episodes.md`](docs/architecture/local-video-recipes-and-episodes.md).
+  Corrected the stale Content Studio claim that unproven Wan Remix and MiniMax
+  H3 profiles remain visible; both were removed from the registry by the
+  cost-capped generation boundary. Dropped a dead `openspec validate` step from
+  the recorded design-review project check.
 - **2026-08-23:** added `guided-app-demo@2` and the opt-in cartoon-hand pointer
   treatment: the `reel-pipeline.pointer-trace.v1` privacy-bounded sidecar,
   hash-bound trace approval on the capture record, a deterministic
