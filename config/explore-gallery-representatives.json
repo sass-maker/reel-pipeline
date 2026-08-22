@@ -13,7 +13,7 @@
       },
       {
         "recipeId": "guided-app-demo",
-        "reason": "Quality-gated: the available recording showed an unavailable local state instead of a successful product flow."
+        "reason": "Duration-gated: guided-app-demo@2 has a real hash-bound local proof in fixtures/guided-app-demo/cartoon-hand-pointer/evidence.json, but it runs 5.5s and representative proofs must be 6-15s. Promoting it needs a longer scripted capture, not a new render family."
       },
       {
         "recipeId": "product-proof",
@@ -178,7 +178,7 @@
       "intendedRuntime": "Raster glyph frames + FFmpeg",
       "sourcePosture": "local-render",
       "executionMode": "real",
-      "qualityTier": "showcase",
+      "qualityTier": "experiment",
       "spend": "Local compute",
       "variantId": "ascii-story--palette-mono",
       "prompt": "Create ascii signal story using scene-progression and glyph-animation with visible progression and a readable conclusion.",

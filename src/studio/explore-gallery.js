@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import galleryConfig from '../../config/explore-gallery.json' with { type: 'json' };
+import qualityReviewConfig from '../../config/explore-gallery-quality-review.json' with { type: 'json' };
 import representativeConfig from '../../config/explore-gallery-representatives.json' with { type: 'json' };
 import { listProductionRecipes, listRecipeVariants } from './production-catalog.js';
 
@@ -19,6 +20,10 @@ const POSTURES = new Set([
 ]);
 const QUALITY_TIERS = new Set(['showcase', 'experiment', 'baseline']);
 const EXECUTION_MODES = new Set(['fixture', 'real']);
+// A showcase claim is the strongest quality claim the gallery makes, so it has to be
+// backed by a scored frame review. Unscored and low-scoring proofs stay at experiment
+// tier instead of being presented as showcase work.
+const SHOWCASE_SCORE_FLOOR = 15;
 
 export async function listExploreGallery(options = {}) {
   const registry = validateExploreGallery(options.galleryConfig ?? galleryConfig, options);
@@ -106,6 +111,7 @@ export async function listRepresentativeExploreGallery(options = {}) {
       prompt: item.prompt,
       durationSeconds: item.durationSeconds,
       evidence: item.evidence,
+      review: item.review,
       playable,
       bytes: playable ? info.size : null,
       mediaUrl: playable ? `/studio/explore-gallery/representatives/${encodeURIComponent(item.id)}/media` : null,
@@ -170,6 +176,9 @@ export function validateRepresentativeExploreGallery(input, options = {}) {
     { ...options, galleryRoot: options.representativeRoot ?? DEFAULT_ROOT, variants },
   );
   const variantsById = new Map(variants.map((variant) => [variant.id, variant]));
+  const qualityReview = options.qualityReview ?? qualityReviewConfig;
+  if (!Array.isArray(qualityReview?.reviews)) throw new Error('representative gallery requires a quality review ledger');
+  const reviewsById = new Map(qualityReview.reviews.map((entry) => [entry.id, entry]));
   const knownRecipes = new Set(recipes.map((recipe) => recipe.id));
   const seenRecipes = new Set();
   const primaryRecipes = new Set();
@@ -200,7 +209,27 @@ export function validateRepresentativeExploreGallery(input, options = {}) {
     if (resolvedPoster && resolvedPoster !== root && !resolvedPoster.startsWith(`${root}${path.sep}`)) throw new Error(`${item.id}: poster escapes the gallery root`);
     const durationSeconds = Number(source.durationSeconds);
     if (!Number.isFinite(durationSeconds) || durationSeconds < 6 || durationSeconds > 15) throw new Error(`${item.id}: duration must be 6–15 seconds`);
-    return { ...item, recipeId, proofRole, rangeLabel, motionTags, durationSeconds, poster, resolvedPoster };
+    const review = reviewsById.get(item.id);
+    if (!review) throw new Error(`${item.id}: a quality review entry is required`);
+    if (review.decision === 'removed') throw new Error(`${item.id}: a removed proof cannot stay visible`);
+    const reviewScore = typeof review.score === 'number' ? review.score : null;
+    if (item.qualityTier === 'showcase' && reviewScore === null) {
+      throw new Error(`${item.id}: showcase tier requires a scored quality review`);
+    }
+    if (item.qualityTier === 'showcase' && reviewScore < SHOWCASE_SCORE_FLOOR) {
+      throw new Error(`${item.id}: showcase tier requires a review score of at least ${SHOWCASE_SCORE_FLOOR}, not ${reviewScore}`);
+    }
+    return {
+      ...item,
+      recipeId,
+      proofRole,
+      rangeLabel,
+      motionTags,
+      durationSeconds,
+      poster,
+      resolvedPoster,
+      review: { score: reviewScore, decision: required(review.decision, `${item.id} review decision`), reason: required(review.reason, `${item.id} review reason`) },
+    };
   });
   const coverage = input.coverage;
   if (!coverage || coverage.exactOptionCount !== variants.length) throw new Error(`representative gallery exact option count must be ${variants.length}`);
@@ -239,10 +268,43 @@ export async function validateRepresentativeExploreGalleryMedia(options = {}) {
       if (digest !== item.sha256) failures.push(`${item.recipeId}: sha256 mismatch`);
     }
     if (!evidenceInfo?.isFile() || evidenceInfo.size < 1) failures.push(`${item.recipeId}: missing evidence`);
+    else failures.push(...await evidenceSourceFailures(item, options));
     if (!posterInfo?.isFile() || posterInfo.size < 1) failures.push(`${item.recipeId}: missing poster`);
   }
   if (failures.length) throw new Error(`representative gallery media validation failed: ${failures.join('; ')}`);
   return { capabilities: new Set(registry.items.map((item) => item.recipeId)).size, proofs: registry.items.length, totalBytes };
+}
+
+// Evidence may cite a receipt that lived in a workspace this repository no longer
+// contains. That is allowed, but it must say so: a receipt path that does not resolve
+// inside the repository has to carry an explicit receiptLocation, and it may never be
+// an absolute path or escape the repository root.
+async function evidenceSourceFailures(item, options = {}) {
+  const root = path.resolve(options.representativeRoot ?? DEFAULT_ROOT);
+  let evidence;
+  try {
+    evidence = JSON.parse(await readFile(item.resolvedEvidence, 'utf8'));
+  } catch {
+    return [`${item.recipeId}: evidence is not readable JSON`];
+  }
+  const failures = [];
+  if (evidence.sha256 !== item.sha256) failures.push(`${item.recipeId}: evidence sha256 does not match the proof`);
+  if (evidence.renderer !== item.renderer) failures.push(`${item.recipeId}: evidence renderer does not match the proof`);
+  const receipt = evidence.source?.receipt;
+  if (typeof receipt === 'string' && receipt.length) {
+    if (path.isAbsolute(receipt)) failures.push(`${item.recipeId}: evidence receipt must not be an absolute path`);
+    else {
+      const resolved = path.resolve(root, receipt);
+      if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`)) {
+        failures.push(`${item.recipeId}: evidence receipt escapes the repository root`);
+      } else {
+        const present = (await stat(resolved).catch(() => null))?.isFile() === true;
+        const explained = typeof evidence.source.receiptLocation === 'string' && evidence.source.receiptLocation.trim().length > 0;
+        if (!present && !explained) failures.push(`${item.recipeId}: evidence receipt is absent and carries no receiptLocation explanation`);
+      }
+    }
+  }
+  return failures;
 }
 
 export function validateExploreGallery(input, options = {}) {
