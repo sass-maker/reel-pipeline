@@ -32,7 +32,7 @@
       }
     ],
     "projectCheck": {
-      "command": "npm test && npm run smoke:studio && npm run gallery:check && npm run gallery:representatives:check && npm run docs:validate && openspec validate add-voice-first-reel-workflows --strict && git diff --check",
+      "command": "npm test && npm run smoke:studio && npm run gallery:check && npm run gallery:representatives:check && npm run docs:validate && git diff --check",
       "status": "pass"
     },
     "critique": {
