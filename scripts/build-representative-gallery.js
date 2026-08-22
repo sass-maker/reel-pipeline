@@ -15,13 +15,16 @@ import { normalizeVideoBrief } from '../src/video-brief.js';
 
 const execFileAsync = promisify(execFile);
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
-const localFleetRoot = process.env.FLEET_ROOT ?? '/Users/sarthak/Desktop/fleet';
+const retiredWorkspaceRoot = process.env.FLEET_ARCHIVE_ROOT ?? null;
+const retiredPodcastRun = 'foundry/marketing/reel-pipeline/.reel-pipeline/podcast-edits/runs/zeropod-conviction-short-2026-07-29T09-48-39-947Z';
 const representativeRoot = path.join(root, 'fixtures/video-gallery/representatives');
 const videoDir = path.join(representativeRoot, 'videos');
 const posterDir = path.join(representativeRoot, 'posters');
 const evidenceDir = path.join(representativeRoot, 'evidence');
 const liveCaptureDir = path.join(representativeRoot, 'live-captures');
 const configPath = path.join(root, 'config/explore-gallery-representatives.json');
+const qualityReviewPath = path.join(root, 'config/explore-gallery-quality-review.json');
+const SHOWCASE_SCORE_FLOOR = 15;
 const checkOnly = process.argv.includes('--check');
 
 const imageProofs = [
@@ -51,6 +54,7 @@ const asciiProofs = [
   {
     key: 'ascii-kinetic', title: 'ASCII signal story', rangeLabel: 'ASCII · staged narrative', motionTags: ['scene-progression', 'glyph-animation'],
     sceneStyle: 'kinetic-type', palette: 'mono', variantId: 'ascii-story--palette-mono', proofRole: 'primary',
+    qualityTier: 'experiment',
     description: 'A legible glyph world progresses from atom to bond to orbit while a travelling signal connects the three states.',
   },
 ];
@@ -85,9 +89,9 @@ const modelProofs = [
 }));
 
 const sources = {
-  voice: path.join(localFleetRoot, 'foundry/marketing/reel-pipeline/.reel-pipeline/first-deliverable/s01/mixed-media/demo-2026-07-26T17-56-56-853Z/local-video-forge-mixed-media.mp4'),
-  podcast: path.join(localFleetRoot, 'foundry/marketing/reel-pipeline/.reel-pipeline/podcast-edits/runs/zeropod-conviction-short-2026-07-29T09-48-39-947Z/podcast-edit.mp4'),
-  podcastReceipt: path.join(localFleetRoot, 'foundry/marketing/reel-pipeline/.reel-pipeline/podcast-edits/runs/zeropod-conviction-short-2026-07-29T09-48-39-947Z/receipt.json'),
+  voice: retiredSource('foundry/marketing/reel-pipeline/.reel-pipeline/first-deliverable/s01/mixed-media/demo-2026-07-26T17-56-56-853Z/local-video-forge-mixed-media.mp4'),
+  podcast: retiredSource(`${retiredPodcastRun}/podcast-edit.mp4`),
+  podcastReceipt: `${retiredPodcastRun}/receipt.json`,
   lyric: path.join(root, 'fixtures/video-gallery/proofs/lyric-clean/lyric_twinkle-literal-canary_1785682469829/twinkle-literally.mp4'),
 };
 
@@ -105,24 +109,18 @@ try {
   for (const proof of imageProofs) await renderImageMotion(proof.source, output(proof.key), proof.move, 8);
   await renderHtmlProof('web-motion', 'kinetic-type', 'A claim is not proof.', 'The claim enters as typography. Evidence interrupts it with a visible result. The hierarchy resolves: show the work.');
   for (const proof of asciiProofs) await renderAsciiProof(proof);
-  await transcode(sources.voice, output('local-voice-film'), { duration: 12 });
+  await preserveOrRebuild('local-voice-film', sources.voice, () => transcode(sources.voice, output('local-voice-film'), { duration: 12 }));
   for (const proof of blenderProofs) await transcode(proof.source, output(proof.key), { duration: 7.5, speed: 3, audio: false });
   for (const proof of threeProofs) await transcode(proof.source, output(proof.key), { duration: 8, audio: false });
   for (const proof of modelProofs) await transcode(proof.source, output(proof.key), { duration: 6, audio: false });
-  await renderPodcast();
+  await preserveOrRebuild('podcast-short', sources.podcast, renderPodcast);
   await renderCleanLyric();
 
   const config = await buildConfig();
   await writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`);
-  await writeFile(path.join(representativeRoot, 'manifest.json'), `${JSON.stringify({
-    schema: 'fleet.video-representative-proof-manifest.v2',
-    generatedAt: new Date().toISOString(),
-    renderer: 'scripts/build-representative-gallery.js',
-    items: config.items.map(({ id, recipeId, proofRole, rangeLabel, motionTags, source, poster, evidence, sha256, durationSeconds }) => ({
-      id, recipeId, proofRole, rangeLabel, motionTags, source, poster, evidence, sha256, durationSeconds,
-    })),
-    unproven: config.coverage.unproven,
-  }, null, 2)}\n`);
+  // config/explore-gallery-representatives.json is the only coverage ledger. A second
+  // derived manifest under fixtures/ had no reader and silently under-reported the
+  // unproven set, so it is not written.
 } finally {
   await rm(scratch, { recursive: true, force: true });
 }
@@ -193,6 +191,31 @@ async function renderPodcast() {
   });
   const render = await adapter.createVideo(brief);
   await ffmpeg(['-i', render.videos[0], '-i', sources.podcast, '-t', '12', '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', output('podcast-short')]);
+}
+
+function retiredSource(relativePath) {
+  return retiredWorkspaceRoot ? path.join(retiredWorkspaceRoot, relativePath) : null;
+}
+
+async function preserveOrRebuild(key, source, rebuild) {
+  if (source && await exists(source)) {
+    await rebuild();
+    return;
+  }
+  if (await exists(output(key))) {
+    process.stdout.write(`${key}: preserved the checked-in proof; its retired-workspace source is unavailable here.\n`);
+    return;
+  }
+  throw new Error(`${key}: no checked-in proof and no reachable source; set FLEET_ARCHIVE_ROOT to a restored archive containing it`);
+}
+
+async function exists(target) {
+  try {
+    await stat(target);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function transcode(input, destination, options = {}) {
@@ -291,7 +314,7 @@ async function buildConfig() {
       exactOptionCount, totalCapabilityCount, provenCapabilityCount, proofCount: items.length,
       unproven: [
         { recipeId: 'grok-asset-film', reason: 'Intentionally excluded: no valid operator-approved Grok MP4 with provenance is available.' },
-        { recipeId: 'guided-app-demo', reason: 'Quality-gated: the available recording showed an unavailable local state instead of a successful product flow.' },
+        { recipeId: 'guided-app-demo', reason: 'Duration-gated: guided-app-demo@2 has a real hash-bound local proof in fixtures/guided-app-demo/cartoon-hand-pointer/evidence.json, but it runs 5.5s and representative proofs must be 6-15s. Promoting it needs a longer scripted capture, not a new render family.' },
         { recipeId: 'product-proof', reason: 'Quality-gated: the available slideshow did not demonstrate a complete, legible product interaction.' },
         { recipeId: 'night-out-carousel', reason: 'Exact option fixture exists; no substantive owner-approved representative proof is available yet.' },
       ],
@@ -305,7 +328,12 @@ function sourceEvidence(definition) {
     const proof = imageProofs.find((entry) => entry.key === definition.key);
     return { kind: 'generated-image-motion', generator: 'OpenAI built-in image generation', asset: path.relative(root, proof.source), cameraMove: proof.move };
   }
-  if (definition.recipeId === 'podcast-short') return { kind: 'licensed-source', receipt: path.relative(root, sources.podcastReceipt), license: 'CC0 / zero rights reserved' };
+  if (definition.recipeId === 'podcast-short') return {
+    kind: 'licensed-source',
+    receipt: sources.podcastReceipt,
+    receiptLocation: 'Retired Fleet workspace; the run directory is not present in this repository.',
+    license: 'CC0 / zero rights reserved',
+  };
   if (definition.recipeId === 'literal-lyric-video') return {
     kind: 'original-canary',
     composition: 'public-domain',
@@ -320,6 +348,11 @@ function sourceEvidence(definition) {
 
 async function checkRepresentativePack() {
   const config = JSON.parse(await readFile(configPath, 'utf8'));
+  const review = JSON.parse(await readFile(qualityReviewPath, 'utf8'));
+  const reviewsById = new Map(review.reviews.map((entry) => [entry.id, entry]));
+  if (await exists(path.join(representativeRoot, 'manifest.json'))) {
+    throw new Error('fixtures/video-gallery/representatives/manifest.json is a second coverage ledger; config/explore-gallery-representatives.json is the only one');
+  }
   const expectedOptionCount = listRecipeVariants().length;
   const expectedCapabilityCount = PRODUCTION_RECIPE_IDS.length;
   if (config.coverage.exactOptionCount !== expectedOptionCount || config.coverage.totalCapabilityCount !== expectedCapabilityCount) throw new Error('representative coverage summary drifted');
@@ -350,6 +383,19 @@ async function checkRepresentativePack() {
     if (height <= width) throw new Error(`${item.recipeId}: representative media must be vertical`);
     const evidence = JSON.parse(await readFile(path.join(root, item.evidence), 'utf8'));
     if (evidence.sha256 !== item.sha256 || evidence.renderer !== item.renderer) throw new Error(`${item.recipeId}: evidence drifted`);
+    const receipt = evidence.source?.receipt;
+    if (typeof receipt === 'string' && receipt.length) {
+      if (path.isAbsolute(receipt)) throw new Error(`${item.recipeId}: evidence receipt must not be an absolute path`);
+      if (!(await exists(path.join(root, receipt))) && !String(evidence.source.receiptLocation ?? '').trim()) {
+        throw new Error(`${item.recipeId}: evidence receipt is absent and carries no receiptLocation explanation`);
+      }
+    }
+    const itemReview = reviewsById.get(item.id);
+    if (!itemReview) throw new Error(`${item.id}: a quality review entry is required`);
+    if (itemReview.decision === 'removed') throw new Error(`${item.id}: a removed proof cannot stay visible`);
+    if (item.qualityTier === 'showcase' && !(typeof itemReview.score === 'number' && itemReview.score >= SHOWCASE_SCORE_FLOOR)) {
+      throw new Error(`${item.id}: showcase tier requires a review score of at least ${SHOWCASE_SCORE_FLOOR}`);
+    }
   }
   process.stdout.write(`Representative gallery: ${uniqueRecipes.size}/${config.coverage.totalCapabilityCount} proven capabilities, ${config.items.length} substantive proofs, ${config.coverage.exactOptionCount} exact maker options.\n`);
 }

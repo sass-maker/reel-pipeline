@@ -46,6 +46,18 @@ interface may request a write only through an explicit per-channel policy.
   H3 profiles remain visible; both were removed from the registry by the
   cost-capped generation boundary. Dropped a dead `openspec validate` step from
   the recorded design-review project check.
+- **2026-08-23:** closed the remaining honesty holes in representative gallery
+  coverage. Deleted the orphaned
+  `fixtures/video-gallery/representatives/manifest.json`, which no code read and
+  which under-reported the unproven set as 3 instead of 4, and made
+  `gallery:representatives:check` fail if a second ledger reappears. Bound every
+  visible proof to its scored frame review: `showcase` now requires a score of at
+  least 15, so the never-scored ASCII replacement drops to `experiment` alongside
+  the 13/25 and 14/25 proofs. Made an absent evidence receipt state where it
+  lived, with `podcast-short` as the enforced example. Corrected the stale
+  `guided-app-demo` blocker to its real cause: a real hash-bound 5.5s proof
+  against a 6s floor. Coverage remains an honest 9/13.
+  See [`docs/architecture/representative-gallery-proofs.md`](docs/architecture/representative-gallery-proofs.md).
 - **2026-08-23:** added `guided-app-demo@2` and the opt-in cartoon-hand pointer
   treatment: the `reel-pipeline.pointer-trace.v1` privacy-bounded sidecar,
   hash-bound trace approval on the capture record, a deterministic

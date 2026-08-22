@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { existsSync, readFileSync } from 'node:fs';
 import { mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -54,10 +55,18 @@ function representativeFixtureConfig(source = 'sample.mp4') {
   };
 }
 
-const representativeOptions = (root) => ({
+function representativeQualityReview(overrides = {}) {
+  return {
+    schema: 'fleet.video-explore-gallery-quality-review.v1',
+    reviews: [{ id: 'kinetic-proof', score: 19, decision: 'improved', reason: 'A linear claim, evidence, and conclusion sequence.', ...overrides }],
+  };
+}
+
+const representativeOptions = (root, qualityReview = representativeQualityReview()) => ({
   representativeRoot: root,
   variants: [{ id: 'web-motion--visualstyle-kinetic-type', recipeId: 'web-motion' }],
   recipes: [{ id: 'web-motion' }],
+  qualityReview,
 });
 
 test('gallery registry reports playable media without exposing local paths', async () => {
@@ -156,6 +165,38 @@ test('representative registry requires substantive proof and compatible coverage
   );
 });
 
+test('representative registry binds every visible proof to a scored quality review', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'representative-review-'));
+  await writeFile(path.join(root, 'sample.mp4'), Buffer.from('representative video'));
+  await writeFile(path.join(root, 'evidence.json'), Buffer.from('{}'));
+  const showcase = representativeFixtureConfig();
+  assert.equal(showcase.items[0].qualityTier, 'showcase');
+
+  assert.throws(
+    () => validateRepresentativeExploreGallery(showcase, representativeOptions(root, { schema: 'fleet.video-explore-gallery-quality-review.v1', reviews: [] })),
+    /a quality review entry is required/,
+  );
+  assert.throws(
+    () => validateRepresentativeExploreGallery(showcase, representativeOptions(root, representativeQualityReview({ decision: 'removed' }))),
+    /a removed proof cannot stay visible/,
+  );
+  assert.throws(
+    () => validateRepresentativeExploreGallery(showcase, representativeOptions(root, representativeQualityReview({ score: null, decision: 'replacement' }))),
+    /showcase tier requires a scored quality review/,
+  );
+  assert.throws(
+    () => validateRepresentativeExploreGallery(showcase, representativeOptions(root, representativeQualityReview({ score: 13, decision: 'kept-as-experiment' }))),
+    /showcase tier requires a review score of at least 15, not 13/,
+  );
+
+  // An unscored or low-scoring proof may still ship, but only at experiment tier.
+  const experiment = { ...showcase, items: [{ ...showcase.items[0], qualityTier: 'experiment' }] };
+  const unscored = validateRepresentativeExploreGallery(experiment, representativeOptions(root, representativeQualityReview({ score: null, decision: 'replacement' })));
+  assert.equal(unscored.items[0].review.score, null);
+  const lowScore = validateRepresentativeExploreGallery(experiment, representativeOptions(root, representativeQualityReview({ score: 13, decision: 'kept-as-experiment' })));
+  assert.equal(lowScore.items[0].review.score, 13);
+});
+
 test('checked-in representative gallery is honest, playable, and hash-valid', async () => {
   const gallery = await listRepresentativeExploreGallery();
   assert.equal(gallery.totalCapabilityCount, 13);
@@ -170,8 +211,53 @@ test('checked-in representative gallery is honest, playable, and hash-valid', as
   assert.ok(gallery.items.every((item) => item.rangeLabel && item.motionTags.length));
   assert.ok(gallery.items.every((item) => item.posterUrl?.endsWith('/poster')));
   assert.equal(gallery.items.find((item) => item.recipeId === 'threejs-scene')?.renderer, 'three-webgl-visual-lab@2');
+
+  // Every showcase claim is backed by a scored review; the two 13/14-scoring proofs and
+  // the never-scored ASCII replacement ship at experiment tier instead.
+  assert.ok(gallery.items.every((item) => item.qualityTier !== 'showcase' || item.review.score >= 15));
+  assert.deepEqual(
+    gallery.items.filter((item) => item.qualityTier === 'experiment').map((item) => [item.id, item.review.score]),
+    [
+      ['representative-ascii-kinetic', null],
+      ['representative-local-voice-film', 14],
+      ['representative-three-cel', 13],
+      ['representative-podcast-short', 16],
+    ],
+  );
+
   const validation = await validateRepresentativeExploreGalleryMedia();
   assert.equal(validation.capabilities, 9);
   assert.equal(validation.proofs, 14);
   assert.ok(validation.totalBytes > 0);
+});
+
+test('representative coverage has exactly one ledger and explains absent receipts', async () => {
+  const representativeRoot = new URL('../fixtures/video-gallery/representatives/', import.meta.url);
+
+  // A second, unread proof manifest under fixtures/ silently under-reported the unproven
+  // set. config/explore-gallery-representatives.json is the only coverage ledger.
+  assert.equal(existsSync(new URL('manifest.json', representativeRoot)), false);
+  const builder = readFileSync(new URL('../scripts/build-representative-gallery.js', import.meta.url), 'utf8');
+  assert.equal(builder.includes("writeFile(path.join(representativeRoot, 'manifest.json')"), false, 'the builder must not write a second ledger');
+  assert.equal(builder.includes("exists(path.join(representativeRoot, 'manifest.json'))"), true, 'the builder must fail if a second ledger reappears');
+
+  const gallery = await listRepresentativeExploreGallery();
+  for (const item of gallery.items) {
+    const evidence = JSON.parse(readFileSync(new URL(`../${item.evidence}`, import.meta.url), 'utf8'));
+    const receipt = evidence.source?.receipt;
+    if (typeof receipt !== 'string' || !receipt.length) continue;
+    assert.equal(path.isAbsolute(receipt), false, `${item.id}: receipt must be repository-relative`);
+    if (existsSync(new URL(`../${receipt}`, import.meta.url))) continue;
+    assert.ok(
+      String(evidence.source.receiptLocation ?? '').trim().length > 0,
+      `${item.id}: an absent receipt must carry a receiptLocation explanation`,
+    );
+  }
+
+  // The guided-app-demo blocker must describe the current state, not the removed proof.
+  const guided = gallery.unproven.find((entry) => entry.recipeId === 'guided-app-demo');
+  assert.match(guided.reason, /5\.5s/);
+  assert.match(guided.reason, /fixtures\/guided-app-demo\/cartoon-hand-pointer\/evidence\.json/);
+  const demoEvidence = JSON.parse(readFileSync(new URL('../fixtures/guided-app-demo/cartoon-hand-pointer/evidence.json', import.meta.url), 'utf8'));
+  assert.equal(demoEvidence.outputs.find((output) => output.key === 'cartoonHand').durationSeconds, 5.5);
 });

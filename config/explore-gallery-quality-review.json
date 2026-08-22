@@ -21,7 +21,7 @@
     { "id": "representative-ascii-scale", "score": 13, "decision": "removed", "reason": "Abrupt icon changes and unreadable raster typography did not communicate a useful story." },
     { "id": "representative-ascii-tunnel", "score": 12, "decision": "removed", "reason": "The expanding diamonds did not read as depth or travel." },
     { "id": "representative-ascii-terrain", "score": 15, "decision": "removed", "reason": "The landscape idea was promising, but the rasterized chrome remained too small to read." },
-    { "id": "representative-ascii-kinetic", "score": null, "decision": "replacement", "reason": "A browser-rendered, legible atom-to-bond-to-orbit signal story replaces the three weak raster demos." },
+    { "id": "representative-ascii-kinetic", "score": null, "decision": "replacement", "reason": "A browser-rendered, legible atom-to-bond-to-orbit signal story replaces the three weak raster demos. It entered as a replacement and was never scored on the 0-25 rubric, so it is held at experiment tier until an owner scores it." },
     { "id": "representative-product-proof", "score": 10, "decision": "removed", "reason": "Cropped and then miniaturized screenshots did not demonstrate a complete product interaction." },
     { "id": "representative-local-voice-film", "score": 14, "decision": "kept-as-experiment", "reason": "The full sequence communicates an approved-frame and selected-render workflow, but the motion-variant crops still need a stronger source render." },
     { "id": "representative-blender-cosmic-shrine", "score": 9, "decision": "removed", "reason": "Object-state popping and loop resets made the scene incoherent." },

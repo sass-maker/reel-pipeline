@@ -13,7 +13,8 @@
   "sha256": "638b5c84f66e9d533b97fb48cca91f15f636573e03fc4f0f3e4e6032c3c1164a",
   "source": {
     "kind": "licensed-source",
-    "receipt": "../../../../../foundry/marketing/reel-pipeline/.reel-pipeline/podcast-edits/runs/zeropod-conviction-short-2026-07-29T09-48-39-947Z/receipt.json",
+    "receipt": "foundry/marketing/reel-pipeline/.reel-pipeline/podcast-edits/runs/zeropod-conviction-short-2026-07-29T09-48-39-947Z/receipt.json",
+    "receiptLocation": "Retired Fleet workspace; the run directory is not present in this repository.",
     "license": "CC0 / zero rights reserved"
   }
 }

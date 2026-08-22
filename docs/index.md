@@ -30,6 +30,7 @@ Markdown but does not replace it as the source of truth.
 - [`architecture/generation-craft.md`](./architecture/generation-craft.md)
 - [`architecture/rust-orchestrator.md`](./architecture/rust-orchestrator.md)
 - [`architecture/decisions/`](./architecture/decisions/)
+- [`architecture/representative-gallery-proofs.md`](./architecture/representative-gallery-proofs.md)
 
 ## Development
 
