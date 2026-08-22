@@ -26,6 +26,7 @@ Markdown but does not replace it as the source of truth.
 - [`architecture/cartoon-hand-pointer.md`](./architecture/cartoon-hand-pointer.md)
 - [`architecture/studio-agent-arsenal.md`](./architecture/studio-agent-arsenal.md)
 - [`architecture/engines.md`](./architecture/engines.md)
+- [`architecture/local-video-recipes-and-episodes.md`](./architecture/local-video-recipes-and-episodes.md)
 - [`architecture/generation-craft.md`](./architecture/generation-craft.md)
 - [`architecture/rust-orchestrator.md`](./architecture/rust-orchestrator.md)
 - [`architecture/decisions/`](./architecture/decisions/)
