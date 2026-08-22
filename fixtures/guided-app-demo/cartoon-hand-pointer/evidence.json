@@ -1,0 +1,407 @@
+{
+  "schema": "reel-pipeline.cartoon-hand-pointer-proof.v1",
+  "filmSkill": "guided-app-demo@2",
+  "generatedAt": "2026-08-22T18:45:10.986Z",
+  "spend": {
+    "paidGenerationCalls": 0,
+    "note": "Local Chrome capture, local SVG rasterization, and local ffmpeg only. No generation API was called."
+  },
+  "source": {
+    "path": "fixtures/guided-app-demo/cartoon-hand-pointer/source-capture.mp4",
+    "sha256": "6ce072d6ee630f9d99bd1ec3c1f49b0582434c807adba68b239e224ae52b5ffb",
+    "bytes": 71920,
+    "posture": "real-capture",
+    "executionMode": "real",
+    "surface": {
+      "id": "anonymous-brand-reel-landing",
+      "module": "src/anonymous-video/ui.js",
+      "export": "anonymousVideoPageHtml",
+      "note": "Rendered locally and opened over file://; network-backed panes stay in their offline state."
+    },
+    "capturedBy": {
+      "capture": "chrome-cdp@Chrome/151.0.7922.170",
+      "encoder": "ffmpeg libx264 crf20 720x1280@24"
+    },
+    "rights": {
+      "tier": "production-safe",
+      "license": "fleet-owned-product-surface",
+      "approved": true
+    },
+    "approval": {
+      "approved": true,
+      "approvedAt": "2026-08-22T18:36:01.648Z",
+      "approvedBy": "local-proof-run",
+      "note": "Local capture of this repository's own product surface; approved for local review only, not for publication."
+    }
+  },
+  "pointerTrace": {
+    "path": "fixtures/guided-app-demo/cartoon-hand-pointer/pointer-trace.json",
+    "sha256": "37f508d448aa4cff9c40c5a6680529e1a55ab1ae7aab7d171333223e8609b3b3",
+    "digest": "58da7b24eeaea617a0e7ca94d4cb657110e2f28e721c90f7b672303b4e742080",
+    "schema": "reel-pipeline.pointer-trace.v1",
+    "acquisition": {
+      "method": "scripted-browser-runner",
+      "displaySurface": "browser-viewport",
+      "coordinateMapping": "calibrated",
+      "calibration": {
+        "method": "cdp-device-metrics-override",
+        "evidence": "Viewport pinned to 720x1280 at deviceScaleFactor 1; every screenshot verified at 720x1280; each sample was dispatched into the same CDP session immediately before the frame it labels, so sample time equals frame time at 24fps.",
+        "viewport": {
+          "width": 720,
+          "height": 1280,
+          "deviceScaleFactor": 1
+        }
+      },
+      "capturedCursor": {
+        "present": false,
+        "reason": "Headless CDP screenshots do not composite a system cursor, so there is no captured cursor to cover."
+      }
+    },
+    "samples": 132,
+    "durationMs": 5500
+  },
+  "handStyle": {
+    "path": "assets/cartoon-hand/fleet-mitt-v1.json",
+    "ref": "fleet-mitt@1",
+    "digest": "30850e32f79984ea16f0981c86b6fc7f4c4b98c78ad65ddcebd4430d0925548f",
+    "rights": {
+      "license": "fleet-authored-original",
+      "provenance": "Original vector pose geometry authored in this repository for guided-app-demo@2; no third-party or generated asset is included. Colours are an operator-selected palette and are not derived from any presenter image.",
+      "tier": "production-safe",
+      "approved": true,
+      "verifiedAt": "2026-08-22T00:00:00.000Z",
+      "expiresAt": null
+    },
+    "poses": {
+      "point": {
+        "path": "assets/cartoon-hand/fleet-mitt-v1/point.svg",
+        "sha256": "0465c12a748db1620049bedd7434d77c4d5767c327032d612f661b73bc642c8c"
+      },
+      "tap": {
+        "path": "assets/cartoon-hand/fleet-mitt-v1/tap.svg",
+        "sha256": "e1f27cc29c773b8a37f71306226dd3df38746df8520598bf5a90e4ca37d7dad4"
+      },
+      "grab": {
+        "path": "assets/cartoon-hand/fleet-mitt-v1/grab.svg",
+        "sha256": "206041baea00323551fdf198f9b1346d8971b8d7145c54270b110beaa6a0d32b"
+      },
+      "release": {
+        "path": "assets/cartoon-hand/fleet-mitt-v1/release.svg",
+        "sha256": "35f4d7fb31f9e06ee7354e8e85fcde309bcc933d50d3509db1d7be4541b2dfac"
+      }
+    },
+    "checksumFailures": [],
+    "appearanceSelection": "operator-selected"
+  },
+  "plan": {
+    "digest": "754b684be67264658fa0e3999568c8c5d30718f98dbebd514c94effefb272ed6",
+    "reducedMotionDigest": "ad84282a1e664fd922161b15a0ee3a8b0311fb1b08063d03bbe84289261eab80",
+    "fallbackDigest": "cc405bfb2a5f113abb3e09aedffeacf2258fac96bc21281a4733db97c73ec754",
+    "fallbackReason": "operator-disabled",
+    "composition": {
+      "width": 720,
+      "height": 1280,
+      "fps": 24,
+      "presenter": {
+        "position": "bottom-right",
+        "widthFraction": 0.24,
+        "safeMarginFraction": 0.06
+      }
+    },
+    "geometry": {
+      "handLengthPx": 144,
+      "coverRadiusPx": 18.72,
+      "ringRadiusPx": 15.84,
+      "armWidthPx": 23.04
+    },
+    "presenter": {
+      "position": "bottom-right",
+      "rect": {
+        "x": 504,
+        "y": 1006.4,
+        "width": 172.8,
+        "height": 230.4
+      },
+      "anchors": {
+        "top": {
+          "x": 590.4,
+          "y": 1006.4
+        },
+        "inner": {
+          "x": 504,
+          "y": 1121.6
+        }
+      }
+    },
+    "safeAreas": {
+      "bands": [
+        {
+          "id": "title",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 720,
+            "height": 153.6
+          }
+        },
+        {
+          "id": "captions",
+          "rect": {
+            "x": 0,
+            "y": 1049.6,
+            "width": 504,
+            "height": 230.4
+          }
+        }
+      ]
+    },
+    "capturedCursor": {
+      "present": false,
+      "reason": "Headless CDP screenshots do not composite a system cursor, so there is no captured cursor to cover."
+    },
+    "measurements": {
+      "frameCount": 132,
+      "interactionFrames": 39,
+      "illegibleFrames": 0,
+      "visibleFrames": 102,
+      "states": {
+        "off-screen": 15,
+        "point": 57,
+        "grab": 17,
+        "tap": 10,
+        "release": 12,
+        "idle": 21
+      }
+    }
+  },
+  "outputs": [
+    {
+      "key": "cartoonHand",
+      "path": "fixtures/guided-app-demo/cartoon-hand-pointer/cartoon-hand-preview.mp4",
+      "treatment": "cartoon-hand",
+      "planDigest": "754b684be67264658fa0e3999568c8c5d30718f98dbebd514c94effefb272ed6",
+      "sha256": "9a6f7fcea7950cf5fb66a08d76cd7b72b64a98adf5c6f0e64266c5603c25bf93",
+      "bytes": 142828,
+      "width": 720,
+      "height": 1280,
+      "durationSeconds": 5.5,
+      "renderer": {
+        "compositor": "reel-pipeline guided-app-demo@2 overlay compositor",
+        "video": "ffmpeg libx264 crf23 720x1280",
+        "overlayRasterizer": "/usr/bin/sips svg-to-png (rgba)",
+        "profile": "guided-preview",
+        "renderDurationMs": 530
+      }
+    },
+    {
+      "key": "reducedMotion",
+      "path": "fixtures/guided-app-demo/cartoon-hand-pointer/cartoon-hand-reduced-motion-preview.mp4",
+      "treatment": "cartoon-hand-reduced-motion",
+      "planDigest": "ad84282a1e664fd922161b15a0ee3a8b0311fb1b08063d03bbe84289261eab80",
+      "sha256": "136860397983337f23ce699b2491c8600b0f8606ea940d5457623678c55ce1d2",
+      "bytes": 116506,
+      "width": 720,
+      "height": 1280,
+      "durationSeconds": 5.5,
+      "renderer": {
+        "compositor": "reel-pipeline guided-app-demo@2 overlay compositor",
+        "video": "ffmpeg libx264 crf23 720x1280",
+        "overlayRasterizer": "/usr/bin/sips svg-to-png (rgba)",
+        "profile": "guided-preview",
+        "renderDurationMs": 503
+      }
+    },
+    {
+      "key": "standardCursor",
+      "path": "fixtures/guided-app-demo/cartoon-hand-pointer/standard-cursor-preview.mp4",
+      "treatment": "standard-cursor",
+      "planDigest": "cc405bfb2a5f113abb3e09aedffeacf2258fac96bc21281a4733db97c73ec754",
+      "sha256": "573f2d3b73c095db1b300a9d300a4a1807d3938574588ab91be4a905488a5061",
+      "bytes": 65065,
+      "width": 720,
+      "height": 1280,
+      "durationSeconds": 5.5,
+      "renderer": {
+        "compositor": "reel-pipeline guided-app-demo@2 overlay compositor",
+        "video": "ffmpeg libx264 crf23 720x1280",
+        "overlayRasterizer": null,
+        "profile": "guided-preview",
+        "renderDurationMs": 252
+      }
+    }
+  ],
+  "proofFrame": {
+    "path": "assets/cartoon-hand/proof-frame-tap.png",
+    "sha256": "b1456238cd4d320a417277a1650672aa30b58ffa23207b504eadb2f08106cd80",
+    "frameIndex": 46,
+    "state": "tap",
+    "source": "fixtures/guided-app-demo/cartoon-hand-pointer/cartoon-hand-preview.mp4"
+  },
+  "measurements": {
+    "method": "Ring-colour centroid measured on the rasterized overlay plate that was composited into the encoded video, plus a presence check for the same ring inside the encoded frame. Frames whose marker is clipped by the composition edge cannot be centroid-measured and are excluded from the precision gate.",
+    "hotspotTolerancePx": 2,
+    "hotspotSamples": [
+      {
+        "frameIndex": 17,
+        "state": "point",
+        "clipped": false,
+        "expected": {
+          "x": 20.19,
+          "y": 291.17
+        },
+        "measured": {
+          "x": 20.355,
+          "y": 291.404
+        },
+        "errorPx": 0.286,
+        "ringPixels": 344,
+        "compositedRingPixels": 326,
+        "compositedRingPresent": true
+      },
+      {
+        "frameIndex": 18,
+        "state": "point",
+        "clipped": false,
+        "expected": {
+          "x": 26.95,
+          "y": 271.46
+        },
+        "measured": {
+          "x": 26.848,
+          "y": 271.486
+        },
+        "errorPx": 0.105,
+        "ringPixels": 348,
+        "compositedRingPixels": 337,
+        "compositedRingPresent": true
+      },
+      {
+        "frameIndex": 19,
+        "state": "point",
+        "clipped": false,
+        "expected": {
+          "x": 32.47,
+          "y": 255.38
+        },
+        "measured": {
+          "x": 32.491,
+          "y": 255.587
+        },
+        "errorPx": 0.208,
+        "ringPixels": 346,
+        "compositedRingPixels": 337,
+        "compositedRingPresent": true
+      },
+      {
+        "frameIndex": 29,
+        "state": "grab",
+        "clipped": false,
+        "expected": {
+          "x": 55.53,
+          "y": 233.96
+        },
+        "measured": {
+          "x": 55.52,
+          "y": 233.868
+        },
+        "errorPx": 0.093,
+        "ringPixels": 348,
+        "compositedRingPixels": 333,
+        "compositedRingPresent": true
+      },
+      {
+        "frameIndex": 46,
+        "state": "tap",
+        "clipped": false,
+        "expected": {
+          "x": 607.65,
+          "y": 252.63
+        },
+        "measured": {
+          "x": 607.534,
+          "y": 252.466
+        },
+        "errorPx": 0.201,
+        "ringPixels": 350,
+        "compositedRingPixels": 344,
+        "compositedRingPresent": true
+      },
+      {
+        "frameIndex": 47,
+        "state": "release",
+        "clipped": false,
+        "expected": {
+          "x": 607.68,
+          "y": 252.63
+        },
+        "measured": {
+          "x": 607.615,
+          "y": 252.428
+        },
+        "errorPx": 0.212,
+        "ringPixels": 349,
+        "compositedRingPixels": 346,
+        "compositedRingPresent": true
+      }
+    ]
+  },
+  "review": {
+    "schema": "reel-pipeline.cartoon-hand-pointer-review.v1",
+    "filmSkill": "guided-app-demo@2",
+    "planDigest": "754b684be67264658fa0e3999568c8c5d30718f98dbebd514c94effefb272ed6",
+    "treatment": "cartoon-hand",
+    "automatedStatus": "pass",
+    "failed": [],
+    "unmeasured": [],
+    "gates": [
+      {
+        "id": "pointer-trace-integrity",
+        "status": "pass",
+        "detail": "trace 58da7b24eeae bound to capture 6ce072d6ee63"
+      },
+      {
+        "id": "fingertip-hotspot-precision",
+        "status": "pass",
+        "detail": "max fingertip-to-hotspot error 0.286px over 6 representative frames"
+      },
+      {
+        "id": "captured-cursor-coverage",
+        "status": "not-applicable",
+        "detail": "Headless CDP screenshots do not composite a system cursor, so there is no captured cursor to cover."
+      },
+      {
+        "id": "presenter-safe-area",
+        "status": "pass",
+        "detail": "arm and hand cleared the presenter, title, and caption bands on every frame"
+      },
+      {
+        "id": "mobile-legibility",
+        "status": "pass",
+        "detail": "hotspot ring radius 15.84px at 720px wide"
+      },
+      {
+        "id": "hand-style-rights",
+        "status": "pass",
+        "detail": "fleet-mitt@1 rights and pose checksums verified"
+      },
+      {
+        "id": "preview-final-binding",
+        "status": "pass",
+        "detail": "preview and final share plan digest 754b684be672"
+      },
+      {
+        "id": "reduced-motion",
+        "status": "pass",
+        "detail": "reduced-motion variant planned (ad84282a1e66)"
+      },
+      {
+        "id": "standard-cursor-fallback",
+        "status": "pass",
+        "detail": "standard-cursor fallback render proven (cc405bfb2a5f)"
+      }
+    ],
+    "ownerDecision": null,
+    "publication": "blocked-pending-owner-review",
+    "channelPolicy": "none-configured"
+  }
+}

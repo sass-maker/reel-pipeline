@@ -1,0 +1,40 @@
+{
+  "schema": "reel-pipeline.cartoon-hand-style.v1",
+  "id": "fleet-mitt",
+  "version": 1,
+  "title": "Fleet mitt",
+  "handedness": "right",
+  "palette": {
+    "fill": "#f0d9b8",
+    "outline": "#141a22",
+    "cuff": "#2f7d63",
+    "ring": "#ffffff",
+    "ringOutline": "#141a22"
+  },
+  "poses": {
+    "point": {
+      "path": "assets/cartoon-hand/fleet-mitt-v1/point.svg",
+      "sha256": "0465c12a748db1620049bedd7434d77c4d5767c327032d612f661b73bc642c8c"
+    },
+    "tap": {
+      "path": "assets/cartoon-hand/fleet-mitt-v1/tap.svg",
+      "sha256": "e1f27cc29c773b8a37f71306226dd3df38746df8520598bf5a90e4ca37d7dad4"
+    },
+    "grab": {
+      "path": "assets/cartoon-hand/fleet-mitt-v1/grab.svg",
+      "sha256": "206041baea00323551fdf198f9b1346d8971b8d7145c54270b110beaa6a0d32b"
+    },
+    "release": {
+      "path": "assets/cartoon-hand/fleet-mitt-v1/release.svg",
+      "sha256": "35f4d7fb31f9e06ee7354e8e85fcde309bcc933d50d3509db1d7be4541b2dfac"
+    }
+  },
+  "rights": {
+    "license": "fleet-authored-original",
+    "provenance": "Original vector pose geometry authored in this repository for guided-app-demo@2; no third-party or generated asset is included. Colours are an operator-selected palette and are not derived from any presenter image.",
+    "tier": "production-safe",
+    "approved": true,
+    "verifiedAt": "2026-08-22T00:00:00.000Z",
+    "expiresAt": null
+  }
+}

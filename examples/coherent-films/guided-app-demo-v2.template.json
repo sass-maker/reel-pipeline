@@ -1,0 +1,98 @@
+{
+  "schema": "reel-pipeline.guided-app-demo-template.v2",
+  "template": true,
+  "filmSkill": {
+    "id": "guided-app-demo",
+    "version": 2,
+    "ref": "guided-app-demo@2"
+  },
+  "workflow": {
+    "source": "browser-display-media",
+    "maximumDurationSeconds": 90,
+    "approvalRequiredBeforeUpload": true,
+    "presenter": {
+      "optional": false,
+      "capture": "same-session-camera-and-microphone",
+      "sync": "same-session",
+      "position": "bottom-right",
+      "note": "The cartoon arm anchors to the presenter rectangle, so the treatment requires a same-session presenter."
+    },
+    "pointerTrace": {
+      "schema": "reel-pipeline.pointer-trace.v1",
+      "required": true,
+      "acquisition": ["scripted-browser-runner", "operator-display-helper"],
+      "supportedDisplaySurfaces": ["monitor", "browser-viewport"],
+      "boundTo": ["source-video-sha256", "trace-sha256", "timebase", "capture-dimensions"],
+      "prohibitedContent": [
+        "keystrokes",
+        "entered text",
+        "DOM selectors",
+        "window titles",
+        "application content"
+      ]
+    }
+  },
+  "composition": {
+    "aspectRatio": "9:16",
+    "fps": 24,
+    "appCapture": "dominant-full-frame-subject",
+    "presenterWidthFraction": 0.24,
+    "presenterSafeMarginFraction": 0.06,
+    "captions": {
+      "style": "phrase-timed",
+      "maximumLines": 2,
+      "avoid": "bottom-right-presenter"
+    },
+    "cartoonHandPointer": {
+      "optIn": true,
+      "styleSchema": "reel-pipeline.cartoon-hand-style.v1",
+      "style": "fleet-mitt@1",
+      "appearance": "operator-selected",
+      "states": ["point", "tap", "grab", "release", "idle", "off-screen"],
+      "hotspotMarker": "high-contrast ring above an opaque fingertip cover",
+      "hotspotTolerancePx": 2,
+      "idleRetractMs": 900,
+      "reducedMotionVariant": true,
+      "fallback": "standard-cursor"
+    }
+  },
+  "render": {
+    "preview": {
+      "width": 720,
+      "height": 1280,
+      "crf": 23,
+      "audioLoudnessLufs": -16
+    },
+    "final": {
+      "width": 1080,
+      "height": 1920,
+      "crf": 17,
+      "audioLoudnessLufs": -16
+    },
+    "preserveApprovedSourceSha256": true,
+    "preserveAcceptedPointerTreatmentDigest": true,
+    "overlay": {
+      "kind": "transparent-frame-sequence",
+      "rasterizer": "sips svg-to-png (rgba)",
+      "compositor": "ffmpeg overlay=0:0"
+    }
+  },
+  "qualityGates": [
+    "real-app-capture",
+    "authentic-presenter-sync",
+    "presenter-safe-area",
+    "mobile-legibility",
+    "publication-rights",
+    "pointer-trace-integrity",
+    "fingertip-hotspot-precision",
+    "captured-cursor-coverage",
+    "hand-style-rights",
+    "standard-cursor-fallback"
+  ],
+  "reproducibleDemo": {
+    "capture": "node scripts/capture-cartoon-hand-pointer-source.js",
+    "render": "node scripts/render-cartoon-hand-pointer-demo.js",
+    "verify": "node scripts/render-cartoon-hand-pointer-demo.js --check",
+    "evidence": "fixtures/guided-app-demo/cartoon-hand-pointer/evidence.json"
+  }
+}

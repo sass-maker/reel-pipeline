@@ -126,7 +126,7 @@ test('registers a complete immutable evidence-beam@1 recipe', async () => {
   );
   assert.deepEqual(
     listFilmSkills().map((entry) => entry.ref),
-    ['evidence-beam@1', 'guided-app-demo@1'],
+    ['evidence-beam@1', 'guided-app-demo@1', 'guided-app-demo@2'],
   );
 });
 

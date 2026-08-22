@@ -64,6 +64,9 @@ publishing is intentionally rejected.
 | `npm run lesson:render -- ...` | Tutoring lesson renderer |
 | `npm run setup:kokoro` | Install the optional local Kokoro model |
 | `npm run forge:coherent -- --manifest <json> --output <dir>` | Render an approved skill-bound coherent film with reproducibility and review metadata |
+| `npm run demo:cartoon-hand:capture` | Acquire the `guided-app-demo@2` demo capture and its bound pointer trace with local Chrome |
+| `npm run demo:cartoon-hand` | Render the cartoon-hand, reduced-motion, and standard-cursor demo outputs and write the review evidence |
+| `npm run demo:cartoon-hand:check` | Verify the committed demo hashes, plan digests, and rendered outputs without re-rendering |
 
 Add `--reduced-motion` to `forge:coherent` to render the same manifest with
 fixed source frames and direct scene changes.

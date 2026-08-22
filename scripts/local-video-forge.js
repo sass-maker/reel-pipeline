@@ -11,8 +11,19 @@ import {
   loadForgeProject,
   selectForgeShot,
 } from '../src/local-video-forge.js';
+import { planCartoonHandPointer } from '../src/cartoon-hand-pointer.js';
+import { loadHandStyle, rasterizeCartoonHandOverlay } from '../src/cartoon-hand-overlay.js';
 import { prepareFilmSkillForgeExecution } from '../src/film-skills.js';
-import { renderGuidedAppDemoCapture } from '../src/guided-app-demo.js';
+import { guidedAppDemoRenderProfile, renderGuidedAppDemoCapture } from '../src/guided-app-demo.js';
+
+// Reference composition for cartoon-hand planning. Renders scale the overlay
+// vectors from here instead of re-planning, so treatment digests stay stable.
+const CARTOON_HAND_REFERENCE_COMPOSITION = {
+  width: 720,
+  height: 1280,
+  fps: 24,
+  presenter: { position: 'bottom-right', widthFraction: 0.24, safeMarginFraction: 0.06 },
+};
 
 const { command, options } = parseArguments(process.argv.slice(2));
 
@@ -85,7 +96,7 @@ async function workOnce(cliOptions) {
     method: 'POST',
     body: {
       workerId,
-      capabilities: ['apple-silicon', 'mlx-ltx-2.3', 'ffmpeg', 'guided-app-demo'],
+      capabilities: ['apple-silicon', 'mlx-ltx-2.3', 'ffmpeg', 'guided-app-demo', 'cartoon-hand-pointer'],
       leaseSeconds: 6 * 60 * 60,
     },
     allowNoContent: true,
@@ -233,10 +244,17 @@ async function workGuidedAppDemoJob(job, context) {
     renderKind === 'final' ? 'finals' : 'previews',
     `${renderKind}.mp4`,
   );
+  const treatment = await resolveCartoonHandTreatment(job, {
+    cliOptions,
+    inputDir,
+    jobDir,
+    renderKind,
+  });
   const rendered = await renderGuidedAppDemoCapture({
     inputPath: sourcePath,
     outputPath,
     renderKind,
+    ...(treatment?.overlay ? { overlay: treatment.overlay } : {}),
   });
   const variantId = renderKind === 'final' ? 'guided-final' : 'guided-preview';
   const upload = await coordinatorFetchRaw(
@@ -261,6 +279,7 @@ async function workGuidedAppDemoJob(job, context) {
         filmSkill: job.filmSkill.ref,
         qualityGates,
         sourceSha256: job.sourceCapture.sha256,
+        ...(treatment ? { pointerTreatment: treatment.reported } : {}),
         renderDurationMs: rendered.renderDurationMs,
         encoder: {
           name: 'ffmpeg',
@@ -274,6 +293,81 @@ async function workGuidedAppDemoJob(job, context) {
     },
   }, cliOptions);
   return completed.data;
+}
+
+// Resolves the cartoon-hand pointer treatment for a guided-app-demo@2 job.
+// The plan is computed from the approved trace and the rights-cleared style on
+// this host; if anything is untrustworthy the render keeps the standard cursor
+// and the reason travels with the variant.
+async function resolveCartoonHandTreatment(job, context) {
+  const request = job.pointerTreatment;
+  if (!request?.requested) return null;
+  if (request.outcome === 'standard-cursor') {
+    return {
+      overlay: null,
+      reported: {
+        outcome: 'standard-cursor',
+        planDigest: null,
+        fallbackReason: request.fallbackReason,
+        traceSha256: request.trace?.sha256 ?? null,
+        styleRef: request.style?.ref ?? null,
+      },
+    };
+  }
+  const { cliOptions, inputDir, jobDir, renderKind } = context;
+  const traceResponse = await coordinatorFetchRaw(
+    `/forge/jobs/${encodeURIComponent(job.id)}/pointer-trace`,
+    {},
+    cliOptions,
+  );
+  const traceBytes = Buffer.from(await traceResponse.arrayBuffer());
+  const tracePath = path.join(inputDir, 'pointer-trace.json');
+  await writeFile(tracePath, traceBytes);
+  await assertFileSha256(tracePath, request.trace.sha256, 'approved pointer trace');
+  const { style, poseSources } = await loadHandStyle(request.style.ref, {
+    root: path.resolve(import.meta.dirname, '..'),
+  });
+  if (style.digest !== request.style.digest) {
+    throw new Error('hand style digest does not match the approved job');
+  }
+  const plan = planCartoonHandPointer({
+    filmSkillRef: job.filmSkill.ref,
+    capture: job.sourceCapture,
+    trace: JSON.parse(traceBytes.toString('utf8')),
+    traceSha256: request.trace.sha256,
+    style,
+    // The treatment is planned once in the reference composition so the
+    // accepted preview and the final render share one plan digest.
+    composition: CARTOON_HAND_REFERENCE_COMPOSITION,
+    treatmentRequested: true,
+    reducedMotion: request.reducedMotion === true,
+  });
+  const reported = {
+    outcome: plan.treatment,
+    planDigest: plan.digest,
+    fallbackReason: plan.fallbackReason,
+    traceSha256: request.trace.sha256,
+    styleRef: style.ref,
+    reducedMotion: request.reducedMotion === true,
+  };
+  if (renderKind === 'final') {
+    const accepted = job.finalRender?.pointerTreatmentDigest;
+    if (accepted && accepted !== plan.digest) {
+      throw new Error('final render pointer treatment differs from the accepted preview');
+    }
+  }
+  if (plan.treatment !== 'cartoon-hand') return { overlay: null, reported };
+  const profile = guidedAppDemoRenderProfile(renderKind);
+  const overlay = await rasterizeCartoonHandOverlay({
+    plan,
+    poseSources,
+    dir: path.join(jobDir, 'overlay', renderKind),
+    scale: profile.width / plan.composition.width,
+  });
+  return {
+    overlay: { framePattern: overlay.framePattern, fps: overlay.fps },
+    reported,
+  };
 }
 
 async function workLoop(cliOptions) {
