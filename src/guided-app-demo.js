@@ -37,18 +37,40 @@ export function buildGuidedAppDemoFfmpegArgs(input) {
     'fps=24',
     'setsar=1',
   ].join(',');
+  // The cartoon-hand pointer is composited as a pre-rendered transparent frame
+  // sequence. Without an overlay the argument list stays byte-identical to the
+  // guided-app-demo@1 encoder so pinned renders do not change.
+  const overlay = input.overlay ?? null;
+  const overlayInputIndex = hasAudio ? 1 : 2;
+  const overlayArgs = overlay
+    ? [
+      '-framerate',
+      String(requiredPositive(overlay.fps, 'overlay.fps')),
+      '-start_number',
+      String(overlay.startNumber ?? 0),
+      '-i',
+      requiredString(overlay.framePattern, 'overlay.framePattern'),
+    ]
+    : [];
+  const filterComplex = overlay
+    ? [
+      `[0:v]${videoFilter}[base]`,
+      `[${overlayInputIndex}:v]scale=${profile.width}:${profile.height},format=rgba,fps=24[hand]`,
+      '[base][hand]overlay=0:0:eof_action=pass:format=auto[composited]',
+    ].join(';')
+    : null;
 
   return [
     '-y',
     '-i',
     inputPath,
     ...(hasAudio ? [] : ['-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo']),
+    ...overlayArgs,
     '-map',
-    '0:v:0',
+    overlay ? '[composited]' : '0:v:0',
     '-map',
     hasAudio ? '0:a:0' : '1:a:0',
-    '-vf',
-    videoFilter,
+    ...(overlay ? ['-filter_complex', filterComplex] : ['-vf', videoFilter]),
     '-c:v',
     'libx264',
     '-preset',
@@ -88,6 +110,7 @@ export async function renderGuidedAppDemoCapture(input, options = {}) {
     outputPath,
     renderKind,
     hasAudio,
+    ...(input.overlay ? { overlay: input.overlay } : {}),
   });
   await mkdir(path.dirname(outputPath), { recursive: true });
   const startedAt = Date.now();
@@ -97,6 +120,7 @@ export async function renderGuidedAppDemoCapture(input, options = {}) {
     renderKind,
     profile: guidedAppDemoRenderProfile(renderKind),
     hasAudio,
+    overlay: input.overlay ? { framePattern: input.overlay.framePattern, fps: input.overlay.fps } : null,
     renderDurationMs: Date.now() - startedAt,
   };
 }
@@ -104,4 +128,10 @@ export async function renderGuidedAppDemoCapture(input, options = {}) {
 function requiredString(value, name) {
   if (typeof value !== 'string' || !value.trim()) throw new Error(`${name} is required`);
   return value.trim();
+}
+
+function requiredPositive(value, name) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number <= 0) throw new Error(`${name} must be a positive number`);
+  return number;
 }

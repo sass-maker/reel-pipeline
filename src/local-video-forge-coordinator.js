@@ -1,9 +1,15 @@
+import { FALLBACK_REASONS } from './cartoon-hand-pointer.js';
 import {
   assertForgeJobFilmSkill,
   filmSkillExecutionContract,
   listFilmSkills,
   resolveFilmSkill,
 } from './film-skills.js';
+import {
+  evaluatePointerTraceBinding,
+  normalizePointerTrace,
+  POINTER_TRACE_SCHEMA,
+} from './pointer-trace.js';
 
 const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
 const JOB_PREFIX = 'video-forge/jobs/';
@@ -13,6 +19,8 @@ const OUTPUT_PREFIX = 'video-forge/outputs/';
 const MAX_KEYFRAME_BYTES = 12 * 1024 * 1024;
 const MAX_CAPTURE_BYTES = 95 * 1024 * 1024;
 const MAX_CAPTURE_DURATION_MS = 90 * 1000;
+const MAX_POINTER_TRACE_BYTES = 2 * 1024 * 1024;
+const GUIDED_FILM_SKILLS = new Set(['guided-app-demo@1', 'guided-app-demo@2']);
 const MAX_ATTEMPTS = 2;
 const REVIEW_DECISIONS = new Set([
   'accepted',
@@ -44,6 +52,36 @@ export async function handleForgeWorkerRequest(request, env) {
     } catch (error) {
       return responseJson({ error: formatError(error) }, statusForError(error));
     }
+  }
+
+  const pointerTraceUploadMatch = request.method === 'PUT'
+    && url.pathname.match(/^\/forge\/captures\/([^/]+)\/pointer-trace$/);
+  if (pointerTraceUploadMatch) {
+    try {
+      const data = await storeForgePointerTrace(
+        decodeURIComponent(pointerTraceUploadMatch[1]),
+        request,
+        { bucket },
+      );
+      return responseJson({ data }, 201);
+    } catch (error) {
+      return responseJson({ error: formatError(error) }, statusForError(error));
+    }
+  }
+
+  const pointerTraceReadMatch = request.method === 'GET'
+    && url.pathname.match(/^\/forge\/jobs\/([^/]+)\/pointer-trace$/);
+  if (pointerTraceReadMatch) {
+    const job = await getForgeJob(decodeURIComponent(pointerTraceReadMatch[1]), { bucket });
+    if (!job) return responseJson({ error: 'forge job not found' }, 404);
+    const key = job.pointerTreatment?.trace?.assetKey;
+    if (!key) return responseJson({ error: 'forge pointer trace not found' }, 404);
+    const object = await bucket.get(key);
+    if (!object) return responseJson({ error: 'forge pointer trace not found' }, 404);
+    const headers = new Headers();
+    headers.set('content-type', 'application/json; charset=utf-8');
+    headers.set('cache-control', 'private, no-store');
+    return new Response(object.body, { headers });
   }
 
   if (request.method === 'POST' && url.pathname === '/forge/jobs') {
@@ -279,8 +317,8 @@ export async function storeForgeCapture(idInput, request, options) {
   const filmSkill = resolveFilmSkill(
     requiredString(request.headers.get('x-forge-film-skill'), 'x-forge-film-skill'),
   );
-  if (filmSkill.ref !== 'guided-app-demo@1') {
-    throw new Error('browser capture currently requires guided-app-demo@1');
+  if (!GUIDED_FILM_SKILLS.has(filmSkill.ref)) {
+    throw new Error(`browser capture requires ${[...GUIDED_FILM_SKILLS].join(' or ')}`);
   }
   const presenterMode = requiredString(
     request.headers.get('x-forge-presenter-mode') ?? 'none',
@@ -355,12 +393,125 @@ export async function storeForgeCapture(idInput, request, options) {
   return record;
 }
 
+// Stores the privacy-bounded pointer sidecar next to an approved capture.
+// An ineligible trace is still recorded: the job stays renderable with the
+// standard cursor and carries the reason instead of silently dropping it.
+export async function storeForgePointerTrace(captureId, request, options) {
+  const bucket = requiredBucket(options.bucket);
+  const id = safeId(captureId);
+  const metadataKey = `${CAPTURE_PREFIX}${id}.json`;
+  const captureObject = await bucket.get(metadataKey);
+  if (!captureObject) throw forgeError('approved forge capture not found', 404);
+  const capture = await captureObject.json();
+  if (capture.filmSkill !== 'guided-app-demo@2') {
+    throw new Error('pointer traces require a guided-app-demo@2 capture');
+  }
+  const body = await request.text();
+  if (body.length > MAX_POINTER_TRACE_BYTES) {
+    throw new Error(`pointer trace exceeds ${MAX_POINTER_TRACE_BYTES} bytes`);
+  }
+  const trace = normalizePointerTrace(JSON.parse(body));
+  const evaluation = evaluatePointerTraceBinding({ trace, capture });
+  const sha256Value = await sha256Hex(body);
+  const assetKey = `${CAPTURE_PREFIX}${id}.pointer-trace.json`;
+  await bucket.put(assetKey, body, {
+    httpMetadata: { contentType: 'application/json; charset=utf-8' },
+  });
+  const now = options.now?.() ?? new Date();
+  const record = {
+    ...capture,
+    pointerTrace: {
+      schema: POINTER_TRACE_SCHEMA,
+      assetKey,
+      sha256: sha256Value,
+      digest: evaluation.binding.traceDigest,
+      acquisitionMethod: trace.acquisition.method,
+      displaySurface: trace.acquisition.displaySurface,
+      coordinateMapping: trace.acquisition.coordinateMapping,
+      capturedCursor: trace.acquisition.capturedCursor,
+      samples: trace.samples.length,
+      durationMs: trace.timebase.durationMs,
+      eligible: evaluation.eligible,
+      failures: evaluation.failures,
+      storedAt: now.toISOString(),
+    },
+  };
+  await bucket.put(metadataKey, `${JSON.stringify(record, null, 2)}\n`, {
+    httpMetadata: { contentType: 'application/json; charset=utf-8' },
+  });
+  return record;
+}
+
+async function sha256Hex(value) {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+// Builds the job-side pointer treatment record. The plan digest is produced by
+// the renderer, so at queue time this only proves the request is coherent.
+function normalizeSubmittedPointerTreatment(input, capture, filmSkillRef) {
+  const requested = input?.requested === true;
+  if (filmSkillRef !== 'guided-app-demo@2') {
+    if (requested) throw new Error('the cartoon-hand pointer requires guided-app-demo@2');
+    return null;
+  }
+  if (!requested) {
+    return { requested: false, outcome: 'standard-cursor', fallbackReason: 'operator-disabled' };
+  }
+  const trace = capture.pointerTrace;
+  if (!trace?.sha256) {
+    throw new Error('the cartoon-hand pointer requires an approved pointer trace on the capture');
+  }
+  if (trace.eligible !== true) {
+    const reason = trace.failures?.[0]?.code ?? 'unsupported-source-mapping';
+    if (!FALLBACK_REASONS.has(reason)) {
+      throw new Error(`unrecognized pointer trace failure: ${reason}`);
+    }
+    return {
+      requested: true,
+      outcome: 'standard-cursor',
+      fallbackReason: reason,
+      fallbackDetail: trace.failures?.[0]?.detail ?? null,
+      trace: pointerTraceReference(trace, capture),
+    };
+  }
+  const styleRef = requiredString(input.styleRef, 'pointerTreatment.styleRef');
+  return {
+    requested: true,
+    filmSkill: filmSkillRef,
+    trace: pointerTraceReference(trace, capture),
+    style: {
+      ref: styleRef,
+      digest: requiredString(input.styleDigest, 'pointerTreatment.styleDigest').toLowerCase(),
+      rightsApproved: input.styleRightsApproved === true,
+      tier: requiredString(input.styleTier ?? 'production-safe', 'pointerTreatment.styleTier'),
+    },
+    reducedMotion: input.reducedMotion === true,
+    plan: null,
+  };
+}
+
+function pointerTraceReference(trace, capture) {
+  return {
+    schema: POINTER_TRACE_SCHEMA,
+    assetKey: trace.assetKey,
+    sha256: trace.sha256,
+    digest: trace.digest,
+    sourceSha256: capture.sha256,
+    acquisitionMethod: trace.acquisitionMethod,
+    displaySurface: trace.displaySurface,
+    coordinateMapping: trace.coordinateMapping,
+    durationMs: trace.durationMs,
+    samples: trace.samples,
+  };
+}
+
 async function createGuidedCaptureJob(input, options) {
   const bucket = requiredBucket(options.bucket);
   const project = normalizeSubmittedProject(input.project);
   const filmSkill = normalizeSubmittedFilmSkill(input.filmSkill);
-  if (filmSkill?.ref !== 'guided-app-demo@1') {
-    throw new Error('capture jobs require guided-app-demo@1');
+  if (!GUIDED_FILM_SKILLS.has(filmSkill?.ref)) {
+    throw new Error(`capture jobs require ${[...GUIDED_FILM_SKILLS].join(' or ')}`);
   }
   const brief = normalizeSubmittedBrief(input);
   const captureId = safeId(input.captureId);
@@ -370,6 +521,11 @@ async function createGuidedCaptureJob(input, options) {
   if (sourceCapture.filmSkill !== filmSkill.ref) {
     throw new Error('capture film skill does not match the requested film style');
   }
+  const pointerTreatment = normalizeSubmittedPointerTreatment(
+    input.pointerTreatment,
+    sourceCapture,
+    filmSkill.ref,
+  );
   const id = safeId(
     input.id
     ?? `forge_${new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14)}_${crypto.randomUUID().slice(0, 8)}`,
@@ -383,7 +539,10 @@ async function createGuidedCaptureJob(input, options) {
     status: 'queued',
     attempts: 0,
     maxAttempts: MAX_ATTEMPTS,
-    requiredCapabilities: ['ffmpeg', 'guided-app-demo'],
+    requiredCapabilities: pointerTreatment?.requested === true
+      && pointerTreatment.outcome !== 'standard-cursor'
+      ? ['ffmpeg', 'guided-app-demo', 'cartoon-hand-pointer']
+      : ['ffmpeg', 'guided-app-demo'],
     filmSkill,
     brief,
     project,
@@ -393,6 +552,7 @@ async function createGuidedCaptureJob(input, options) {
       preview: { preset: 'guided-preview', seeds: [] },
     },
     sourceCapture,
+    ...(pointerTreatment ? { pointerTreatment } : {}),
     lease: null,
     progress: null,
     variants: [],
@@ -639,6 +799,13 @@ export async function recordForgeDecision(id, input, options) {
           ?? current.sourceCapture?.sha256
           ?? current.keyframe?.sha256
           ?? null,
+        ...(variant.pointerTreatment
+          ? {
+            pointerTreatmentDigest: variant.pointerTreatment.planDigest ?? null,
+            pointerTreatmentOutcome: variant.pointerTreatment.outcome ?? null,
+            pointerTreatmentFallbackReason: variant.pointerTreatment.fallbackReason ?? null,
+          }
+          : {}),
         acceptedAt: entry.decidedAt,
       }
     : current.review?.selection?.variantId === variantId
@@ -696,8 +863,21 @@ export async function requestForgeFinalRender(id, input, options) {
   if (['queued', 'running', 'completed'].includes(current.finalRender?.status)) return current;
 
   const now = options.now?.() ?? new Date();
+  const acceptedTreatment = variant.pointerTreatment ?? null;
   const next = {
     ...current,
+    ...(current.pointerTreatment && acceptedTreatment
+      ? {
+        pointerTreatment: {
+          ...current.pointerTreatment,
+          plan: {
+            digest: acceptedTreatment.planDigest ?? null,
+            outcome: acceptedTreatment.outcome ?? null,
+            fallbackReason: acceptedTreatment.fallbackReason ?? null,
+          },
+        },
+      }
+      : {}),
     finalRender: {
       status: 'queued',
       attempts: 0,
@@ -706,6 +886,12 @@ export async function requestForgeFinalRender(id, input, options) {
       seed: Number.isInteger(Number(variant.seed)) ? Number(variant.seed) : null,
       sourceSha256: approvedSource.sha256,
       filmSkill: current.filmSkill.ref,
+      ...(acceptedTreatment
+        ? {
+          pointerTreatmentDigest: acceptedTreatment.planDigest ?? null,
+          pointerTreatmentOutcome: acceptedTreatment.outcome ?? null,
+        }
+        : {}),
       note: optionalString(input.note) ?? null,
     },
     updatedAt: now.toISOString(),
@@ -920,6 +1106,9 @@ function normalizeCompletedVariants(variants, job) {
     ) {
       throw new Error('guided app-demo preview must preserve the approved source hash');
     }
+    if (job?.pointerTreatment?.requested === true) {
+      assertVariantPointerTreatment(variant, job);
+    }
     if (job?.sourceKind !== 'guided-app-capture') {
       const seed = Number(variant?.seed);
       if (!Number.isInteger(seed) || !expectedSeeds.has(seed)) {
@@ -934,6 +1123,30 @@ function normalizeCompletedVariants(variants, job) {
     throw new Error('completed forge variants must preserve the requested preview seeds');
   }
   return variants;
+}
+
+// The renderer must say which treatment the bytes actually used, so a
+// standard-cursor fallback can never be reported as the cartoon hand.
+function assertVariantPointerTreatment(variant, job) {
+  const reported = variant?.pointerTreatment;
+  if (!reported) throw new Error('guided-app-demo@2 variants must report the pointer treatment used');
+  if (!['cartoon-hand', 'standard-cursor'].includes(reported.outcome)) {
+    throw new Error('reported pointer treatment outcome is unsupported');
+  }
+  if (!/^[a-f0-9]{64}$/i.test(String(reported.planDigest ?? ''))) {
+    throw new Error('reported pointer treatment must carry a plan digest');
+  }
+  if (reported.outcome === 'cartoon-hand') {
+    if (reported.fallbackReason) {
+      throw new Error('a cartoon-hand variant must not carry a fallback reason');
+    }
+    const expectedTrace = job.pointerTreatment?.trace?.sha256;
+    if (expectedTrace && String(reported.traceSha256).toLowerCase() !== expectedTrace) {
+      throw new Error('reported pointer treatment trace hash does not match the approved trace');
+    }
+  } else if (!FALLBACK_REASONS.has(reported.fallbackReason)) {
+    throw new Error('a standard-cursor variant must record a known fallback reason');
+  }
 }
 
 function normalizeFinalVariant(variants, job) {

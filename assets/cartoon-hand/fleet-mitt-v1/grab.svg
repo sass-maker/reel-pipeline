@@ -1,0 +1,11 @@
+<!-- Fleet Mitt v1 pose: grab.
+     Local pose space: pinch point at (0,0), arm extends toward -x, total length 200.
+     A closed mitt whose pinch stays locked to the dragged hotspot. -->
+<g>
+  <path d="M -196 -40 L -152 -40 L -152 56 L -196 56 Z" fill="{{cuff}}" stroke="{{outline}}" stroke-width="9" stroke-linejoin="round"/>
+  <ellipse cx="-82" cy="6" rx="66" ry="52" fill="{{fill}}" stroke="{{outline}}" stroke-width="9"/>
+  <path d="M -30 -22 A 30 30 0 0 1 -30 30" fill="{{fill}}" stroke="{{outline}}" stroke-width="9"/>
+  <ellipse cx="-52" cy="-42" rx="34" ry="20" transform="rotate(-8 -52 -42)" fill="{{fill}}" stroke="{{outline}}" stroke-width="9"/>
+  <path d="M -46 -6 L -16 -6" fill="none" stroke="{{outline}}" stroke-width="9" stroke-linecap="round" opacity="0.7"/>
+  <path d="M -46 22 L -16 22" fill="none" stroke="{{outline}}" stroke-width="9" stroke-linecap="round" opacity="0.7"/>
+</g>

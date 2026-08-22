@@ -1,6 +1,6 @@
 # Reel Pipeline — Project Status
 
-Last updated: 2026-08-20
+Last updated: 2026-08-23
 
 ## Why / What
 
@@ -37,6 +37,18 @@ interface may request a write only through an explicit per-channel policy.
 
 ## Timeline
 
+- **2026-08-23:** added `guided-app-demo@2` and the opt-in cartoon-hand pointer
+  treatment: the `reel-pipeline.pointer-trace.v1` privacy-bounded sidecar,
+  hash-bound trace approval on the capture record, a deterministic
+  presenter-anchored overlay planner with fingertip/hotspot precision, a
+  rights-cleared `fleet-mitt@1` hand style, review gates measured on rendered
+  frames, and a recorded standard-cursor fallback. Proved it with a
+  reproducible zero-spend demo: a real local Chrome capture of this
+  repository's own brand-reel surface, a trace emitted by the same scripted
+  runner, and cartoon-hand, reduced-motion, and standard-cursor renders with
+  hashes in `fixtures/guided-app-demo/cartoon-hand-pointer/evidence.json`.
+  Publication stays blocked pending an owner decision.
+  See [`docs/architecture/cartoon-hand-pointer.md`](docs/architecture/cartoon-hand-pointer.md).
 - **2026-08-20:** restored this standalone repository as the canonical source,
   moved Content Factory under the same repository boundary, and removed the
   embedded Fleet Console maker/gallery and direct Fleet source imports. Existing

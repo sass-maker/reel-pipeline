@@ -5,6 +5,13 @@ import {
   normalizeFilmSkillReference,
 } from './coherent-scene-composition.js';
 
+import {
+  CARTOON_HAND_STYLE_SCHEMA,
+  FALLBACK_REASONS,
+  POINTER_STATES,
+} from './cartoon-hand-pointer.js';
+import { POINTER_TRACE_SCHEMA } from './pointer-trace.js';
+
 export const FILM_SKILL_SCHEMA = 'fleet.film-skill.v1';
 
 const EVIDENCE_BEAM_V1 = {
@@ -288,7 +295,103 @@ const GUIDED_APP_DEMO_V1 = {
   ],
 };
 
-const RAW_SKILLS = [EVIDENCE_BEAM_V1, GUIDED_APP_DEMO_V1];
+// guided-app-demo@2 adds the opt-in cartoon-hand pointer treatment. Version 1
+// stays byte-identical above so pinned jobs keep rendering exactly as accepted.
+const GUIDED_APP_DEMO_V2 = {
+  ...structuredClone(GUIDED_APP_DEMO_V1),
+  version: 2,
+  title: 'Guided app demo with optional cartoon-hand pointer',
+  description: 'Record a real application with a same-session presenter and, optionally, replace the cursor with a presenter-anchored cartoon hand driven by an approved pointer trace.',
+  assetRequirements: [
+    ...structuredClone(GUIDED_APP_DEMO_V1.assetRequirements),
+    {
+      id: 'cartoon-hand-style',
+      required: false,
+      minimum: 0,
+      kinds: ['image'],
+      sourceTypes: ['fleet-authored-graphic'],
+      tiers: ['production-safe'],
+      evidence: false,
+    },
+  ],
+  scenePrimitives: [
+    ...GUIDED_APP_DEMO_V1.scenePrimitives,
+    'cartoon-hand-pointer',
+  ],
+  defaults: {
+    ...structuredClone(GUIDED_APP_DEMO_V1.defaults),
+    cartoonHandPointer: {
+      optIn: true,
+      requiresPresenterAnchor: true,
+      pointerTraceSchema: POINTER_TRACE_SCHEMA,
+      supportedDisplaySurfaces: ['monitor', 'browser-viewport'],
+      handStyleSchema: CARTOON_HAND_STYLE_SCHEMA,
+      appearance: 'operator-selected',
+      hotspotMarker: 'high-contrast ring above the fingertip cover',
+      hotspotTolerancePx: 2,
+      idleRetractMs: 900,
+      states: [...POINTER_STATES],
+      reducedMotion: 'restrained poses or a static pointing hand at interaction moments',
+      fallback: 'standard-cursor',
+      fallbackReasons: [...FALLBACK_REASONS].sort(),
+    },
+  },
+  qualityGates: [
+    ...structuredClone(GUIDED_APP_DEMO_V1.qualityGates),
+    {
+      id: 'pointer-trace-integrity',
+      description: 'The pointer trace is privacy-bounded, calibrated, and bound to the approved capture and trace hashes.',
+    },
+    {
+      id: 'fingertip-hotspot-precision',
+      description: 'The rendered fingertip stays on the traced interaction hotspot at representative move, click, and drag frames.',
+    },
+    {
+      id: 'captured-cursor-coverage',
+      description: 'Any captured system cursor stays inside the verified fingertip cover; no pixel reconstruction is used.',
+    },
+    {
+      id: 'hand-style-rights',
+      description: 'The hand style is operator-selected with verified license, provenance, and pose checksums.',
+    },
+    {
+      id: 'standard-cursor-fallback',
+      description: 'An untrusted, disabled, or illegible treatment renders the standard cursor and records the reason.',
+    },
+  ],
+  reference: {
+    manifest: 'examples/coherent-films/guided-app-demo-v2.template.json',
+    frames: [
+      {
+        path: 'assets/cartoon-hand/proof-frame-tap.png',
+        purpose: 'rendered tap frame proving fingertip, cover, and hotspot ring alignment',
+      },
+    ],
+  },
+  knownFailureModes: [
+    ...structuredClone(GUIDED_APP_DEMO_V1.knownFailureModes),
+    {
+      symptom: 'The cartoon hand drifts off the control being clicked.',
+      response: 'Reject the trace binding and render the standard cursor until calibration is proven again.',
+    },
+    {
+      symptom: 'The original cursor is still visible beside the hand.',
+      response: 'Fall back to the standard cursor; never inpaint the captured interface.',
+    },
+    {
+      symptom: 'The arm becomes a permanent overlay.',
+      response: 'Keep the idle retract threshold and one principal gesture per interaction.',
+    },
+  ],
+  notWhen: [
+    ...GUIDED_APP_DEMO_V1.notWhen,
+    'The pointer trace cannot be calibrated to the encoded capture.',
+    'The demo is a dense precision-heavy sequence where the ordinary cursor reads better.',
+    'No rights-cleared, operator-selected hand style is available.',
+  ],
+};
+
+const RAW_SKILLS = [EVIDENCE_BEAM_V1, GUIDED_APP_DEMO_V1, GUIDED_APP_DEMO_V2];
 const FILM_SKILL_REGISTRY = new Map(
   RAW_SKILLS.map((skill) => {
     const normalized = normalizeFilmSkill(skill);
@@ -427,7 +530,7 @@ export function assertForgeJobFilmSkill(job, options = {}) {
   if (job.project?.aspectRatio !== '9:16') {
     throw new Error(`forge job ${job.filmSkill.ref} requires a 9:16 mobile composition`);
   }
-  if (expected.ref === 'guided-app-demo@1') {
+  if (expected.ref.startsWith('guided-app-demo@')) {
     return assertGuidedAppDemoJob(job, expected, options);
   }
   if (job.shot?.keyframeApproved !== true) {
@@ -491,8 +594,8 @@ export function assertForgeJobFilmSkill(job, options = {}) {
 }
 
 export function prepareFilmSkillForgeExecution(job, options = {}) {
-  if (job?.filmSkill?.ref === 'guided-app-demo@1') {
-    throw new Error('guided-app-demo@1 uses the approved capture encoder, not image-to-video execution');
+  if (typeof job?.filmSkill?.ref === 'string' && job.filmSkill.ref.startsWith('guided-app-demo@')) {
+    throw new Error(`${job.filmSkill.ref} uses the approved capture encoder, not image-to-video execution`);
   }
   const execution = assertForgeJobFilmSkill(job, options);
   const keyframePath = requiredText(options.keyframePath)
@@ -557,6 +660,7 @@ function assertGuidedAppDemoJob(job, expected, options) {
       throw new Error(`forge job ${expected.ref} final render must preserve the accepted source hash`);
     }
   }
+  const pointerTreatment = assertPointerTreatment(job, expected, capture, renderKind);
   return {
     ref: expected.ref,
     renderKind,
@@ -564,7 +668,127 @@ function assertGuidedAppDemoJob(job, expected, options) {
     seeds: [],
     sourceSha256: capture.sha256,
     qualityGateIds: expected.qualityGates.map((gate) => gate.id),
+    pointerTreatment,
   };
+}
+
+// The cartoon-hand pointer is opt-in and version-gated. A job pinned to
+// guided-app-demo@1 can never carry the treatment, and a requested treatment
+// on guided-app-demo@2 must prove its trace, style, and preview binding or
+// resolve to the standard cursor with a recorded reason.
+function assertPointerTreatment(job, expected, capture, renderKind) {
+  const treatment = job.pointerTreatment;
+  const supportsTreatment = expected.scenePrimitives.includes('cartoon-hand-pointer');
+  if (!supportsTreatment) {
+    if (treatment?.requested === true) {
+      throw new Error(`forge job ${expected.ref} does not support the cartoon-hand pointer`);
+    }
+    return null;
+  }
+  if (!treatment || treatment.requested !== true) {
+    return { outcome: 'standard-cursor', requested: false, fallbackReason: 'operator-disabled' };
+  }
+  if (capture.presenter?.mode !== 'same-session') {
+    throw new Error(
+      `forge job ${expected.ref} cannot anchor the cartoon-hand pointer without a same-session presenter`,
+    );
+  }
+  if (treatment.outcome === 'standard-cursor') {
+    if (!FALLBACK_REASONS.has(treatment.fallbackReason)) {
+      throw new Error(
+        `forge job ${expected.ref} fails the standard-cursor-fallback quality gate: unrecorded fallback reason`,
+      );
+    }
+    return {
+      outcome: 'standard-cursor',
+      requested: true,
+      fallbackReason: treatment.fallbackReason,
+    };
+  }
+  const trace = treatment.trace;
+  if (trace?.schema !== POINTER_TRACE_SCHEMA) {
+    throw new Error(`forge job ${expected.ref} requires a ${POINTER_TRACE_SCHEMA} pointer trace`);
+  }
+  if (!isSha256(trace.sha256) || !isSha256(trace.digest)) {
+    throw new Error(`forge job ${expected.ref} requires pointer trace hashes`);
+  }
+  if (String(trace.sourceSha256).toLowerCase() !== capture.sha256) {
+    throw new Error(
+      `forge job ${expected.ref} fails the pointer-trace-integrity quality gate: trace is not bound to the approved capture`,
+    );
+  }
+  const style = treatment.style;
+  if (
+    !requiredText(style?.ref)
+    || !isSha256(style?.digest)
+    || style?.rightsApproved !== true
+    || style?.tier !== 'production-safe'
+  ) {
+    throw new Error(`forge job ${expected.ref} fails the hand-style-rights quality gate`);
+  }
+  const plan = treatment.plan;
+  if (!plan) {
+    // A queued preview has no rendered plan yet; the renderer reports the plan
+    // digest with the variant and the final render is bound to it below.
+    if (renderKind === 'final') {
+      throw new Error(`forge job ${expected.ref} final render requires an accepted pointer treatment plan`);
+    }
+    return {
+      outcome: 'pending-render',
+      requested: true,
+      planDigest: null,
+      traceSha256: String(trace.sha256).toLowerCase(),
+      traceDigest: String(trace.digest).toLowerCase(),
+      styleRef: style.ref,
+      styleDigest: style.digest,
+      reducedMotion: treatment.reducedMotion === true,
+      fallbackReason: null,
+    };
+  }
+  if (!isSha256(plan?.digest)) {
+    throw new Error(`forge job ${expected.ref} requires a cartoon-hand plan digest`);
+  }
+  if (plan.outcome === 'standard-cursor') {
+    if (!FALLBACK_REASONS.has(plan.fallbackReason)) {
+      throw new Error(
+        `forge job ${expected.ref} fails the standard-cursor-fallback quality gate: unrecorded fallback reason`,
+      );
+    }
+  } else if (plan.outcome !== 'cartoon-hand') {
+    throw new Error(`forge job ${expected.ref} has an unsupported pointer treatment outcome`);
+  } else if (plan.fallbackReason) {
+    throw new Error(
+      `forge job ${expected.ref} cannot label a fallen-back render as the cartoon-hand treatment`,
+    );
+  }
+  if (renderKind === 'final') {
+    const accepted = job.review?.selection?.pointerTreatmentDigest;
+    if (!isSha256(accepted) || accepted !== plan.digest) {
+      throw new Error(
+        `forge job ${expected.ref} final render must reuse the accepted preview pointer treatment`,
+      );
+    }
+    if (job.finalRender?.pointerTreatmentDigest !== plan.digest) {
+      throw new Error(
+        `forge job ${expected.ref} final render must record the accepted pointer treatment digest`,
+      );
+    }
+  }
+  return {
+    outcome: plan.outcome,
+    requested: true,
+    planDigest: plan.digest,
+    traceSha256: String(trace.sha256).toLowerCase(),
+    traceDigest: String(trace.digest).toLowerCase(),
+    styleRef: style.ref,
+    styleDigest: style.digest,
+    reducedMotion: treatment.reducedMotion === true,
+    fallbackReason: plan.outcome === 'standard-cursor' ? plan.fallbackReason : null,
+  };
+}
+
+function isSha256(value) {
+  return typeof value === 'string' && /^[a-f0-9]{64}$/i.test(value);
 }
 
 export function bindFilmManifestToSkill(manifestInput, reference = manifestInput?.filmSkill) {

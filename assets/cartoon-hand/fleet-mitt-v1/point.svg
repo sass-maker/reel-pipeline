@@ -1,0 +1,12 @@
+<!-- Fleet Mitt v1 pose: point.
+     Local pose space: fingertip at (0,0), arm extends toward -x, total length 200.
+     Palette tokens {{fill}}, {{outline}}, {{cuff}} are substituted at render time. -->
+<g>
+  <path d="M -196 -46 L -150 -46 L -150 52 L -196 52 Z" fill="{{cuff}}" stroke="{{outline}}" stroke-width="9" stroke-linejoin="round"/>
+  <ellipse cx="-108" cy="4" rx="58" ry="48" fill="{{fill}}" stroke="{{outline}}" stroke-width="9"/>
+  <ellipse cx="-104" cy="-46" rx="34" ry="19" transform="rotate(-22 -104 -46)" fill="{{fill}}" stroke="{{outline}}" stroke-width="9"/>
+  <path d="M -66 -2 L -12 -2" fill="none" stroke="{{outline}}" stroke-width="38" stroke-linecap="round"/>
+  <path d="M -66 -2 L -12 -2" fill="none" stroke="{{fill}}" stroke-width="24" stroke-linecap="round"/>
+  <path d="M -78 34 L -46 34" fill="none" stroke="{{outline}}" stroke-width="30" stroke-linecap="round"/>
+  <path d="M -78 34 L -46 34" fill="none" stroke="{{fill}}" stroke-width="18" stroke-linecap="round"/>
+</g>

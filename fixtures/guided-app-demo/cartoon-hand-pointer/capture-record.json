@@ -1,0 +1,60 @@
+{
+  "schema": "reel-pipeline.forge-capture.v1",
+  "id": "cartoon-hand-pointer-demo",
+  "assetKey": "fixtures/guided-app-demo/cartoon-hand-pointer/source-capture.mp4",
+  "fileName": "source-capture.mp4",
+  "mediaType": "video/mp4",
+  "bytes": 71920,
+  "durationMs": 5500,
+  "width": 720,
+  "height": 1280,
+  "fps": 24,
+  "sha256": "6ce072d6ee630f9d99bd1ec3c1f49b0582434c807adba68b239e224ae52b5ffb",
+  "filmSkill": "guided-app-demo@2",
+  "captureMethod": "scripted-browser-runner",
+  "displaySurface": "browser-viewport",
+  "sourcePosture": "real-capture",
+  "executionMode": "real",
+  "surface": {
+    "id": "anonymous-brand-reel-landing",
+    "module": "src/anonymous-video/ui.js",
+    "export": "anonymousVideoPageHtml",
+    "note": "Rendered locally and opened over file://; network-backed panes stay in their offline state."
+  },
+  "renderer": {
+    "capture": "chrome-cdp@Chrome/151.0.7922.170",
+    "encoder": "ffmpeg libx264 crf20 720x1280@24"
+  },
+  "presenter": {
+    "mode": "same-session",
+    "sync": "same-session",
+    "position": "bottom-right",
+    "note": "Presenter rectangle is reserved and anchored; this local proof recorded no camera frames."
+  },
+  "approval": {
+    "approved": true,
+    "approvedAt": "2026-08-22T18:36:01.648Z",
+    "approvedBy": "local-proof-run",
+    "note": "Local capture of this repository's own product surface; approved for local review only, not for publication."
+  },
+  "provenance": {
+    "sourceType": "real-capture",
+    "sourceRevision": "a7663ef1fbb858134997d8db6ca73b6da4821a68:dda4954a8d3a",
+    "rights": {
+      "tier": "production-safe",
+      "license": "fleet-owned-product-surface",
+      "approved": true
+    }
+  },
+  "pointerTrace": {
+    "schema": "reel-pipeline.pointer-trace.v1",
+    "path": "fixtures/guided-app-demo/cartoon-hand-pointer/pointer-trace.json",
+    "sha256": "37f508d448aa4cff9c40c5a6680529e1a55ab1ae7aab7d171333223e8609b3b3",
+    "acquisitionMethod": "scripted-browser-runner",
+    "displaySurface": "browser-viewport",
+    "coordinateMapping": "calibrated",
+    "samples": 132,
+    "durationMs": 5500
+  },
+  "capturedAt": "2026-08-22T18:36:01.649Z"
+}
