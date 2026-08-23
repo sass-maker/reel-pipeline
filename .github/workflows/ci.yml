@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: reel-pipeline-ci-${{ github.ref }}
+  group: reel-pipeline-ci-v2-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
