@@ -4,8 +4,8 @@ Reel Pipeline generates media artifacts. Postiz owns social review,
 scheduling, publishing, and provider analytics.
 
 Start with [`STATUS.md`](../STATUS.md) and
-[`PROJECT_STATUS.md`](../PROJECT_STATUS.md). Blume renders this committed
-Markdown but does not replace it as the source of truth.
+[`PROJECT_STATUS.md`](../PROJECT_STATUS.md). The committed Markdown is the
+source of truth.
 
 ## Product
 
@@ -38,7 +38,6 @@ Markdown but does not replace it as the source of truth.
 - [`development/commands.md`](./development/commands.md)
 - [`development/testing.md`](./development/testing.md)
 - [`development/submodules.md`](./development/submodules.md)
-- [`development/docs-build.md`](./development/docs-build.md)
 
 ## Operations
 

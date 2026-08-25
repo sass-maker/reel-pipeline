@@ -15,12 +15,6 @@ commands.
 | `npm run ready:proofs` | Refresh required readiness evidence |
 | `npm run ready:target` | Target-host acceptance; requires prepared live services |
 | `npm run docs:validate` | Documentation structure and link validation |
-| `npm run docs:build` | Build the Blume documentation site |
-
-## Render
-
-| Command | Purpose |
-| --- | --- |
 | `npm run render:pro -- <reel-id>` | Canonical Worker/R2 production render |
 | `npm run render:pro:rs -- <reel-id>` | Rust wrapper around production render |
 | `npm run render:fixture -- --mode <mode>` | Direct local VideoBrief fixture render |

@@ -82,6 +82,6 @@ surfaces. These are generation tools, not social publishing surfaces.
 
 ## Documentation policy
 
-Committed Markdown is the source of truth; Blume only renders it. Executable
-configuration is authoritative for commands and readiness checks. Run
+Committed Markdown is the source of truth. Executable configuration is
+authoritative for commands and readiness checks. Run
 `npm run docs:validate` after documentation changes.

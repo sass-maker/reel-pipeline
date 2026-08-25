@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Validate docs structure + internal markdown links without requiring Blume.
+// Validate docs structure + internal markdown links.
 // Run: npm run docs:validate
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, dirname, resolve, relative, sep, posix } from "node:path";
@@ -37,7 +37,6 @@ const REQUIRED_FILES = [
   "development/commands.md",
   "development/testing.md",
   "development/submodules.md",
-  "development/docs-build.md",
   "operations/deployment.md",
   "operations/postiz-handoff.md",
   "knowledge/failed-approaches/openshorts-adapter.md",

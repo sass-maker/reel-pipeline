@@ -62,11 +62,7 @@
     "forge:coherent": "node scripts/render-coherent-film.js",
     "worker:dry-run": "npx wrangler deploy --dry-run",
     "deploy": "node scripts/manual-deploy.mjs deploy.yml ci.yml",
-    "docs:validate": "node scripts/validate-docs.mjs",
-    "docs:links": "blume validate",
-    "docs:dev": "blume dev",
-    "docs:build": "blume build",
-    "docs:preview": "blume preview"
+    "docs:validate": "node scripts/validate-docs.mjs"
   },
   "engines": {
     "node": ">=20"
