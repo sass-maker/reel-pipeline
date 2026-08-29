@@ -1,0 +1,32 @@
+{
+  "$schema": "fleet.landing-audit.scorecard.v1",
+  "project": "reel-pipeline",
+  "priority": "P2",
+  "surfaceMode": "none",
+  "applicability": "not-applicable",
+  "productionChanged": false,
+  "checkedAt": "2026-08-28",
+  "purpose": {
+    "score": null,
+    "reason": "Reel Pipeline is a held operator media-production pipeline whose full publishable loop never shipped; it is not currently a public acquisition product."
+  },
+  "design": {
+    "score": null,
+    "reason": "Its local Studio, review, gallery, and operator interfaces are functional product surfaces rather than a canonical public landing page."
+  },
+  "publicSurface": {
+    "expected": false,
+    "observedCanonicalDomains": [],
+    "publicName": null,
+    "publicListing": "hidden",
+    "deploymentKind": "worker",
+    "deploymentPurpose": "Artifact intake and storage, not a marketing website"
+  },
+  "verification": {
+    "dossier": "docs/project-dossiers/reel-pipeline.yaml",
+    "dossierStatus": "verified",
+    "repositoryStatus": "Held pipeline with CLI, API, local Studio, review, gallery, and evidence surfaces",
+    "ownerDecision": "Reopen only after reducing to one bounded video-to-publication loop with explicit cost and operator-time limits"
+  },
+  "decision": "Do not invent, host, SEO-audit, GEO-audit, or rank a public landing page while the product is held and lacks a shipped public loop. Preserve its local operator UI and revisit a public page only when that bounded loop is genuinely proven."
+}
