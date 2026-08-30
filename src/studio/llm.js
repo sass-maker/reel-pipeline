@@ -1,3 +1,5 @@
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
+import { generateText } from 'ai';
 import { spawnSync } from 'node:child_process';
 import { readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -5,50 +7,42 @@ import path from 'node:path';
 
 const DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
 const DEEPSEEK_MODEL = 'deepseek-chat';
-const FREE_AI_BASE_URL = 'https://ai-gateway.sassmaker.com';
-const FREE_AI_MODEL = 'auto';
-const FREE_AI_PROJECT_ID = 'reel-pipeline';
 const HTTP_TIMEOUT_MS = 45_000;
 const CODEX_TIMEOUT_MS = 120_000;
-const DEFAULT_PROVIDER_ORDER = ['free-ai', 'codex', 'deepseek'];
+const DEFAULT_PROVIDER_ORDER = ['direct', 'codex', 'deepseek'];
 
 class OpenAiCompatibleProvider {
-  constructor({ name, apiKey, baseUrl, model, fetchImpl, headers = {} }) {
+  constructor({ name, apiKey, baseUrl, model, fetchImpl }) {
     this.name = name;
     this.apiKey = apiKey;
     this.baseUrl = (baseUrl ?? '').replace(/\/$/, '');
     this.model = model;
     this.fetchImpl = fetchImpl ?? fetch;
-    this.headers = headers;
+    this.provider = this.baseUrl && this.apiKey
+      ? createOpenAICompatible({
+        name,
+        baseURL: this.baseUrl,
+        apiKey: this.apiKey,
+        ...(fetchImpl ? { fetch: fetchImpl } : {}),
+      })
+      : null;
   }
 
   isConfigured() {
-    return Boolean(this.apiKey);
+    return Boolean(this.provider && this.model);
   }
 
   async chatJson(messages, { temperature = 0.7, maxTokens = 2048 } = {}) {
-    if (!this.apiKey) throw new Error(`${this.name} is not configured`);
-    const res = await this.fetchImpl(`${this.baseUrl}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        authorization: `Bearer ${this.apiKey}`,
-        ...this.headers,
-      },
-      body: JSON.stringify({
-        model: this.model,
-        messages,
-        temperature,
-        max_tokens: maxTokens,
-        response_format: { type: 'json_object' },
-      }),
-      signal: AbortSignal.timeout(HTTP_TIMEOUT_MS),
+    if (!this.provider || !this.model) throw new Error(`${this.name} is not configured`);
+    const result = await generateText({
+      model: this.provider.chatModel(this.model),
+      messages,
+      temperature,
+      maxOutputTokens: maxTokens,
+      maxRetries: 0,
+      timeout: { totalMs: HTTP_TIMEOUT_MS },
     });
-    if (!res.ok) {
-      throw new Error(`${this.name} request failed ${res.status}: ${await res.text()}`);
-    }
-    const payload = await res.json();
-    const content = payload?.choices?.[0]?.message?.content;
+    const content = result.text;
     if (!content) throw new Error(`${this.name} response missing content`);
     return parseJsonContent(content, this.name);
   }
@@ -146,14 +140,13 @@ function buildProvider(name, options) {
       fetchImpl: options.fetchImpl,
     });
   }
-  if (name === 'free-ai') {
+  if (name === 'direct') {
     return new OpenAiCompatibleProvider({
-      name: 'free-ai',
-      apiKey: process.env.FREE_AI_API_KEY,
-      baseUrl: `${(process.env.FREE_AI_BASE_URL ?? FREE_AI_BASE_URL).replace(/\/$/, '')}/v1`,
-      model: process.env.FREE_AI_MODEL ?? FREE_AI_MODEL,
+      name: 'direct',
+      apiKey: process.env.STUDIO_AI_API_KEY ?? process.env.AI_API_KEY,
+      baseUrl: process.env.STUDIO_AI_BASE_URL ?? process.env.AI_BASE_URL,
+      model: process.env.STUDIO_AI_MODEL ?? process.env.AI_MODEL,
       fetchImpl: options.fetchImpl,
-      headers: { 'x-gateway-project-id': process.env.FREE_AI_PROJECT_ID ?? FREE_AI_PROJECT_ID },
     });
   }
   if (name === 'codex') return new CodexProvider(options.codex ?? {});

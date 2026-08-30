@@ -22,18 +22,18 @@ function stubProvider(name, { configured = true, result, fail } = {}) {
 
 test('chain uses the first configured provider and reports it', async () => {
   const llm = new StudioLlm({
-    providers: [stubProvider('free-ai'), stubProvider('codex')],
+    providers: [stubProvider('direct'), stubProvider('codex')],
     logger: silent,
   });
   const result = await llm.generate({ messages: MESSAGES, fallback: () => ({ from: 'template' }) });
   assert.equal(result.source, 'llm');
-  assert.equal(result.provider, 'free-ai');
-  assert.deepEqual(result.data, { from: 'free-ai' });
+  assert.equal(result.provider, 'direct');
+  assert.deepEqual(result.data, { from: 'direct' });
 });
 
 test('unconfigured providers are skipped', async () => {
   const llm = new StudioLlm({
-    providers: [stubProvider('free-ai', { configured: false }), stubProvider('codex')],
+    providers: [stubProvider('direct', { configured: false }), stubProvider('codex')],
     logger: silent,
   });
   const result = await llm.generate({ messages: MESSAGES, fallback: () => ({}) });
@@ -42,7 +42,7 @@ test('unconfigured providers are skipped', async () => {
 
 test('a failing provider falls through to the next, then to template on exhaustion', async () => {
   const llm = new StudioLlm({
-    providers: [stubProvider('free-ai', { fail: true }), stubProvider('codex')],
+    providers: [stubProvider('direct', { fail: true }), stubProvider('codex')],
     logger: silent,
   });
   const result = await llm.generate({ messages: MESSAGES, fallback: () => ({}) });
@@ -50,7 +50,7 @@ test('a failing provider falls through to the next, then to template on exhausti
   assert.equal(result.provider, 'codex');
 
   const allFail = new StudioLlm({
-    providers: [stubProvider('free-ai', { fail: true }), stubProvider('codex', { fail: true })],
+    providers: [stubProvider('direct', { fail: true }), stubProvider('codex', { fail: true })],
     logger: silent,
   });
   const fallback = await allFail.generate({ messages: MESSAGES, fallback: () => ({ from: 'template' }) });
@@ -117,31 +117,30 @@ test('codex provider reports unavailable when the binary is missing', () => {
   assert.equal(llm.isConfigured(), false);
 });
 
-test('free-ai provider sends an OpenAI-compatible request with project header', async (t) => {
+test('direct provider sends an OpenAI-compatible SDK request', async (t) => {
   t.before(() => {
-    process.env.FREE_AI_API_KEY = 'test-free-key';
+    process.env.STUDIO_AI_BASE_URL = 'https://direct.example.test/v1';
+    process.env.STUDIO_AI_API_KEY = 'test-free-key';
+    process.env.STUDIO_AI_MODEL = 'free-model';
   });
   t.after(() => {
-    delete process.env.FREE_AI_API_KEY;
+    delete process.env.STUDIO_AI_BASE_URL;
+    delete process.env.STUDIO_AI_API_KEY;
+    delete process.env.STUDIO_AI_MODEL;
   });
   let captured;
   const llm = new StudioLlm({
-    providers: ['free-ai'],
+    providers: ['direct'],
     fetchImpl: async (url, init) => {
       captured = { url, init };
-      return {
-        ok: true,
-        json: async () => ({ choices: [{ message: { content: '{"ok": true}' } }] }),
-      };
+      return Response.json({ choices: [{ message: { content: '{"ok": true}' } }] });
     },
     logger: silent,
   });
   const data = await llm.chatJson(MESSAGES);
   assert.deepEqual(data, { ok: true });
-  assert.match(captured.url, /\/v1\/chat\/completions$/);
-  assert.equal(captured.init.headers['x-gateway-project-id'], 'reel-pipeline');
-  assert.equal(captured.init.headers.authorization, 'Bearer test-free-key');
+  assert.match(String(captured.url), /\/v1\/chat\/completions$/);
+  assert.equal(new Headers(captured.init.headers).get('authorization'), 'Bearer test-free-key');
   const body = JSON.parse(captured.init.body);
-  assert.equal(body.model, 'auto');
-  assert.deepEqual(body.response_format, { type: 'json_object' });
+  assert.equal(body.model, 'free-model');
 });
