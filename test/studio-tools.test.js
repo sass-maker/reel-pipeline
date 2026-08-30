@@ -13,10 +13,8 @@ const offlineLlm = new StudioLlm({ apiKey: '' });
 function llmStub(payload) {
   return new StudioLlm({
     apiKey: 'test-key',
-    fetchImpl: async () => ({
-      ok: true,
-      json: async () => ({ choices: [{ message: { content: JSON.stringify(payload) } }] }),
-    }),
+    fetchImpl: async () =>
+      Response.json({ choices: [{ message: { content: JSON.stringify(payload) } }] }),
   });
 }
 
@@ -36,7 +34,7 @@ test('studio tools return llm output when configured', async () => {
 test('llm failure falls back to template', async () => {
   const llm = new StudioLlm({
     apiKey: 'test-key',
-    fetchImpl: async () => ({ ok: false, status: 500, text: async () => 'boom' }),
+    fetchImpl: async () => new Response('boom', { status: 500 }),
     logger: { warn: () => {} },
   });
   const result = await generateTitles({ topic: 'compound interest', llm });
